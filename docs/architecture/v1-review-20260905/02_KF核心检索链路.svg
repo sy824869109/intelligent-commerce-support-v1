@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1300" height="1210" viewBox="0 0 1300 1210"><rect width="1300" height="1210" fill="white"/>
+<text x="35" y="27" dominant-baseline="text-before-edge" text-anchor="start" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="30" font-weight="700" fill="#172B3A">图 2  KF RAG 核心 Stage 0 至 7</text>
+<text x="35" y="76" dominant-baseline="text-before-edge" text-anchor="start" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">入口：N4 → 知识门面 → RAG API → QAService → LangChain 显式 Pipeline</text>
+<rect x="45" y="165" width="360" height="115" rx="8" fill="#F0F8F4" stroke="#267862" stroke-width="1.5"/>
+<text x="225.0" y="176.0" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="700" fill="#172B3A">K0 创建上下文</text>
+<text x="225.0" y="211.0" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="24" font-weight="400" fill="#172B3A">场景 数据权限 会话</text>
+<text x="225.0" y="243.0" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="24" font-weight="400" fill="#172B3A">固定本次 kb_version</text>
+<rect x="470" y="165" width="360" height="115" rx="8" fill="#F0F8F4" stroke="#267862" stroke-width="1.5"/>
+<text x="650.0" y="176.0" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="700" fill="#172B3A">K1 低成本路由</text>
+<text x="650.0" y="211.0" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="24" font-weight="400" fill="#172B3A">边界与确定性直答</text>
+<text x="650.0" y="243.0" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="24" font-weight="400" fill="#172B3A">FAQ 精确探测</text>
+<rect x="895" y="165" width="360" height="115" rx="8" fill="#F0F8F4" stroke="#267862" stroke-width="1.5"/>
+<text x="1075.0" y="177.0" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="700" fill="#172B3A">K2 检索准备</text>
+<text x="1075.0" y="212.0" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">历史 意图 source 改写</text>
+<text x="1075.0" y="243.0" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">计划 变体 Prompt Profile</text>
+<polyline points="405,225 470,225" fill="none" stroke="#267862" stroke-width="2"/>
+<polygon points="470,225 460.47372055837116,230.5 460.47372055837116,219.5" fill="#267862"/>
+<polyline points="830,225 895,225" fill="none" stroke="#267862" stroke-width="2"/>
+<polygon points="895,225 885.4737205583712,230.5 885.4737205583712,219.5" fill="#267862"/>
+<polyline points="1075,280 1075,385" fill="none" stroke="#267862" stroke-width="2"/>
+<polygon points="1075,385 1069.5,375.47372055837116 1080.5,375.47372055837116" fill="#267862"/>
+<rect x="1094.5" y="318" width="81.0" height="30" fill="white"/>
+<text x="1135" y="320" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#267862">需检索</text>
+<rect x="895" y="385" width="360" height="115" rx="8" fill="#F0F8F4" stroke="#267862" stroke-width="1.5"/>
+<text x="1075.0" y="397.0" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="700" fill="#172B3A">K3 FAQ 检索</text>
+<text x="1075.0" y="432.0" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">Dense + BM25 混合召回</text>
+<text x="1075.0" y="463.0" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">按计划重排并判断直出</text>
+<rect x="470" y="385" width="360" height="115" rx="8" fill="#F0F8F4" stroke="#267862" stroke-width="1.5"/>
+<text x="650.0" y="397.0" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="700" fill="#172B3A">K4 文档检索</text>
+<text x="650.0" y="432.0" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">FAQ 未直出时继续</text>
+<text x="650.0" y="463.0" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">混合召回与按计划重排</text>
+<rect x="45" y="385" width="360" height="115" rx="8" fill="#F0F8F4" stroke="#267862" stroke-width="1.5"/>
+<text x="225.0" y="397.0" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="700" fill="#172B3A">K5 上下文构建</text>
+<text x="225.0" y="432.0" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">合并筛选 FAQ 与文档证据</text>
+<text x="225.0" y="463.0" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">预算控制 编号与来源</text>
+<polyline points="895,440 830,440" fill="none" stroke="#267862" stroke-width="2"/>
+<polygon points="830,440 839.5262794416288,434.5 839.5262794416288,445.5" fill="#267862"/>
+<polyline points="470,440 405,440" fill="none" stroke="#267862" stroke-width="2"/>
+<polygon points="405,440 414.52627944162884,434.5 414.52627944162884,445.5" fill="#267862"/>
+<rect x="45" y="670" width="360" height="135" rx="8" fill="#F0F8F4" stroke="#267862" stroke-width="1.5"/>
+<text x="225.0" y="676.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="700" fill="#172B3A">K6 生成与后处理</text>
+<text x="225.0" y="711.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">Prompt + LLM 流式生成</text>
+<text x="225.0" y="742.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">引用补齐及生成后核验</text>
+<text x="225.0" y="773.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">输出答案与置信度</text>
+<rect x="470" y="670" width="785" height="135" rx="8" fill="#F0F8F4" stroke="#267862" stroke-width="1.5"/>
+<text x="862.5" y="676.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="700" fill="#172B3A">K7 收尾并返回平台</text>
+<text x="862.5" y="711.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">保存 KF 历史和 Trace → 发送 end 或 error</text>
+<text x="862.5" y="742.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">答案 来源 kb_version 诊断 → N4 → N3</text>
+<text x="862.5" y="773.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">N3 保存最终消息后，向客户发出完成事件</text>
+<polyline points="225,500 225,670" fill="none" stroke="#267862" stroke-width="2"/>
+<polygon points="225,670 219.5,660.4737205583712 230.5,660.4737205583712" fill="#267862"/>
+<rect x="82.0" y="587" width="104.0" height="30" fill="white"/>
+<text x="134" y="589" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#267862">证据充分</text>
+<polyline points="405,739 470,739" fill="none" stroke="#267862" stroke-width="2"/>
+<polygon points="470,739 460.47372055837116,744.5 460.47372055837116,733.5" fill="#267862"/>
+<polyline points="650,165 650,124 1290,124 1290,739 1255,739" fill="none" stroke="#697782" stroke-width="2"/>
+<polygon points="1255,739 1264.5262794416287,733.5 1264.5262794416287,744.5" fill="#697782"/>
+<text x="982" y="135" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="22" font-weight="400" fill="#697782">K1 直答 → K7</text>
+<polyline points="1075,500 1075,670" fill="none" stroke="#697782" stroke-width="2"/>
+<polygon points="1075,670 1069.5,660.4737205583712 1080.5,660.4737205583712" fill="#697782"/>
+<rect x="998.26171875" y="579" width="203.4765625" height="30" fill="white"/>
+<text x="1100" y="581" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#697782">FAQ 标准答案直出</text>
+<polyline points="225,548 625,548 625,670" fill="none" stroke="#697782" stroke-width="2"/>
+<polygon points="625,670 619.5,660.4737205583712 630.5,660.4737205583712" fill="#697782"/>
+<rect x="497.0" y="574" width="256.0" height="30" fill="white"/>
+<text x="625" y="576" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#697782">无证据 → 信息不足提示</text>
+<text x="35" y="852" dominant-baseline="text-before-edge" text-anchor="start" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="700" fill="#172B3A">K3 与 K4 内部数据交互</text>
+<rect x="45" y="910" width="360" height="100" rx="8" fill="#F0F6FA" stroke="#28668E" stroke-width="1.5"/>
+<text x="225.0" y="930.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="26" font-weight="700" fill="#172B3A">检索查询与授权过滤</text>
+<text x="225.0" y="964.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">tenant dataset 角色 版本</text>
+<rect x="470" y="910" width="360" height="100" rx="8" fill="#F0F6FA" stroke="#28668E" stroke-width="1.5"/>
+<text x="650.0" y="930.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="26" font-weight="700" fill="#172B3A">Embedding 与 Milvus</text>
+<text x="650.0" y="964.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">查询向量 + BM25 Sparse</text>
+<rect x="895" y="910" width="360" height="100" rx="8" fill="#F0F6FA" stroke="#28668E" stroke-width="1.5"/>
+<text x="1075.0" y="930.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="26" font-weight="700" fill="#172B3A">候选片段与得分</text>
+<text x="1075.0" y="964.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">chunk_id 原文位置 版本</text>
+<polyline points="405,960 470,960" fill="none" stroke="#28668E" stroke-width="2"/>
+<polygon points="470,960 460.47372055837116,965.5 460.47372055837116,954.5" fill="#28668E"/>
+<polyline points="830,960 895,960" fill="none" stroke="#28668E" stroke-width="2"/>
+<polygon points="895,960 885.4737205583712,965.5 885.4737205583712,954.5" fill="#28668E"/>
+<polyline points="1075,1010 1075,1060 780,1060" fill="none" stroke="#28668E" stroke-width="2"/>
+<polygon points="780,1060 789.5262794416288,1054.5 789.5262794416288,1065.5" fill="#28668E"/>
+<rect x="45" y="1040" width="735" height="110" rx="8" fill="#F0F6FA" stroke="#28668E" stroke-width="1.5"/>
+<text x="412.5" y="1065.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="26" font-weight="700" fill="#172B3A">按计划调用 Reranker → 排序候选回到 K3 或 K4</text>
+<text x="412.5" y="1099.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">输入 查询与候选文本  /  输出 相关性排序</text>
+<text x="1020" y="1090" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="22" font-weight="400" fill="#697782">Milvus 保存索引</text>
+<text x="1020" y="1124" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="22" font-weight="400" fill="#697782">MinIO 保留原文</text>
+<text x="35" y="1172" dominant-baseline="text-before-edge" text-anchor="start" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#697782">适配层只转换身份、会话映射和事件协议；KF 核心调用顺序与旁路保持。</text>
+</svg>
