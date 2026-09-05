@@ -1,0 +1,8 @@
+name: intelligent-commerce-support-v1
+
+channels:
+  - defaults
+
+dependencies:
+  - python=3.12.14
+  - pip
