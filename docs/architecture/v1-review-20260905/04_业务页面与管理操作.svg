@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1300" height="1460" viewBox="0 0 1300 1460"><rect width="1300" height="1460" fill="white"/>
+<text x="35" y="27" dominant-baseline="text-before-edge" text-anchor="start" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="30" font-weight="700" fill="#172B3A">图 4  从一次页面操作向下展开管理链路</text>
+<text x="35" y="75" dominant-baseline="text-before-edge" text-anchor="start" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#697782">客户 客服和管理员共用入口；权限校验后按操作类型下钻到所属领域。</text>
+<rect x="250" y="125" width="800" height="90" rx="8" fill="#F0F6FA" stroke="#28668E" stroke-width="1.5"/>
+<text x="650.0" y="140.0" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="700" fill="#172B3A">起点  用户发起业务或管理页面操作</text>
+<text x="650.0" y="175.0" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">订单详情 / 工单处理 / 知识管理 / 身份管理</text>
+<rect x="250" y="265" width="800" height="90" rx="8" fill="#F0F6FA" stroke="#28668E" stroke-width="1.5"/>
+<text x="650.0" y="280.0" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="700" fill="#172B3A">N1 Nginx 局域网统一入口</text>
+<text x="650.0" y="315.0" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">HTTPS 页面接口；不开放内部服务与存储地址</text>
+<polyline points="650,215 650,265" fill="none" stroke="#28668E" stroke-width="2"/>
+<polygon points="650,265 644.5,255.47372055837118 655.5,255.47372055837118" fill="#28668E"/>
+<rect x="250" y="405" width="800" height="110" rx="8" fill="#F0F6FA" stroke="#28668E" stroke-width="1.5"/>
+<text x="650.0" y="414.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="700" fill="#172B3A">N2 Gateway 与 IAM 校验权限</text>
+<text x="650.0" y="449.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">认证 租户 角色 资源范围；分发到所属模块</text>
+<text x="650.0" y="480.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">会话咨询 A3 进入图 1，管理操作进入下方分支</text>
+<polyline points="650,355 650,405" fill="none" stroke="#28668E" stroke-width="2"/>
+<polygon points="650,405 644.5,395.47372055837116 655.5,395.47372055837116" fill="#28668E"/>
+<polyline points="650,515 650,560 177.5,560 177.5,615" fill="none" stroke="#28668E" stroke-width="2"/>
+<polygon points="177.5,615 172.0,605.4737205583712 183.0,605.4737205583712" fill="#28668E"/>
+<polyline points="650,515 650,560 492.5,560 492.5,615" fill="none" stroke="#28668E" stroke-width="2"/>
+<polygon points="492.5,615 487.0,605.4737205583712 498.0,605.4737205583712" fill="#28668E"/>
+<polyline points="650,515 650,560 807.5,560 807.5,615" fill="none" stroke="#28668E" stroke-width="2"/>
+<polygon points="807.5,615 802.0,605.4737205583712 813.0,605.4737205583712" fill="#28668E"/>
+<polyline points="650,515 650,560 1122.5,560 1122.5,615" fill="none" stroke="#28668E" stroke-width="2"/>
+<polygon points="1122.5,615 1117.0,605.4737205583712 1128.0,605.4737205583712" fill="#28668E"/>
+<rect x="35" y="615" width="285" height="150" rx="8" fill="#F0F6FA" stroke="#28668E" stroke-width="1.5"/>
+<text x="177.5" y="644.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="700" fill="#172B3A">A6 商务操作 N5</text>
+<text x="177.5" y="679.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">订单 商品 物流 发票</text>
+<text x="177.5" y="710.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">受控售后申请</text>
+<rect x="350" y="615" width="285" height="150" rx="8" fill="#FFF8EB" stroke="#A36C23" stroke-width="1.5"/>
+<text x="492.5" y="644.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="700" fill="#172B3A">A8 工单操作 N7</text>
+<text x="492.5" y="679.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">接单 分派 回复 关闭</text>
+<text x="492.5" y="710.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">客户回复与内部备注分开</text>
+<rect x="665" y="615" width="285" height="150" rx="8" fill="#F0F8F4" stroke="#267862" stroke-width="1.5"/>
+<text x="807.5" y="644.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="700" fill="#172B3A">A7 知识操作 N6</text>
+<text x="807.5" y="679.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">上传 评测 发布 回滚</text>
+<text x="807.5" y="710.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">异步工作流见图 3</text>
+<rect x="980" y="615" width="285" height="150" rx="8" fill="#F5F7F9" stroke="#697782" stroke-width="1.5"/>
+<text x="1122.5" y="644.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="700" fill="#172B3A">身份权限 IAM</text>
+<text x="1122.5" y="679.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">用户 租户 角色与权限</text>
+<text x="1122.5" y="710.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">管理员按授权范围操作</text>
+<polyline points="177.5,765 177.5,830" fill="none" stroke="#28668E" stroke-width="2"/>
+<polygon points="177.5,830 172.0,820.4737205583712 183.0,820.4737205583712" fill="#28668E"/>
+<rect x="35" y="830" width="285" height="145" rx="8" fill="#F0F6FA" stroke="#28668E" stroke-width="1.5"/>
+<text x="177.5" y="857.0" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="700" fill="#172B3A">N5 领域事务</text>
+<text x="177.5" y="892.0" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">校验资源与业务状态</text>
+<text x="177.5" y="923.0" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">MySQL 事实 审计与事件</text>
+<polyline points="492.5,765 492.5,830" fill="none" stroke="#28668E" stroke-width="2"/>
+<polygon points="492.5,830 487.0,820.4737205583712 498.0,820.4737205583712" fill="#28668E"/>
+<rect x="350" y="830" width="285" height="145" rx="8" fill="#FFF8EB" stroke="#A36C23" stroke-width="1.5"/>
+<text x="492.5" y="857.0" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="700" fill="#172B3A">N7 工单持久化</text>
+<text x="492.5" y="892.0" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">MySQL 处理记录与事件</text>
+<text x="492.5" y="923.0" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">客户回复事件 → N3</text>
+<polyline points="807.5,765 807.5,830" fill="none" stroke="#28668E" stroke-width="2"/>
+<polygon points="807.5,830 802.0,820.4737205583712 813.0,820.4737205583712" fill="#28668E"/>
+<rect x="665" y="830" width="285" height="145" rx="8" fill="#F0F8F4" stroke="#267862" stroke-width="1.5"/>
+<text x="807.5" y="857.0" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="700" fill="#172B3A">知识存储与队列</text>
+<text x="807.5" y="892.0" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">原文 元数据 候选索引</text>
+<text x="807.5" y="923.0" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">任务 ID → N8 Worker</text>
+<polyline points="1122.5,765 1122.5,830" fill="none" stroke="#28668E" stroke-width="2"/>
+<polygon points="1122.5,830 1117.0,820.4737205583712 1128.0,820.4737205583712" fill="#28668E"/>
+<rect x="980" y="830" width="285" height="145" rx="8" fill="#F5F7F9" stroke="#697782" stroke-width="1.5"/>
+<text x="1122.5" y="857.0" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="700" fill="#172B3A">IAM 权限持久化</text>
+<text x="1122.5" y="892.0" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">MySQL 角色与授权关系</text>
+<text x="1122.5" y="923.0" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">记录审计并更新缓存</text>
+<polyline points="177.5,975 177.5,1025 650,1025 650,1070" fill="none" stroke="#28668E" stroke-width="2"/>
+<polygon points="650,1070 644.5,1060.4737205583713 655.5,1060.4737205583713" fill="#28668E"/>
+<polyline points="492.5,975 492.5,1025 650,1025 650,1070" fill="none" stroke="#28668E" stroke-width="2"/>
+<polygon points="650,1070 644.5,1060.4737205583713 655.5,1060.4737205583713" fill="#28668E"/>
+<polyline points="807.5,975 807.5,1025 650,1025 650,1070" fill="none" stroke="#28668E" stroke-width="2"/>
+<polygon points="650,1070 644.5,1060.4737205583713 655.5,1060.4737205583713" fill="#28668E"/>
+<polyline points="1122.5,975 1122.5,1025 650,1025 650,1070" fill="none" stroke="#28668E" stroke-width="2"/>
+<polygon points="650,1070 644.5,1060.4737205583713 655.5,1060.4737205583713" fill="#28668E"/>
+<rect x="250" y="1070" width="800" height="100" rx="8" fill="#F0F6FA" stroke="#28668E" stroke-width="1.5"/>
+<text x="650.0" y="1090.0" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="700" fill="#172B3A">所属领域返回操作结果 → Gateway → 当前页面</text>
+<text x="650.0" y="1125.0" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">成功 / 明确错误 / 异步任务 ID；未完成任务不展示完成</text>
+<polyline points="650,1170 650,1220" fill="none" stroke="#7157A3" stroke-width="2" stroke-dasharray="6 5"/>
+<polygon points="650,1220 644.5,1210.4737205583713 655.5,1210.4737205583713" fill="#7157A3"/>
+<rect x="250" y="1220" width="800" height="105" rx="8" fill="#F8F5FC" stroke="#7157A3" stroke-width="1.5"/>
+<text x="650.0" y="1227.0" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="700" fill="#172B3A">异步结果按事件或任务查询更新</text>
+<text x="650.0" y="1262.0" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">人工客户回复经 N3 推送；知识任务继续图 3</text>
+<text x="650.0" y="1293.0" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">内部备注不外发；任务最终状态以 MySQL 为准</text>
+<text x="650" y="1380" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#697782">各域只写自有表；跨域通知通过版本化事件；N9 记录全程脱敏 Trace。</text>
+</svg>

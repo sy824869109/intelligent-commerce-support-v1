@@ -1,85 +1,96 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1300" height="1190" viewBox="0 0 1300 1190"><rect width="1300" height="1190" fill="white"/>
-<text x="35" y="27" dominant-baseline="text-before-edge" text-anchor="start" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="30" font-weight="700" fill="#172B3A">图 3  知识入库与反馈发布闭环</text>
-<text x="35" y="77" dominant-baseline="text-before-edge" text-anchor="start" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">B1 至 B7 负责知识生产；B8 至 B10 将服务结果转为经过审核的改进。</text>
-<rect x="45" y="150" width="360" height="125" rx="8" fill="#F5F7FA" stroke="#28668E" stroke-width="1.5"/>
-<text x="225.0" y="167.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="26" font-weight="700" fill="#172B3A">B1 管理端上传</text>
-<text x="225.0" y="201.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">经 Gateway → Knowledge</text>
-<text x="225.0" y="232.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">文件校验 权限去重</text>
-<rect x="470" y="150" width="360" height="125" rx="8" fill="#F5F7FA" stroke="#28668E" stroke-width="1.5"/>
-<text x="650.0" y="167.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="26" font-weight="700" fill="#172B3A">B2 保存原文与元数据</text>
-<text x="650.0" y="201.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">MinIO 原文及校验摘要</text>
-<text x="650.0" y="232.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">MySQL 元数据 + Outbox</text>
-<rect x="895" y="150" width="360" height="125" rx="8" fill="#F5F7FA" stroke="#28668E" stroke-width="1.5"/>
-<text x="1075.0" y="167.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="26" font-weight="700" fill="#172B3A">B3 可靠投递</text>
-<text x="1075.0" y="201.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">Outbox → Redis Streams</text>
-<text x="1075.0" y="232.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">收到确认后标记已投递</text>
-<rect x="895" y="380" width="360" height="125" rx="8" fill="#F5F7FA" stroke="#28668E" stroke-width="1.5"/>
-<text x="1075.0" y="397.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="26" font-weight="700" fill="#172B3A">B4 Worker 消费</text>
-<text x="1075.0" y="431.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">解析 分块 Embedding</text>
-<text x="1075.0" y="462.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">调用知识域写入接口</text>
-<rect x="470" y="380" width="360" height="125" rx="8" fill="#F5F7FA" stroke="#28668E" stroke-width="1.5"/>
-<text x="650.0" y="397.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="26" font-weight="700" fill="#172B3A">B5 构建候选知识版本</text>
-<text x="650.0" y="431.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">Milvus 向量与稀疏索引</text>
-<text x="650.0" y="462.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">MySQL 片段映射及任务状态</text>
-<rect x="45" y="380" width="360" height="125" rx="8" fill="#F5F7FA" stroke="#28668E" stroke-width="1.5"/>
-<text x="225.0" y="397.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="26" font-weight="700" fill="#172B3A">B6 评测和审核</text>
-<text x="225.0" y="431.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">黄金集 质量 权限 性能</text>
-<text x="225.0" y="462.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">通过后审批 未过则修订</text>
-<rect x="45" y="610" width="360" height="125" rx="8" fill="#F5F7FA" stroke="#28668E" stroke-width="1.5"/>
-<text x="225.0" y="627.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="26" font-weight="700" fill="#172B3A">B7 发布与回滚</text>
-<text x="225.0" y="661.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">切换 active kb_version</text>
-<text x="225.0" y="692.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">未完成索引不可对外可见</text>
-<rect x="470" y="610" width="360" height="125" rx="8" fill="#F5F7FA" stroke="#28668E" stroke-width="1.5"/>
-<text x="650.0" y="627.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="26" font-weight="700" fill="#172B3A">B8 服务请求与结果</text>
-<text x="650.0" y="661.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">图 1 和图 2 在线链路</text>
-<text x="650.0" y="692.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">消息 来源 业务结果 版本</text>
-<rect x="895" y="610" width="360" height="125" rx="8" fill="#F5F7FA" stroke="#28668E" stroke-width="1.5"/>
-<text x="1075.0" y="627.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="26" font-weight="700" fill="#172B3A">B9 评价与人工纠错</text>
-<text x="1075.0" y="661.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">Conversation 保存评价</text>
-<text x="1075.0" y="692.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">Ticket 保存纠错与处理结果</text>
-<rect x="895" y="845" width="360" height="150" rx="8" fill="#F5F7FA" stroke="#28668E" stroke-width="1.5"/>
-<text x="1075.0" y="859.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="26" font-weight="700" fill="#172B3A">B10 归因与候选改进</text>
-<text x="1075.0" y="893.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">Worker 汇总 Bad Case</text>
-<text x="1075.0" y="924.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">N6 外层治理保存与审核</text>
-<text x="1075.0" y="955.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">按原因分配责任域</text>
-<rect x="45" y="845" width="360" height="150" rx="8" fill="#F5F7FA" stroke="#28668E" stroke-width="1.5"/>
-<text x="225.0" y="859.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="26" font-weight="700" fill="#172B3A">返回责任域修改</text>
-<text x="225.0" y="893.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">知识 → B1 或 B5 → B6</text>
-<text x="225.0" y="924.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">规则代码 → 测试与发布</text>
-<text x="225.0" y="955.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">业务数据 → 领域接口纠正</text>
-<polyline points="405,212 470,212" fill="none" stroke="#28668E" stroke-width="2"/>
-<polygon points="470,212 460.47372055837116,217.5 460.47372055837116,206.5" fill="#28668E"/>
-<polyline points="830,212 895,212" fill="none" stroke="#7157A3" stroke-width="2" stroke-dasharray="6 5"/>
-<polygon points="895,212 885.4737205583712,217.5 885.4737205583712,206.5" fill="#7157A3"/>
-<polyline points="1075,275 1075,380" fill="none" stroke="#7157A3" stroke-width="2" stroke-dasharray="6 5"/>
-<polygon points="1075,380 1069.5,370.47372055837116 1080.5,370.47372055837116" fill="#7157A3"/>
-<rect x="1103.0" y="311" width="104.0" height="30" fill="white"/>
-<text x="1155" y="313" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#7157A3">任务事件</text>
-<polyline points="895,442 830,442" fill="none" stroke="#28668E" stroke-width="2"/>
-<polygon points="830,442 839.5262794416288,436.5 839.5262794416288,447.5" fill="#28668E"/>
-<polyline points="470,442 405,442" fill="none" stroke="#28668E" stroke-width="2"/>
-<polygon points="405,442 414.52627944162884,436.5 414.52627944162884,447.5" fill="#28668E"/>
-<polyline points="225,505 225,610" fill="none" stroke="#28668E" stroke-width="2"/>
-<polygon points="225,610 219.5,600.4737205583712 230.5,600.4737205583712" fill="#28668E"/>
-<rect x="253.0" y="546" width="58.0" height="30" fill="white"/>
-<text x="282" y="548" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#28668E">通过</text>
-<polyline points="405,672 470,672" fill="none" stroke="#267862" stroke-width="2"/>
-<polygon points="470,672 460.47372055837116,677.5 460.47372055837116,666.5" fill="#267862"/>
-<polyline points="830,672 895,672" fill="none" stroke="#28668E" stroke-width="2"/>
-<polygon points="895,672 885.4737205583712,677.5 885.4737205583712,666.5" fill="#28668E"/>
-<polyline points="1075,735 1075,845" fill="none" stroke="#7157A3" stroke-width="2" stroke-dasharray="6 5"/>
-<polygon points="1075,845 1069.5,835.4737205583712 1080.5,835.4737205583712" fill="#7157A3"/>
-<rect x="1098.0" y="773" width="104.0" height="30" fill="white"/>
-<text x="1150" y="775" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#7157A3">关联样本</text>
-<polyline points="895,920 405,920" fill="none" stroke="#28668E" stroke-width="2"/>
-<polygon points="405,920 414.52627944162884,914.5 414.52627944162884,925.5" fill="#28668E"/>
-<rect x="463.00390625" y="870" width="373.9921875" height="30" fill="white"/>
-<text x="650" y="872" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#28668E">知识 / Prompt / 路由 / 业务 / 人工</text>
-<polyline points="45,900 15,900 15,212 45,212" fill="none" stroke="#697782" stroke-width="2"/>
-<polygon points="45,212 35.47372055837117,217.5 35.47372055837117,206.5" fill="#697782"/>
-<text x="650" y="330" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#697782">B6 未通过：保留失败证据，回到 B1 或 B5 修订后复测。</text>
-<text x="650" y="563" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#697782">B7 发布异常：恢复上一有效版本，缓存按版本隔离。</text>
-<text x="650" y="1026" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#697782">B2 原文与数据库不跨存储强事务：登记上传状态，失败补偿并清理孤立对象。</text>
-<text x="650" y="1074" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#697782">B3 至 B5 至少一次投递：event_id 去重、重试、死信；MySQL 记录最终任务状态。</text>
-<text x="650" y="1122" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#697782">B9 追加纠错记录，不覆盖原始回答；B10 不能未经审核直接污染正式知识库。</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="1300" height="2270" viewBox="0 0 1300 2270"><rect width="1300" height="2270" fill="white"/>
+<text x="35" y="27" dominant-baseline="text-before-edge" text-anchor="start" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="30" font-weight="700" fill="#172B3A">图 3  从一份知识资料向下展开完整闭环</text>
+<text x="35" y="75" dominant-baseline="text-before-edge" text-anchor="start" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#697782">从资料输入走到下一轮改进；失败旁支说明回到哪一步，不绘制跨层回线。</text>
+<rect x="100" y="125" width="760" height="90" rx="8" fill="#F0F6FA" stroke="#28668E" stroke-width="1.5"/>
+<text x="480.0" y="140.0" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="700" fill="#172B3A">B1 起点  运营提交一份知识资料</text>
+<text x="480.0" y="175.0" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">Gateway → N6；校验类型 大小 权限与重复内容</text>
+<rect x="100" y="260" width="760" height="110" rx="8" fill="#F0F6FA" stroke="#28668E" stroke-width="1.5"/>
+<text x="480.0" y="269.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="700" fill="#172B3A">B2 保存原文与元数据</text>
+<text x="480.0" y="304.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">MinIO 保存原文；MySQL 保存元数据与 Outbox</text>
+<text x="480.0" y="335.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">跨存储失败登记状态，补偿并清理孤立对象</text>
+<polyline points="480,215 480,260" fill="none" stroke="#28668E" stroke-width="2"/>
+<polygon points="480,260 474.5,250.47372055837118 485.5,250.47372055837118" fill="#28668E"/>
+<rect x="100" y="415" width="760" height="100" rx="8" fill="#F8F5FC" stroke="#7157A3" stroke-width="1.5"/>
+<text x="480.0" y="435.0" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="700" fill="#172B3A">B3 可靠投递知识任务</text>
+<text x="480.0" y="470.0" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">Outbox → Redis Streams；收到确认后标记投递状态</text>
+<polyline points="480,370 480,415" fill="none" stroke="#7157A3" stroke-width="2" stroke-dasharray="6 5"/>
+<polygon points="480,415 474.5,405.47372055837116 485.5,405.47372055837116" fill="#7157A3"/>
+<rect x="100" y="560" width="760" height="110" rx="8" fill="#F8F5FC" stroke="#7157A3" stroke-width="1.5"/>
+<text x="480.0" y="569.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="700" fill="#172B3A">B4 Worker 消费与加工</text>
+<text x="480.0" y="604.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">解析 → 分块 → Embedding；event_id 去重</text>
+<text x="480.0" y="635.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">调用知识域接口；失败重试 死信与对账</text>
+<polyline points="480,515 480,560" fill="none" stroke="#7157A3" stroke-width="2" stroke-dasharray="6 5"/>
+<polygon points="480,560 474.5,550.4737205583712 485.5,550.4737205583712" fill="#7157A3"/>
+<rect x="100" y="715" width="760" height="110" rx="8" fill="#F0F6FA" stroke="#28668E" stroke-width="1.5"/>
+<text x="480.0" y="724.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="700" fill="#172B3A">B5 构建候选知识版本</text>
+<text x="480.0" y="759.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">Milvus 保存向量与稀疏索引</text>
+<text x="480.0" y="790.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">MySQL 保存片段映射 版本与任务状态</text>
+<polyline points="480,670 480,715" fill="none" stroke="#28668E" stroke-width="2"/>
+<polygon points="480,715 474.5,705.4737205583712 485.5,705.4737205583712" fill="#28668E"/>
+<rect x="100" y="870" width="760" height="110" rx="8" fill="#F0F6FA" stroke="#28668E" stroke-width="1.5"/>
+<text x="480.0" y="879.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="700" fill="#172B3A">B6 回归评测与人工审核</text>
+<text x="480.0" y="914.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">黄金集 / 引用 / 权限 / 质量 / 性能</text>
+<text x="480.0" y="945.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">评测通过并获准后才进入发布</text>
+<polyline points="480,825 480,870" fill="none" stroke="#28668E" stroke-width="2"/>
+<polygon points="480,870 474.5,860.4737205583712 485.5,860.4737205583712" fill="#28668E"/>
+<rect x="100" y="1120" width="760" height="110" rx="8" fill="#F0F6FA" stroke="#28668E" stroke-width="1.5"/>
+<text x="480.0" y="1129.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="700" fill="#172B3A">B7 发布有效知识版本</text>
+<text x="480.0" y="1164.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">索引完整后切换 active kb_version</text>
+<text x="480.0" y="1195.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">单次请求固定版本；缓存按版本隔离</text>
+<polyline points="480,980 480,1120" fill="none" stroke="#28668E" stroke-width="2"/>
+<polygon points="480,1120 474.5,1110.4737205583713 485.5,1110.4737205583713" fill="#28668E"/>
+<rect x="100" y="1370" width="760" height="110" rx="8" fill="#F0F6FA" stroke="#28668E" stroke-width="1.5"/>
+<text x="480.0" y="1379.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="700" fill="#172B3A">B8 在线问答与业务结果</text>
+<text x="480.0" y="1414.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">N3 正式消息 + N4 路由 + N5 业务 + N7 工单</text>
+<text x="480.0" y="1445.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">关联知识版本 来源片段 与 Trace</text>
+<polyline points="480,1230 480,1370" fill="none" stroke="#28668E" stroke-width="2"/>
+<polygon points="480,1370 474.5,1360.4737205583713 485.5,1360.4737205583713" fill="#28668E"/>
+<rect x="100" y="1525" width="760" height="110" rx="8" fill="#F0F6FA" stroke="#28668E" stroke-width="1.5"/>
+<text x="480.0" y="1534.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="700" fill="#172B3A">B9 用户评价与人工纠错</text>
+<text x="480.0" y="1569.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">N3 保存评价；N7 保存纠错和处理结果</text>
+<text x="480.0" y="1600.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">追加纠错，不覆盖原始回答</text>
+<polyline points="480,1480 480,1525" fill="none" stroke="#28668E" stroke-width="2"/>
+<polygon points="480,1525 474.5,1515.4737205583713 485.5,1515.4737205583713" fill="#28668E"/>
+<rect x="100" y="1680" width="760" height="110" rx="8" fill="#F0F6FA" stroke="#28668E" stroke-width="1.5"/>
+<text x="480.0" y="1689.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="700" fill="#172B3A">B10 Bad Case 归因与运营审核</text>
+<text x="480.0" y="1724.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">Worker 汇总，N6 外层治理保存（归属建议）</text>
+<text x="480.0" y="1755.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">区分知识 Prompt 路由 业务数据与人工处理原因</text>
+<polyline points="480,1635 480,1680" fill="none" stroke="#28668E" stroke-width="2"/>
+<polygon points="480,1680 474.5,1670.4737205583713 485.5,1670.4737205583713" fill="#28668E"/>
+<polyline points="860,925.0 950,925.0" fill="none" stroke="#697782" stroke-width="2"/>
+<polygon points="950,925.0 940.4737205583712,930.5 940.4737205583712,919.5" fill="#697782"/>
+<rect x="950" y="870" width="315" height="140" rx="8" fill="#F5F7F9" stroke="#697782" stroke-width="1.5"/>
+<text x="1107.5" y="894.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="700" fill="#172B3A">评测未通过</text>
+<text x="1107.5" y="929.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">修订后重走</text>
+<text x="1107.5" y="960.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">B1 或 B5 → B6</text>
+<polyline points="860,1175.0 950,1175.0" fill="none" stroke="#697782" stroke-width="2"/>
+<polygon points="950,1175.0 940.4737205583712,1180.5 940.4737205583712,1169.5" fill="#697782"/>
+<rect x="950" y="1120" width="315" height="140" rx="8" fill="#F5F7F9" stroke="#697782" stroke-width="1.5"/>
+<text x="1107.5" y="1144.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="700" fill="#172B3A">发布异常</text>
+<text x="1107.5" y="1179.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">回滚上一有效版本</text>
+<text x="1107.5" y="1210.5" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">用旧版本继续 B8</text>
+<polyline points="480,1790 480,1860 225,1860 225,1910" fill="none" stroke="#28668E" stroke-width="2"/>
+<polygon points="225,1910 219.5,1900.4737205583713 230.5,1900.4737205583713" fill="#28668E"/>
+<polyline points="480,1790 480,1860 650,1860 650,1910" fill="none" stroke="#28668E" stroke-width="2"/>
+<polygon points="650,1910 644.5,1900.4737205583713 655.5,1900.4737205583713" fill="#28668E"/>
+<polyline points="480,1790 480,1860 1075,1860 1075,1910" fill="none" stroke="#28668E" stroke-width="2"/>
+<polygon points="1075,1910 1069.5,1900.4737205583713 1080.5,1900.4737205583713" fill="#28668E"/>
+<a href="#03">
+<rect x="45" y="1910" width="360" height="175" rx="8" fill="#F0F8F4" stroke="#267862" stroke-width="1.5"/>
+<text x="225.0" y="1952.0" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="700" fill="#172B3A">知识与 FAQ 改进</text>
+<text x="225.0" y="1987.0" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">B1 或 B5 → B6 → B7</text>
+<text x="225.0" y="2018.0" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">评测通过后发布下一版</text>
+</a>
+<rect x="470" y="1910" width="360" height="175" rx="8" fill="#F0F6FA" stroke="#28668E" stroke-width="1.5"/>
+<text x="650.0" y="1952.0" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="700" fill="#172B3A">Prompt 或路由改进</text>
+<text x="650.0" y="1987.0" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">测试 → 审核 → 发布</text>
+<text x="650.0" y="2018.0" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">回到 B8 观察新结果</text>
+<a href="#04">
+<rect x="895" y="1910" width="360" height="175" rx="8" fill="#FFF8EB" stroke="#A36C23" stroke-width="1.5"/>
+<text x="1075.0" y="1952.0" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" font-weight="700" fill="#172B3A">业务事实或人工改进</text>
+<text x="1075.0" y="1987.0" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">责任域接口校验与纠正</text>
+<text x="1075.0" y="2018.0" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#172B3A">回到 B8 继续服务</text>
+</a>
+<text x="650" y="2150" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="22" font-weight="400" fill="#697782">关联键贯穿消息 运行记录 业务单 工单 知识片段 评测与发布；未经审核不写正式知识。</text>
+<text x="650" y="2200" dominant-baseline="text-before-edge" text-anchor="middle" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#697782">删除或撤权先改变可见性，再异步清理索引与缓存；新反馈进入下一轮归因。</text>
 </svg>
