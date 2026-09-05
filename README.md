@@ -5,8 +5,8 @@
 ## 当前进度
 
 - 已完成：`M00.1 开发基线初始化`
-- 下一任务：`M00.2 项目目录骨架`
-- 状态：开发基线、Conda 环境、Git 仓库和 GitHub 开发分支均已验证
+- 当前任务：`M00.2 项目目录骨架`
+- 状态：正在建立应用、共享包、部署、文档和测试目录边界
 - V1 目标：前后端、业务服务、KF RAG 知识引擎、人工工单和数据闭环在局域网内完整运行
 
 ## 开发目录
@@ -53,6 +53,17 @@ F:\heima\ai\python\day01\Anaconda\envs\intelligent-commerce-support-v1\python.ex
 - [不可变资产规则](docs/baseline/03_启动包说明与不可变资产规则.md)
 - [只读资产台账](docs/baseline/reference-assets.md)
 - [任务进度台账](docs/progress/task-ledger.md)
+
+## 目录边界
+
+- `apps/`：可运行应用，包括三类前端、网关、电商、会话、编排、知识、工单和 Worker。
+- `packages/`：稳定共享合同、纯领域模型、可观测性和测试工具。
+- `deploy/`：局域网部署资产；业务源码不能放入部署目录。
+- `docs/`：架构、API、ADR、运维、测试、基线和进度文档。
+- `tests/`：跨模块契约、集成、端到端、性能和安全测试。
+- `scripts/`：开发期验证工具，不包含生产业务逻辑。
+
+详细规则见 [模块边界](docs/architecture/module-boundaries.md) 和 [项目目录](docs/architecture/project-layout.md)。
 
 ## Git 交付原则
 
