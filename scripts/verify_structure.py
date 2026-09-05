@@ -41,18 +41,28 @@ REQUIRED_DIRECTORIES = (
 REQUIRED_FILES = (
     ".editorconfig",
     ".env.example",
+    ".github/pull_request_template.md",
     ".gitattributes",
     ".gitignore",
     ".node-version",
     ".python-version",
     "environment.yml",
+    "CHANGELOG.md",
+    "CONTRIBUTING.md",
     "LICENSE",
     "Makefile",
     "README.md",
+    "SECURITY.md",
+    "VERSION",
+    "docs/decisions/ADR-0000-template.md",
+    "docs/decisions/ADR-0001-modular-monorepo-and-kf-boundary.md",
     "docs/architecture/module-boundaries.md",
     "docs/architecture/project-layout.md",
     "docs/baseline/reference-assets.md",
+    "docs/operations/versioning-and-release.md",
     "docs/progress/task-ledger.md",
+    "docs/testing/definition-of-done.md",
+    "scripts/verify_governance.py",
 )
 
 

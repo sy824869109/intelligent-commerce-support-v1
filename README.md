@@ -5,8 +5,8 @@
 ## 当前进度
 
 - 已完成：`M00.1 开发基线初始化`、`M00.2 项目目录骨架`
-- 下一任务：`M00.3 项目治理规则`
-- 状态：开发环境、模块骨架、边界文档与 GitHub 开发分支均已验证
+- 当前任务：`M00.3 项目治理规则`
+- 状态：正在建立 ADR、版本、完成定义、安全和 PR 协作规则
 - V1 目标：前后端、业务服务、KF RAG 知识引擎、人工工单和数据闭环在局域网内完整运行
 
 ## 开发目录
@@ -64,6 +64,15 @@ F:\heima\ai\python\day01\Anaconda\envs\intelligent-commerce-support-v1\python.ex
 - `scripts/`：开发期验证工具，不包含生产业务逻辑。
 
 详细规则见 [模块边界](docs/architecture/module-boundaries.md) 和 [项目目录](docs/architecture/project-layout.md)。
+
+## 项目治理
+
+- [贡献与提交规范](CONTRIBUTING.md)
+- [安全报告规则](SECURITY.md)
+- [变更日志](CHANGELOG.md)
+- [架构决策记录](docs/decisions/README.md)
+- [版本与发布策略](docs/operations/versioning-and-release.md)
+- [Definition of Done](docs/testing/definition-of-done.md)
 
 ## Git 交付原则
 

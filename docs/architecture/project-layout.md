@@ -2,6 +2,8 @@
 
 ```text
 .
+├─ .github/
+│  └─ pull_request_template.md
 ├─ apps/
 │  ├─ web-customer/
 │  ├─ web-agent/
@@ -37,7 +39,11 @@
 │  ├─ e2e/
 │  ├─ performance/
 │  └─ security/
-└─ scripts/
+├─ scripts/
+├─ CHANGELOG.md
+├─ CONTRIBUTING.md
+├─ SECURITY.md
+└─ VERSION
 ```
 
 每个目录使用 README 声明职责。后续实现只能在所属模块内增加源码；出现新的跨模块职责时，先更新模块边界并提交 ADR。
