@@ -20,8 +20,8 @@ STANDARD_FILES = {
     "E": "03_接口事件_幂等与失败恢复.md",
     "A": "04_业务RAG安全与灾备_验收矩阵.md",
 }
-RULE_COUNTS = {"C": 10, "B": 10, "E": 10, "A": 14}
-CASE_COUNTS = {"C": 12, "B": 12, "R": 12, "E": 12, "S": 10, "U": 6, "O": 10, "L": 6}
+RULE_COUNTS = {"C": 11, "B": 12, "E": 11, "A": 14}
+CASE_COUNTS = {"C": 13, "B": 18, "R": 14, "E": 13, "S": 12, "U": 7, "O": 10, "L": 6}
 RULE_DEFINITION = re.compile(r"^## ([CBEA]-\d{2})\s", re.MULTILINE)
 RULE_REFERENCE = re.compile(r"\b([CBEA]-\d{2})\b")
 CASE_ROW = re.compile(r"^\| (AT-([CBRESUOL])(\d{2})) \| (P[012]) \|", re.MULTILINE)
@@ -109,12 +109,23 @@ def validate_documents(root: Path, contents: dict[Path, str]) -> tuple[list[str]
         errors.append("Matrix must distinguish this unexecuted baseline from a runtime report")
     if json_count < 5:
         errors.append("Expected at least five valid JSON examples across the standards")
+    scope = contents.get(STANDARD_DIR / "业务范围与验收映射.md", "")
+    scope_ids = re.findall(r"^\| (BS-\d{2}) ", scope, re.MULTILINE)
+    if sorted(scope_ids) != [f"BS-{number:02}" for number in range(1, 15)]:
+        errors.append("Business scope must map each of BS-01 through BS-14 exactly once")
+    for case_id in set(re.findall(r"\bAT-[CBRESUOL]\d{2}\b", "\n".join(contents.values()))):
+        if case_id not in case_ids:
+            errors.append(f"Undefined acceptance reference: {case_id}")
+    business = contents.get(STANDARD_DIR / STANDARD_FILES["B"], "")
+    scenarios = re.findall(r"^\| (SCN-\d{2}) \|", business, re.MULTILINE)
+    if sorted(scenarios) != [f"SCN-{number:02}" for number in range(1, 23)]:
+        errors.append("Business scenario sequence must be SCN-01 through SCN-22")
     return errors, {"rules": len(definitions), "acceptance_cases": len(cases), "json_examples": json_count}
 
 
 def load_documents(root: Path) -> dict[Path, str]:
     """Load only this documentation set and explicitly maintained indexes."""
-    paths = [STANDARD_DIR / "README.md"]
+    paths = [STANDARD_DIR / "README.md", STANDARD_DIR / "业务范围与验收映射.md"]
     paths.extend(STANDARD_DIR / filename for filename in STANDARD_FILES.values())
     paths.extend(Path(name) for name in (
         "docs/README.md", "docs/api/README.md", "docs/architecture/README.md",

@@ -10,16 +10,20 @@ flowchart LR
     GW --> CV["conversation-service"]
     GW --> CM["commerce-service"]
     GW --> TK["ticket-service"]
+    GW --> KS["knowledge-service / KF RAG"]
     CV --> OR["orchestration-service"]
     OR --> CM
-    OR --> KS["knowledge-service / KF RAG"]
+    OR --> KS
     OR --> TK
+    TK -. "接管握手 API" .-> CV
     WK["worker"] -. "消费版本化事件" .-> CV
     WK -. "消费版本化事件" .-> CM
     WK -. "索引与评测任务" .-> KS
 ```
 
 ## 强制规则
+
+箭头表示允许的端口依赖，不表示分布式原子事务。页面写申请经 Gateway → Commerce 共用领域预检/确认；聊天由 Orchestration 调用同一领域端口。混合查询由 Orchestration 顺序调用 Commerce、Knowledge、Commerce；Knowledge 通过请求级历史适配读取 Conversation 的授权正式快照。详见四份实施标准 C-11、B-11、E-11。
 
 1. 三个前端只访问 API Gateway，不知道内部数据库和服务地址。
 2. API Gateway 负责协议与安全入口，不承载领域规则。
