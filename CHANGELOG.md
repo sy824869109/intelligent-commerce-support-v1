@@ -6,6 +6,8 @@
 
 ### Added
 
+- M01.1 增加纯函数存储配置、2048 行 HNSW/S3 安全合成探针、23 项离线单测和哈希锁定 SDK；完整本地基础测试增至 102 项。镜像安全评估发现新阻断，五服务未启动，M01.1 仍 IN_PROGRESS。
+
 - M01.1 增加独立 MySQL/Redis/etcd Compose、tag+digest、随机本地文件密钥、资源归属/内部网络/loopback/健康门禁、开发验证入口及静态正反测试。对象存储和 Milvus 未启动，M01.1 仍 IN_PROGRESS。
 - ADR-0004 记录用户选择先评估受维护 S3 替代，新增 SeaweedFS/Garage/RustFS 对比与准入/兼容清单；不改原 KF 或历史基线，不提前采用候选。
 

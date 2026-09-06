@@ -1,0 +1,6 @@
+# M01 infrastructure verification SDKs only; application/KF locks remain independent.
+# Compile with uv 0.12.10 and --generate-hashes; no model/framework upgrades.
+boto3==1.43.89
+pymilvus==2.5.18
+PyMySQL==1.2.0
+redis==8.1.0

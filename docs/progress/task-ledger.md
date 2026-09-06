@@ -19,6 +19,12 @@
 
 ## 补充文档交付
 
+### M01.1 安全评估与验收工具增量（2026-09-07）
+
+- 新增 [安全评估记录](../testing/m01-security-evaluation-20260907.md)、无 I/O 配置生成器、S3/Milvus 合成探针、SDK 哈希锁及 23 项探针单测；本地完整 CI 共 102 项通过。
+- 原 SeaweedFS 4.45 实扫 2 HIGH/23 UNKNOWN；Milvus 2.5.27 实扫 3 CRITICAL/51 HIGH。未把隔离或版本较新当作修复，派生安全构建/维护版本继续核查。
+- 本增量不复制未准入 Compose、不启动新知识存储，不推进 M01.2。GitHub 提交/CI 完成后补记证据。
+
 ### M01.1 当前增量（2026-09-06）
 
 - 用户确认先评估受维护 S3 替代，不授权启动旧 MinIO。见 [ADR-0004](../decisions/ADR-0004-object-storage-security-gate.md)。
