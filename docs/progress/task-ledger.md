@@ -15,7 +15,7 @@
 | M00.2 项目目录骨架 | DONE | 应用、共享包、部署、文档、测试目录，环境模板、边界文档和结构检查 | 已推送 `origin/codex/v1-greenfield`；实现提交 `367debb` |
 | M00.3 项目治理规则 | DONE | ADR、变更日志、版本策略、完成定义、安全与 PR 规则及自动治理检查 | 已推送 `origin/codex/v1-greenfield`；实现提交 `37004a4` |
 | M00.4 GitHub CI 骨架 | DONE | 双平台工作流、哈希锁定工具、配置/资产守卫、34 个基础测试及文档通过 | 实现 9842543；Windows 修正 1193aa2；[运行 34011335143 成功](https://github.com/sy824869109/intelligent-commerce-support-v1/actions/runs/34011335143) |
-| M01.1 本地基础设施 Compose | IN_PROGRESS | 三服务隔离子集；S3 先评估受维护替代、Milvus 暂停，五服务验收未完成 | 本轮实现与证据待推送 |
+| M01.1 本地基础设施 Compose | IN_PROGRESS | 三服务健康/认证读写/宿主连接/停止重启通过，79 项基础测试通过；S3 先评估替代，Milvus 未启动 | 实现 `4774ce2` 已推送；[双平台 CI 34027009809 成功](https://github.com/sy824869109/intelligent-commerce-support-v1/actions/runs/34027009809)；五服务任务未完成 |
 
 ## 补充文档交付
 
@@ -25,6 +25,7 @@
 - 只实施新 project MySQL/Redis/etcd，见 [运行说明](../../deploy/compose/README.md)。
 - [验证证据](../testing/m01-1-infrastructure.md) 与 [替代评估](../operations/s3-alternative-evaluation.md) 随原子增量交付；SeaweedFS 是首选待测候选，不是已采用。
 - M01.1 仍 IN_PROGRESS；下一增量仍在本任务内完成存储安全准入/兼容验证，不进入 M01.2，不把 93 条业务用例改为通过。
+- 交付证据：`4774ce2bc24177ed542e240a58a7c6fbc9c5524c` 已推送 `origin/codex/v1-greenfield`；运行 `34027009809` 的 Windows/Linux Foundation 成功，未实现应用作业仍 skipped。14 个配置/测试/文档文件，无密钥、原项目或归档。三份 ZIP 哈希与基线一致。
 
 - 2026-09-06 衔接修订：标准 1.1、48 条规则、93 条 NOT_RUN 业务用例、十四类范围映射，图 05 同步。结构/治理/标准检查通过；Chrome 验证 50 节点无溢出、无穿框，六区导航与缩放通过。复核详情见 [记录](v1-handoff-review-20260906.md)。
 

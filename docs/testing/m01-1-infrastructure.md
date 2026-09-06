@@ -68,4 +68,8 @@ python scripts/local_infra.py smoke
 
 ## 交付记录
 
-本地 79 项测试、三服务真实探针、停止/重启与保卷验证均已通过；实现提交及远端 CI 结果在推送后补记。即使三服务全通过，M01.1 仍不能标 DONE。
+实现提交：`4774ce2bc24177ed542e240a58a7c6fbc9c5524c`，已推送 `origin/codex/v1-greenfield`。14 个配置/测试/文档文件，不包含密钥或参考资产。
+
+[GitHub CI 34027009809](https://github.com/sy824869109/intelligent-commerce-support-v1/actions/runs/34027009809) 对应上述精确实现提交，Windows/Linux Foundation 均 success；五个未实现应用/契约/安全审计/镜像 job 仍 skipped。CI 的 79 项是工具/配置验证，不会远程启动本机 Docker，也不是 93 条业务用例。
+
+独立代码复核无剩余阻断项。本地真实三服务探针、停止/重启、保卷及原资产不变证据见上表。M01.1 仍 IN_PROGRESS；不能将部分交付标为五服务任务完成。
