@@ -26,6 +26,11 @@ def main() -> int:
     os.environ["PYTHONUTF8"] = "1"
     os.environ["PYTHONDONTWRITEBYTECODE"] = "1"
     python = sys.executable
+    expected = (ROOT / ".python-version").read_text(encoding="utf-8").strip()
+    actual = ".".join(str(part) for part in sys.version_info[:3])
+    if actual != expected:
+        print(f"Foundation CI FAILED: Python {actual}, expected {expected}")
+        return 1
     try:
         for script in (
             "verify_structure.py",

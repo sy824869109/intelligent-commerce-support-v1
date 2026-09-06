@@ -1,0 +1,8 @@
+# CI-only bootstrap: same Python patch baseline; no business or KF dependencies.
+name: commerce-ci
+channels:
+  - conda-forge
+  - nodefaults
+dependencies:
+  - python=3.12.14
+  - pip=26.2

@@ -17,6 +17,7 @@ ROOT = Path(__file__).resolve().parents[1]
 ACTION_REFS = {
     "actions/checkout": "de0fac2e4500dabe0009e67214ff5f5447ce83dd",
     "actions/setup-python": "a309ff8b426b58ec0e2a45f0f869d46889d02405",
+    "conda-incubator/setup-miniconda": "fc2d68f6413eb2d87b895e92f8584b5b94a10167",
 }
 STAGES = {"backend", "frontend", "contracts", "security-audit", "image-build"}
 FORBIDDEN_PARTS = {
@@ -116,12 +117,18 @@ def validate_workflow(workflow: dict, stages: dict, root: Path) -> list[str]:
     expected_steps = [
         "Checkout",
         "Python from project baseline",
+        "Windows Conda from project baseline",
         "Install hash-locked CI tools only",
         "Format, static checks, contracts baseline, asset safety and unit tests",
     ]
     steps = foundation.get("steps", [])
-    if any("if" in step for step in steps):
-        errors.append("Foundation steps cannot be conditional")
+    bootstrap_conditions = {
+        "Python from project baseline": "runner.os != 'Windows'",
+        "Windows Conda from project baseline": "runner.os == 'Windows'",
+    }
+    for step in steps:
+        if step.get("if") != bootstrap_conditions.get(step.get("name")):
+            errors.append("Only the two reviewed OS bootstrap conditions are allowed")
     install_command = (
         "python -m pip install --require-hashes --only-binary=:all: -r ci/requirements.lock"
     )

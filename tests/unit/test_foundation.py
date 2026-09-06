@@ -91,7 +91,7 @@ class WorkflowTests(unittest.TestCase):
         self.assertTrue(self.validate())
 
     def test_hash_install_cannot_be_disabled(self):
-        self.workflow["jobs"]["foundation"]["steps"][2]["run"] = "python -m pip install ruff"
+        self.workflow["jobs"]["foundation"]["steps"][3]["run"] = "python -m pip install ruff"
         self.assertTrue(self.validate())
 
     def test_real_step_cannot_be_skipped(self):

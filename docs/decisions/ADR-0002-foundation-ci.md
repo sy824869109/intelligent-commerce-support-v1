@@ -21,6 +21,8 @@ CI 专属工具 Ruff 0.16.6（MIT）、PyYAML 6.0.3（MIT）取官方 PyPI 固�
 
 ## 备选方案
 
+远端实测补充：Windows setup-python 缺少 Python 3.12.14 制品。Windows 改用 SHA 锁定 setup-miniconda v3.3.0 + Miniforge 26.5.3-0 + conda-forge 的同补丁 Python；CI 入口核对实际版本。Linux 仍用 setup-python。不降级项目 Python、不更改用户 Conda 环境配置。
+
 立即生成空 FastAPI/Vue 与假 Docker 镜像：越过 M02/M14/M18，且绿色结果误导，不采用。现在就引入完整应用 SAST/运行测试：没有受测模块，先显式占位，在第一份运行源码/合同引入时同步启用。
 
 ## 结果与影响
