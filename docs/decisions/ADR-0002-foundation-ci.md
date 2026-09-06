@@ -1,6 +1,6 @@
 # ADR-0002：基础 CI 与渐进激活门禁
 
-- 状态：Accepted
+- 状态：Superseded by ADR-0003
 - 日期：2026-09-06
 - 决策者：项目实施（按用户批准 M00.4 范围）
 - 关联任务：M00.4
@@ -20,8 +20,6 @@
 CI 专属工具 Ruff 0.16.6（MIT）、PyYAML 6.0.3（MIT）取官方 PyPI 固定发行与哈希；不引入应用依赖。Action 选 checkout v6.0.2、setup-python v6.2.0 官方提交 SHA，不跟随新主版本。依赖许可证与来源以发行元数据为准，后续 SBOM 汇总。
 
 ## 备选方案
-
-远端实测补充：Windows setup-python 缺少 Python 3.12.14 制品。Windows 改用 SHA 锁定 setup-miniconda v3.3.0 + Miniforge 26.5.3-0 + conda-forge 的同补丁 Python；CI 入口核对实际版本。Linux 仍用 setup-python。不降级项目 Python、不更改用户 Conda 环境配置。
 
 立即生成空 FastAPI/Vue 与假 Docker 镜像：越过 M02/M14/M18，且绿色结果误导，不采用。现在就引入完整应用 SAST/运行测试：没有受测模块，先显式占位，在第一份运行源码/合同引入时同步启用。
 

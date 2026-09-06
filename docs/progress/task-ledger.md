@@ -14,7 +14,8 @@
 | M00.1 开发基线初始化 | DONE | 启动包校验、标准文档、资产台账、独立 Conda 环境、Git 仓库与本地原子提交 | 已推送 `origin/codex/v1-greenfield`；基线提交 `591d1a4` |
 | M00.2 项目目录骨架 | DONE | 应用、共享包、部署、文档、测试目录，环境模板、边界文档和结构检查 | 已推送 `origin/codex/v1-greenfield`；实现提交 `367debb` |
 | M00.3 项目治理规则 | DONE | ADR、变更日志、版本策略、完成定义、安全与 PR 规则及自动治理检查 | 已推送 `origin/codex/v1-greenfield`；实现提交 `37004a4` |
-| M00.4 GitHub CI 骨架 | IN_PROGRESS | 工作流、哈希锁定 CI 工具、正反例及文档已建立；等待本地和远端验证 | 待推送与运行 |
+| M00.4 GitHub CI 骨架 | DONE | 双平台工作流、哈希锁定工具、配置/资产守卫、34 个基础测试及文档通过 | 实现 9842543；Windows 修正 1193aa2；[运行 34011335143 成功](https://github.com/sy824869109/intelligent-commerce-support-v1/actions/runs/34011335143) |
+| M01.1 本地基础设施 Compose | TODO | 下一任务；尚未创建或启动基础设施 | 未开始 |
 
 ## 补充文档交付
 
@@ -61,5 +62,19 @@
 - [x] 创建原子提交并推送 GitHub。
 
 ## 进度纪律
+
+## M00.4 验收与远端证据
+
+- [x] 按顺序完成衔接修订及图 05 复核，提交 `3c3ac0d` 已推送。
+- [x] GitHub push/PR 触发与双平台真实 Foundation 作业，Action SHA/权限/超时受控。
+- [x] 本地 Conda 运行 `python scripts/ci.py`，结构、治理、48 规则/93 用例引用、格式、静态、资产与 34 个基础测试通过。
+- [x] 初次运行 `34011147030` 的 Windows Python 安装失败已记录，未标假通过；`1193aa2` 改用同版本 Conda，未降级基线。
+- [x] 修正运行 `34011335143`：Linux success（14 秒）、Windows success（2 分 22 秒）；五个未实现应用/契约/安全审计/镜像 job 均 skipped。
+- [x] 启动 TAR SHA-256 仍为 `7690AAD97C5593C3AA2791C48FD05096D723859AF75653A4A78BDEDABEB0C7AE`；参考项目及 KF 核心未改。
+- [x] 实现及修正均已推送，ADR-0003 补记 Windows 运行时决策；运行证据与下一任务清楚。
+
+本地仅增加 CI 专属 Ruff/PyYAML；没有启动 MySQL、Redis、MinIO、Milvus 或应用服务。34 个工具测试不是 93 条业务验收，后者仍 NOT_RUN。详见 [CI 说明](../testing/m00-4-ci.md)。
+
+### 后续纪律
 
 只有当前任务的所有验收项通过后才能开始下一任务。每次行为变化都必须同步更新代码注释、README、接口文档和本台账。
