@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "verified_at": "2026-09-06",
+  "verification": "docker buildx imagetools inspect against the named official registry; OCI index digests",
+  "runtime_verified_platform": "linux/amd64",
+  "images": {
+    "mysql": "mysql:8.4.11@sha256:b3b90af2a6552ae30c266fdb7d5dd55f3afb72404bb78d37fe8a23eb857fd3fb",
+    "redis": "redis:8.2.6@sha256:3055dc25265b0c19ec90a1756dad4e0faff6f79e2557a6ac3d1274e39ee906f6",
+    "etcd": "quay.io/coreos/etcd:v3.5.18@sha256:d0a641d5fbcc89678c931a61b7de7b8a1cf097149f135c9c73bc81d076a1494b"
+  },
+  "deferred": {
+    "object_storage": "User requested maintained S3 alternative evaluation; do not start baseline MinIO",
+    "milvus": "Keep 2.5.15 compatibility target; not started until object-storage decision and validation"
+  },
+  "security_scan": "NOT_RUN: registry digest verification is not an image vulnerability scan"
+}

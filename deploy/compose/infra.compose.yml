@@ -1,0 +1,118 @@
+# M01.1 的可执行子集。对象存储与 Milvus 等待 ADR-0004 评估，不能启用旧 MinIO。
+# 不读取原 KF 配置，不加入旧网络，不复用旧数据卷。镜像同时固定 tag 与 registry digest。
+name: ics-v1-dev
+
+x-runtime: &runtime
+  labels:
+    org.ics.instance: ${INFRA_INSTANCE_ID:?INFRA_INSTANCE_ID required}
+  restart: unless-stopped
+  networks: [infra]
+  security_opt: [no-new-privileges:true]
+  logging:
+    driver: json-file
+    options:
+      max-size: 10m
+      max-file: '3'
+
+services:
+  mysql:
+    <<: *runtime
+    networks: [infra, local]
+    image: mysql:8.4.11@sha256:b3b90af2a6552ae30c266fdb7d5dd55f3afb72404bb78d37fe8a23eb857fd3fb
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE:?Run python scripts/local_infra.py init first}
+      MYSQL_USER: ${MYSQL_USER:?Run python scripts/local_infra.py init first}
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/mysql_root_password
+      MYSQL_PASSWORD_FILE: /run/secrets/mysql_password
+      TZ: UTC
+    secrets: [mysql_root_password, mysql_password]
+    command: [--character-set-server=utf8mb4, --collation-server=utf8mb4_0900_ai_ci]
+    ports: ['127.0.0.1:${MYSQL_PORT:?MYSQL_PORT required}:3306']
+    volumes: [mysql_data:/var/lib/mysql]
+    healthcheck:
+      # mysqladmin ping 遇到 Access denied 仍可能成功；必须执行已认证 SELECT。
+      test: [CMD-SHELL, 'MYSQL_PWD="$$(cat /run/secrets/mysql_root_password)" mysql --protocol=TCP -h127.0.0.1 -uroot -Nse "SELECT 1" | grep -qx 1']
+      interval: 10s
+      timeout: 5s
+      retries: 18
+      start_period: 60s
+    mem_limit: 1536m
+
+  redis:
+    <<: *runtime
+    networks: [infra, local]
+    image: redis:8.2.6@sha256:3055dc25265b0c19ec90a1756dad4e0faff6f79e2557a6ac3d1274e39ee906f6
+    # 密码在本地 secret 配置中；不能展开为 redis-server 的命令行参数。
+    command: [redis-server, /run/secrets/redis_config]
+    secrets: [redis_password, redis_config]
+    ports: ['127.0.0.1:${REDIS_PORT:?REDIS_PORT required}:6379']
+    volumes: [redis_data:/data]
+    healthcheck:
+      test: [CMD-SHELL, 'REDISCLI_AUTH="$$(cat /run/secrets/redis_password)" redis-cli --raw ping | grep -qx PONG']
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 10s
+    mem_limit: 384m
+
+  etcd:
+    <<: *runtime
+    image: quay.io/coreos/etcd:v3.5.18@sha256:d0a641d5fbcc89678c931a61b7de7b8a1cf097149f135c9c73bc81d076a1494b
+    environment:
+      ETCD_AUTO_COMPACTION_MODE: revision
+      ETCD_AUTO_COMPACTION_RETENTION: '1000'
+      ETCD_QUOTA_BACKEND_BYTES: '4294967296'
+      ETCD_SNAPSHOT_COUNT: '50000'
+    command:
+      - etcd
+      - --name=ics-etcd
+      - --data-dir=/etcd
+      - --advertise-client-urls=http://etcd:2379
+      - --listen-client-urls=http://0.0.0.0:2379
+      - --listen-peer-urls=http://127.0.0.1:2380
+      - --initial-advertise-peer-urls=http://127.0.0.1:2380
+      - --initial-cluster=ics-etcd=http://127.0.0.1:2380
+    volumes: [etcd_data:/etcd]
+    healthcheck:
+      test: [CMD, etcdctl, --endpoints=http://127.0.0.1:2379, endpoint, health]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 10s
+    mem_limit: 384m
+
+networks:
+  # internal-only 在本机 Engine 不建立宿主端口映射。仅 MySQL/Redis 加本机访问桥。
+  # 不使用 host 网络，不修改防火墙；显式 loopback 发布仍是对局域网的访问边界。
+  local:
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.host_binding_ipv4: '127.0.0.1'
+    labels:
+      org.ics.instance: ${INFRA_INSTANCE_ID:?INFRA_INSTANCE_ID required}
+  infra:
+    internal: true
+    labels:
+      org.ics.instance: ${INFRA_INSTANCE_ID:?INFRA_INSTANCE_ID required}
+
+volumes:
+  mysql_data:
+    labels:
+      org.ics.instance: ${INFRA_INSTANCE_ID:?INFRA_INSTANCE_ID required}
+  redis_data:
+    labels:
+      org.ics.instance: ${INFRA_INSTANCE_ID:?INFRA_INSTANCE_ID required}
+  etcd_data:
+    labels:
+      org.ics.instance: ${INFRA_INSTANCE_ID:?INFRA_INSTANCE_ID required}
+
+# Compose 本地 secrets 是只读文件挂载，不是加密密钥库；Docker 管理员仍可读取。
+secrets:
+  mysql_root_password:
+    file: ./secrets/mysql_root_password
+  mysql_password:
+    file: ./secrets/mysql_password
+  redis_password:
+    file: ./secrets/redis_password
+  redis_config:
+    file: ./secrets/redis_config

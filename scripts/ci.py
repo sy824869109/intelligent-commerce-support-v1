@@ -1,4 +1,4 @@
-"""Run the same M00.4 checks in Conda/PyCharm and on GitHub-hosted runners.
+"""Run foundation checks and M01.1 static configuration guards locally and in CI.
 
 Fail on the first broken gate. Never start application services, read reference
 archives, publish images or claim that business acceptance cases have run.
@@ -22,7 +22,7 @@ def run(arguments: list[str]) -> None:
 
 
 def main() -> int:
-    """Only foundation checks are enabled until runtime modules exist."""
+    """CI validates infrastructure files; Docker smoke runs explicitly on the local host."""
     os.environ["PYTHONUTF8"] = "1"
     os.environ["PYTHONDONTWRITEBYTECODE"] = "1"
     python = sys.executable
@@ -37,6 +37,7 @@ def main() -> int:
             "verify_governance.py",
             "verify_implementation_standards.py",
             "verify_ci.py",
+            "verify_infra.py",
         ):
             run([python, "scripts/" + script])
         run([python, "-m", "ruff", "check", "--config", "ci/ruff.toml", "scripts", "tests/unit"])
