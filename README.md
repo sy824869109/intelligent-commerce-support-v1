@@ -67,7 +67,8 @@ F:\heima\ai\python\day01\Anaconda\envs\intelligent-commerce-support-v1\python.ex
 
 ## 项目治理
 
-- [当前分层流程与逐节点示例](docs/architecture/v1-review-20260905/V1分层流程与示例.html)
+- [当前全景技术流程图：逐步讲解](docs/architecture/v1-review-20260905/V1全景技术流程图_逐步讲解.html)
+- [全景图阅读说明](docs/architecture/v1-review-20260905/全景流程图_阅读说明.md)
 - [流程示例走读](docs/architecture/v1-review-20260905/V1分层流程_示例走读.md)
 - [V1 标准 1.1](docs/implementation-standards/v1/README.md)
 - [CI 骨架说明与本地命令](docs/testing/m00-4-ci.md)

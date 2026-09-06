@@ -1,0 +1,3788 @@
+{
+  "width": 3200,
+  "height": 6600,
+  "nodes": [
+    {
+      "id": "user",
+      "x": 1280,
+      "y": 210,
+      "w": 610,
+      "h": 85,
+      "title": "局域网用户 / 客服 / 管理员",
+      "lines": [
+        "打开三端页面，发起聊天或页面操作"
+      ],
+      "color": "gold",
+      "shape": "rect",
+      "detail": "",
+      "example": "顾客：O1001 的杯子裂了，可以申请退货吗？"
+    },
+    {
+      "id": "nginx",
+      "x": 1280,
+      "y": 345,
+      "w": 610,
+      "h": 85,
+      "title": "N1 · Nginx 统一入口",
+      "lines": [
+        "HTTPS / 静态页面 / API / 流式连接"
+      ],
+      "color": "cyan",
+      "shape": "rect",
+      "detail": "局域网只对客户端开放受控入口；浏览器不直接连接内部数据库和模型。",
+      "example": ""
+    },
+    {
+      "id": "auth",
+      "x": 1230,
+      "y": 485,
+      "w": 710,
+      "h": 110,
+      "title": "N2 · Gateway / IAM",
+      "lines": [
+        "认证 → 租户与角色 → 输入校验 / 限流",
+        "传递 actor / tenant / request_id / trace_id"
+      ],
+      "color": "cyan",
+      "shape": "rect",
+      "detail": "后续领域服务仍需校验资源归属与业务权限。未认证、越权、超限请求在相应入口明确拒绝。",
+      "example": ""
+    },
+    {
+      "id": "session",
+      "x": 1230,
+      "y": 665,
+      "w": 710,
+      "h": 110,
+      "title": "N3 · 保存输入，读取会话控制",
+      "lines": [
+        "正式用户消息 + 活动 Run 预留 / epoch",
+        "授权历史快照；当前问题单独传入"
+      ],
+      "color": "cyan",
+      "shape": "rect",
+      "detail": "HUMAN 模式的客户消息通知人工，不启动可公开回复的 AI Run。AI 资格由 N3 预留，N4 持有 Run。",
+      "example": ""
+    },
+    {
+      "id": "router",
+      "x": 1230,
+      "y": 910,
+      "w": 710,
+      "h": 125,
+      "title": "N4 · 按优先级决定路径",
+      "lines": [
+        "安全 / 人工 → 已有 Workflow → 信息补齐",
+        "只读 / 知识 / 混合咨询 / 受控申请"
+      ],
+      "color": "gold",
+      "shape": "decision",
+      "detail": "确定性编排不是 Agent 自主调用。已有工作流优先处理取消、修改、继续或确认，不能每轮重新分类后丢失状态。",
+      "example": ""
+    },
+    {
+      "id": "reject",
+      "x": 210,
+      "y": 380,
+      "w": 620,
+      "h": 110,
+      "title": "入口拒绝 / 安全错误",
+      "lines": [
+        "未登录、越权、超限、非法输入",
+        "返回安全错误；不泄露他人资源"
+      ],
+      "color": "red",
+      "shape": "rect",
+      "detail": "",
+      "example": ""
+    },
+    {
+      "id": "ticketfailure",
+      "x": 210,
+      "y": 550,
+      "w": 620,
+      "h": 90,
+      "title": "建单失败：尚未成功受理",
+      "lines": [
+        "查同 handoff ID / 有界重试；返回真实失败说明"
+      ],
+      "color": "red",
+      "shape": "rect",
+      "detail": "",
+      "example": ""
+    },
+    {
+      "id": "clarify",
+      "x": 210,
+      "y": 695,
+      "w": 620,
+      "h": 110,
+      "title": "N4 · 澄清 / 拒绝不支持的动作",
+      "lines": [
+        "缺订单 / 商品行 → 让用户选择",
+        "不确定不编造；不执行交易"
+      ],
+      "color": "gold",
+      "shape": "rect",
+      "detail": "",
+      "example": "“帮我退那个”但有两笔订单：先询问是哪一笔。"
+    },
+    {
+      "id": "clarifyresult",
+      "x": 270,
+      "y": 875,
+      "w": 500,
+      "h": 85,
+      "title": "形成澄清或边界说明",
+      "lines": [
+        "进入下方统一结果收口 R"
+      ],
+      "color": "green",
+      "shape": "rect",
+      "detail": "",
+      "example": ""
+    },
+    {
+      "id": "page",
+      "x": 2340,
+      "y": 365,
+      "w": 650,
+      "h": 110,
+      "title": "页面操作按领域分发",
+      "lines": [
+        "订单 / 售后页 → N5；知识页 → N6",
+        "客服台 → N7；权限管理 → N2"
+      ],
+      "color": "purple",
+      "shape": "rect",
+      "detail": "只读页面不经过 N4 意图识别；页面申请使用同一 N5 预检与提交端口，channel=PAGE 不是权限例外。",
+      "example": ""
+    },
+    {
+      "id": "pageread",
+      "x": 2340,
+      "y": 580,
+      "w": 650,
+      "h": 110,
+      "title": "N2 → N5 · 业务页面查询",
+      "lines": [
+        "校验归属 → 读订单 / 包裹 / 售后事实",
+        "查询结果经 N2 / N1 返回页面"
+      ],
+      "color": "purple",
+      "shape": "rect",
+      "detail": "",
+      "example": ""
+    },
+    {
+      "id": "pagewrite",
+      "x": 2340,
+      "y": 790,
+      "w": 650,
+      "h": 110,
+      "title": "页面申请：预检 → 明确确认",
+      "lines": [
+        "同一 N5 submit / query，详情见下方申请链",
+        "不需要 conversation_id / N4 Workflow"
+      ],
+      "color": "purple",
+      "shape": "rect",
+      "detail": "页面生成 N5 preflight，明确确认后调用统一提交端口。下方共享的是领域预检、确认约束和命令端口；N4 的会话草稿 / 确认记录仅用于聊天。",
+      "example": ""
+    },
+    {
+      "id": "businessauth",
+      "x": 210,
+      "y": 1280,
+      "w": 640,
+      "h": 110,
+      "title": "N5 · 业务资源守卫",
+      "lines": [
+        "订单归属 / 商品行 / 数量 / 当前状态",
+        "商品、订单、包裹、支付摘要、发票、售后"
+      ],
+      "color": "cyan",
+      "shape": "rect",
+      "detail": "例中使用演示订单；LIVE/DEMO/HUMAN_ONLY/UNSUPPORTED 必须对用户明示。该图不表示所有渠道已接入。",
+      "example": ""
+    },
+    {
+      "id": "facts",
+      "x": 210,
+      "y": 1490,
+      "w": 640,
+      "h": 110,
+      "title": "N4 调 N5 · 读取真实事实",
+      "lines": [
+        "返回结构化结果 + 更新时间 + facts_version",
+        "事实缺失不由模型猜测"
+      ],
+      "color": "cyan",
+      "shape": "rect",
+      "detail": "",
+      "example": "O1001/L1，签收 2 天，数量 1，尚无占用数量的售后申请。"
+    },
+    {
+      "id": "needpolicy",
+      "x": 210,
+      "y": 1710,
+      "w": 640,
+      "h": 125,
+      "title": "只查事实，还是需要政策判断？",
+      "lines": [
+        "只读 → 直接收口；混合咨询 → 请求 N6",
+        "由 N4 协调，不是 N5 直接调用 KF"
+      ],
+      "color": "gold",
+      "shape": "decision",
+      "detail": "",
+      "example": ""
+    },
+    {
+      "id": "readresult",
+      "x": 210,
+      "y": 1980,
+      "w": 640,
+      "h": 110,
+      "title": "只读结果：物流 / 订单 / 商品等",
+      "lines": [
+        "返回实际状态及时间；进入 R",
+        "多个包裹逐个列出，不合成一个假状态"
+      ],
+      "color": "green",
+      "shape": "rect",
+      "detail": "",
+      "example": "顾客只问物流：答包裹当前位置，不调用退款申请。"
+    },
+    {
+      "id": "policycall",
+      "x": 210,
+      "y": 2200,
+      "w": 640,
+      "h": 110,
+      "title": "N4 · 构造最小政策查询",
+      "lines": [
+        "商品属性 / 区域 / 适用时间依据 / 知识范围",
+        "N6 只返回政策证据，不判订单审批"
+      ],
+      "color": "gold",
+      "shape": "rect",
+      "detail": "",
+      "example": ""
+    },
+    {
+      "id": "rules",
+      "x": 210,
+      "y": 2500,
+      "w": 640,
+      "h": 110,
+      "title": "证据返回 N4 → 调 N5 批准规则",
+      "lines": [
+        "核对事实、适用政策、数量与版本",
+        "输出 ELIGIBLE / INELIGIBLE / REVIEW / UNKNOWN"
+      ],
+      "color": "gold",
+      "shape": "rect",
+      "detail": "完整资格枚举使用标准的 ELIGIBLE / INELIGIBLE / REVIEW_REQUIRED / UNKNOWN；节点中的 REVIEW 为显示缩写。规则缺失或冲突不能由 LLM 自行补规则。",
+      "example": ""
+    },
+    {
+      "id": "eligibility",
+      "x": 210,
+      "y": 2720,
+      "w": 640,
+      "h": 110,
+      "title": "N4 · 组合事实、依据和下一步",
+      "lines": [
+        "可申请 ≠ 审批通过 ≠ 退款到账",
+        "只咨询就在 R 结束；主动办理需后续确认"
+      ],
+      "color": "green",
+      "shape": "rect",
+      "detail": "",
+      "example": "虚构 P003/RULE003：签收 14 天内可提交破损申请，仍待审核；不是法律或真实商家承诺。"
+    },
+    {
+      "id": "kfwrap",
+      "x": 1050,
+      "y": 1250,
+      "w": 780,
+      "h": 110,
+      "title": "N6 授权包装 → 原 KF 入口",
+      "lines": [
+        "请求级 History Adapter：只读 N3 正式授权快照",
+        "隔离诊断历史；固定已发布、兼容的 kb_version"
+      ],
+      "color": "cyan",
+      "shape": "rect",
+      "detail": "禁止临时替换共享单例 history。当前问题单独传递；私密备注、未发布草稿不回灌。适配实现由后续 M09 合同与 ADR 冻结。",
+      "example": ""
+    },
+    {
+      "id": "k0",
+      "x": 1050,
+      "y": 1410,
+      "w": 450,
+      "h": 105,
+      "title": "Stage 0 · 查询上下文",
+      "lines": [
+        "create_query_context",
+        "场景 / 权限 / 会话 / Trace"
+      ],
+      "color": "cyan",
+      "shape": "rect",
+      "detail": "",
+      "example": ""
+    },
+    {
+      "id": "k1",
+      "x": 1050,
+      "y": 1570,
+      "w": 450,
+      "h": 105,
+      "title": "Stage 1 · 低成本路由",
+      "lines": [
+        "decide_route",
+        "确定性直答 / FAQ 精确 / 检索"
+      ],
+      "color": "gold",
+      "shape": "rect",
+      "detail": "",
+      "example": ""
+    },
+    {
+      "id": "direct",
+      "x": 1030,
+      "y": 1760,
+      "w": 310,
+      "h": 85,
+      "title": "确定性 / FAQ 精确直答",
+      "lines": [
+        "无需检索和 LLM → K7"
+      ],
+      "color": "green",
+      "shape": "rect",
+      "detail": "",
+      "example": ""
+    },
+    {
+      "id": "k2",
+      "x": 1460,
+      "y": 1760,
+      "w": 650,
+      "h": 105,
+      "title": "Stage 2 · 检索准备",
+      "lines": [
+        "历史 / 意图 / 按需改写 / 查询变体",
+        "检索计划、来源过滤、Prompt Profile"
+      ],
+      "color": "cyan",
+      "shape": "rect",
+      "detail": "",
+      "example": ""
+    },
+    {
+      "id": "k3",
+      "x": 1270,
+      "y": 1950,
+      "w": 520,
+      "h": 105,
+      "title": "Stage 3 · FAQ 检索",
+      "lines": [
+        "按计划混合召回 / 可选重排",
+        "满足直出条件？"
+      ],
+      "color": "cyan",
+      "shape": "rect",
+      "detail": "",
+      "example": ""
+    },
+    {
+      "id": "faq",
+      "x": 1040,
+      "y": 2150,
+      "w": 280,
+      "h": 85,
+      "title": "FAQ 标准答案直出",
+      "lines": [
+        "跳过文档与 LLM → K7"
+      ],
+      "color": "green",
+      "shape": "rect",
+      "detail": "",
+      "example": ""
+    },
+    {
+      "id": "k4",
+      "x": 1560,
+      "y": 2150,
+      "w": 560,
+      "h": 105,
+      "title": "Stage 4 · 文档检索 + 重排",
+      "lines": [
+        "按原计划执行可用检索分支",
+        "候选片段 / 分数 / 来源元数据"
+      ],
+      "color": "gold",
+      "shape": "rect",
+      "detail": "",
+      "example": ""
+    },
+    {
+      "id": "k5",
+      "x": 1560,
+      "y": 2330,
+      "w": 560,
+      "h": 105,
+      "title": "Stage 5 · 组织答案上下文",
+      "lines": [
+        "合并证据 / 裁剪预算 / 绑定引用",
+        "证据是否足够？"
+      ],
+      "color": "gold",
+      "shape": "rect",
+      "detail": "",
+      "example": ""
+    },
+    {
+      "id": "empty",
+      "x": 1100,
+      "y": 2470,
+      "w": 350,
+      "h": 85,
+      "title": "证据不足，明确无法确认",
+      "lines": [
+        "不编造答案 → K7"
+      ],
+      "color": "red",
+      "shape": "rect",
+      "detail": "",
+      "example": ""
+    },
+    {
+      "id": "k6",
+      "x": 1760,
+      "y": 2530,
+      "w": 405,
+      "h": 105,
+      "title": "Stage 6 · LLM 生成",
+      "lines": [
+        "LangChain / 模型 → 候选答案",
+        "引用等后处理；高风险缓冲"
+      ],
+      "color": "cyan",
+      "shape": "rect",
+      "detail": "",
+      "example": ""
+    },
+    {
+      "id": "k7",
+      "x": 1760,
+      "y": 2760,
+      "w": 405,
+      "h": 105,
+      "title": "Stage 7 · KF 统一收尾",
+      "lines": [
+        "隔离诊断历史 / Trace / end",
+        "子调用完成 ≠ 平台正式完成"
+      ],
+      "color": "green",
+      "shape": "rect",
+      "detail": "",
+      "example": ""
+    },
+    {
+      "id": "pending",
+      "x": 2350,
+      "y": 1280,
+      "w": 640,
+      "h": 110,
+      "title": "N4 → N3 · 先进入待人工",
+      "lines": [
+        "HANDOFF_PENDING / 新控制 epoch",
+        "隔离旧 AI 输出；废止未使用的确认"
+      ],
+      "color": "gold",
+      "shape": "rect",
+      "detail": "",
+      "example": ""
+    },
+    {
+      "id": "ticket",
+      "x": 2350,
+      "y": 1450,
+      "w": 640,
+      "h": 110,
+      "title": "N7 · 幂等创建或关联工单",
+      "lines": [
+        "handoff_request_id → 真实 ticket_id",
+        "失败只能显示尚未受理，不能编造排队"
+      ],
+      "color": "gold",
+      "shape": "rect",
+      "detail": "",
+      "example": ""
+    },
+    {
+      "id": "ticketack",
+      "x": 2350,
+      "y": 1620,
+      "w": 640,
+      "h": 110,
+      "title": "本轮只返回真实受理说明",
+      "lines": [
+        "ticket_id + 当前状态 → R 正式保存",
+        "不等待客服接单才结束本轮"
+      ],
+      "color": "green",
+      "shape": "rect",
+      "detail": "",
+      "example": ""
+    },
+    {
+      "id": "humaninbox",
+      "x": 2350,
+      "y": 1780,
+      "w": 640,
+      "h": 100,
+      "title": "已有人工控制：收件箱 / 待接单材料",
+      "lines": [
+        "HUMAN → 当前客服；待人工 → 排队补充材料",
+        "客户每条新消息不重新认领或接管"
+      ],
+      "color": "gold",
+      "shape": "rect",
+      "detail": "",
+      "example": ""
+    },
+    {
+      "id": "assign",
+      "x": 2350,
+      "y": 1900,
+      "w": 640,
+      "h": 110,
+      "title": "后续事件：客服唯一认领",
+      "lines": [
+        "N7 权限 / 工单版本 / assignment_id",
+        "已是 HUMAN 的消息直达客服收件箱"
+      ],
+      "color": "gold",
+      "shape": "rect",
+      "detail": "人工模式下不重建工单或启动新 AI 答复。双客服竞争只产生一个有效分配；这一步不是本轮受理请求必须等待的步骤。",
+      "example": ""
+    },
+    {
+      "id": "human",
+      "x": 2350,
+      "y": 2080,
+      "w": 640,
+      "h": 110,
+      "title": "N7 → N3 · 版本化接管握手",
+      "lines": [
+        "N3 CAS 确认 HUMAN 后才开放回复",
+        "回执丢失查同 assignment，不重复分配"
+      ],
+      "color": "gold",
+      "shape": "rect",
+      "detail": "",
+      "example": ""
+    },
+    {
+      "id": "reply",
+      "x": 2350,
+      "y": 2260,
+      "w": 640,
+      "h": 110,
+      "title": "N7 · 保存公开回复与 Outbox",
+      "lines": [
+        "当前分配 / 权限校验；原稿留存",
+        "内部备注不生成面向客户的公开事件"
+      ],
+      "color": "gold",
+      "shape": "rect",
+      "detail": "",
+      "example": ""
+    },
+    {
+      "id": "replyworker",
+      "x": 2350,
+      "y": 2450,
+      "w": 640,
+      "h": 110,
+      "title": "Relay → Redis Streams → N8",
+      "lines": [
+        "只投递已提交公开事件，按 event_id 去重",
+        "Worker 调 N3 处理器，不直接改别人表"
+      ],
+      "color": "cyan",
+      "shape": "rect",
+      "detail": "",
+      "example": ""
+    },
+    {
+      "id": "inbox",
+      "x": 2350,
+      "y": 2650,
+      "w": 640,
+      "h": 110,
+      "title": "N3 · Inbox + 正式消息 + 通知",
+      "lines": [
+        "三者在本地事务提交后才 ACK",
+        "ACK 丢失重投原事件，仍是同一条消息"
+      ],
+      "color": "green",
+      "shape": "rect",
+      "detail": "",
+      "example": ""
+    },
+    {
+      "id": "humandelivered",
+      "x": 2350,
+      "y": 3070,
+      "w": 640,
+      "h": 95,
+      "title": "授权客户收到人工公开回复",
+      "lines": [
+        "断线可补查；保留原客服署名",
+        "关工单 ≠ 交还控制 ≠ 售后办结"
+      ],
+      "color": "green",
+      "shape": "rect",
+      "detail": "",
+      "example": ""
+    },
+    {
+      "id": "draft",
+      "x": 210,
+      "y": 3350,
+      "w": 590,
+      "h": 110,
+      "title": "聊天：N4 收集 / 恢复草稿",
+      "lines": [
+        "动作、订单行、数量、原因、READY 附件",
+        "主动请求办理才进入；不是咨询自动续办"
+      ],
+      "color": "gold",
+      "shape": "rect",
+      "detail": "",
+      "example": "“我要申请退货”可以准备草稿；“我再看看”不能消耗确认。"
+    },
+    {
+      "id": "preflight",
+      "x": 900,
+      "y": 3480,
+      "w": 580,
+      "h": 110,
+      "title": "N5 · 预检并签发 preflight_id",
+      "lines": [
+        "当前权限 / 事实 / 规则 / 剩余数量",
+        "摘要、payload_hash、版本、有效期"
+      ],
+      "color": "gold",
+      "shape": "rect",
+      "detail": "",
+      "example": "演示 PF01：L1×1，申请金额 19900 分 CNY；不是最终退款承诺。"
+    },
+    {
+      "id": "confirm",
+      "x": 1590,
+      "y": 3600,
+      "w": 610,
+      "h": 125,
+      "title": "用户明确确认同一份摘要",
+      "lines": [
+        "核对动作 / 数量 / 理由 / 金额与后果",
+        "修改或过期 → 新预检 + 新确认"
+      ],
+      "color": "gold",
+      "shape": "decision",
+      "detail": "",
+      "example": ""
+    },
+    {
+      "id": "submit",
+      "x": 2320,
+      "y": 3730,
+      "w": 650,
+      "h": 110,
+      "title": "N5 · 统一 submit：重新校验并幂等",
+      "lines": [
+        "聊天 N4 先持久化确认消耗 / 命令意图 / Outbox",
+        "页面直达 N5；同预检只映射一个 command_id"
+      ],
+      "color": "gold",
+      "shape": "rect",
+      "detail": "",
+      "example": ""
+    },
+    {
+      "id": "commandresult",
+      "x": 2320,
+      "y": 3910,
+      "w": 650,
+      "h": 105,
+      "title": "查询原命令，返回真实申请结果",
+      "lines": [
+        "未知先查同 command_id / 对账，不能换键重办",
+        "申请 AS001 待审核 ≠ 审批成功 / 退款到账"
+      ],
+      "color": "green",
+      "shape": "rect",
+      "detail": "",
+      "example": ""
+    },
+    {
+      "id": "pageresult",
+      "x": 2310,
+      "y": 4090,
+      "w": 680,
+      "h": 110,
+      "title": "仅 PAGE：N5 结果经 N2 / N1 返回页面",
+      "lines": [
+        "刷新 / 断线查询原 command_id 与申请事实",
+        "不经过 N4 / N3，不伪造聊天记录"
+      ],
+      "color": "purple",
+      "shape": "rect",
+      "detail": "",
+      "example": ""
+    },
+    {
+      "id": "result",
+      "x": 1230,
+      "y": 4200,
+      "w": 710,
+      "h": 110,
+      "title": "N4 · 检查结果 / 权限 / 控制资格",
+      "lines": [
+        "来源授权、脱敏、Run / epoch、关联业务 ID",
+        "普通 delta 是草稿；高风险仅进度、缓冲后发布"
+      ],
+      "color": "gold",
+      "shape": "rect",
+      "detail": "KF start/status/token/end 映射平台进度、受控草稿和子调用结果。KF end 不直接变 run.completed；error 无真实降级结果则失败。",
+      "example": ""
+    },
+    {
+      "id": "save",
+      "x": 1230,
+      "y": 4380,
+      "w": 710,
+      "h": 110,
+      "title": "N3 · 正式消息 + 通知 Outbox",
+      "lines": [
+        "同事务校验发布资格 / 唯一键 / 正式保存",
+        "失败只补同一结果发布，不重跑 KF / 业务"
+      ],
+      "color": "green",
+      "shape": "rect",
+      "detail": "",
+      "example": ""
+    },
+    {
+      "id": "done",
+      "x": 1230,
+      "y": 4560,
+      "w": 710,
+      "h": 110,
+      "title": "正式保存后 → N2 / N1 → 浏览器",
+      "lines": [
+        "message.committed → run.completed",
+        "正式全文替换草稿；重连鉴权 / 补查 / 去重"
+      ],
+      "color": "green",
+      "shape": "rect",
+      "detail": "",
+      "example": ""
+    },
+    {
+      "id": "outputfailure",
+      "x": 2310,
+      "y": 4260,
+      "w": 680,
+      "h": 110,
+      "title": "统一错误 / 发布抑制 / 可恢复状态",
+      "lines": [
+        "旧 epoch、撤权、依赖故障、结果未知分别处理",
+        "保存失败只补同一发布；旧草稿不回灌历史"
+      ],
+      "color": "red",
+      "shape": "rect",
+      "detail": "普通输出发送前受控；已发送字节无法撤回。N3 保存失败与客户端未收到是不同故障，必须查询正式保存证据；不重跑 KF 或领域命令。",
+      "example": ""
+    },
+    {
+      "id": "feedback",
+      "x": 210,
+      "y": 4510,
+      "w": 650,
+      "h": 110,
+      "title": "N3 评价 / N7 纠错 / 各域运行证据",
+      "lines": [
+        "关联 message / run / Trace / 知识与规则版本",
+        "保留原始记录 + 本领域 Outbox"
+      ],
+      "color": "purple",
+      "shape": "rect",
+      "detail": "",
+      "example": ""
+    },
+    {
+      "id": "worker",
+      "x": 210,
+      "y": 4770,
+      "w": 650,
+      "h": 110,
+      "title": "Outbox Relay → Streams → N8",
+      "lines": [
+        "至少一次投递；超时、重试、死信与可重放",
+        "目标领域 Inbox + 效果提交后才 ACK"
+      ],
+      "color": "cyan",
+      "shape": "rect",
+      "detail": "",
+      "example": ""
+    },
+    {
+      "id": "triage",
+      "x": 210,
+      "y": 4980,
+      "w": 650,
+      "h": 110,
+      "title": "审核归因 → 责任领域修复项",
+      "lines": [
+        "知识 N6 / 路由 N4 / 业务 N5 / 人工 N7",
+        "跨领域总工作项归属待 M13 ADR"
+      ],
+      "color": "purple",
+      "shape": "rect",
+      "detail": "",
+      "example": ""
+    },
+    {
+      "id": "upload",
+      "x": 2340,
+      "y": 4590,
+      "w": 650,
+      "h": 110,
+      "title": "N6 · 授权上传 / 内容安全检查",
+      "lines": [
+        "类型、大小、真实格式、哈希与权限范围",
+        "原文入 MinIO；N6 元数据 / 状态入 MySQL"
+      ],
+      "color": "purple",
+      "shape": "rect",
+      "detail": "",
+      "example": ""
+    },
+    {
+      "id": "ready",
+      "x": 2340,
+      "y": 4800,
+      "w": 650,
+      "h": 110,
+      "title": "跨存储校验：VALIDATING → READY",
+      "lines": [
+        "原文与元数据不一致先隔离 / 补偿",
+        "检查失败不可默认安全通过"
+      ],
+      "color": "purple",
+      "shape": "rect",
+      "detail": "",
+      "example": ""
+    },
+    {
+      "id": "fix",
+      "x": 780,
+      "y": 5260,
+      "w": 670,
+      "h": 110,
+      "title": "审核修订：本例为知识修复",
+      "lines": [
+        "基于批准资料修订；不是凭差评杜撰政策",
+        "其他领域修复分别走其测试与发布流程"
+      ],
+      "color": "purple",
+      "shape": "rect",
+      "detail": "",
+      "example": ""
+    },
+    {
+      "id": "build",
+      "x": 2070,
+      "y": 5280,
+      "w": 830,
+      "h": 110,
+      "title": "N6 处理器：解析 → 切片 → 向量化",
+      "lines": [
+        "N8 调度；写 Milvus 候选索引 / MySQL 版本与块映射",
+        "source_hash + 配置 + 目标版本去重；不越界写表"
+      ],
+      "color": "purple",
+      "shape": "rect",
+      "detail": "",
+      "example": ""
+    },
+    {
+      "id": "candidate",
+      "x": 1710,
+      "y": 5470,
+      "w": 710,
+      "h": 110,
+      "title": "候选知识版本与兼容性检查",
+      "lines": [
+        "线上仍使用已发布版本；模型 / 索引必须兼容",
+        "候选版本不可直接进入正式问答"
+      ],
+      "color": "purple",
+      "shape": "rect",
+      "detail": "",
+      "example": ""
+    },
+    {
+      "id": "quality",
+      "x": 1060,
+      "y": 5650,
+      "w": 720,
+      "h": 125,
+      "title": "独立回归 / 安全 / 质量 / 性能门禁",
+      "lines": [
+        "原 Bad Case + 独立 Golden Set + 故障恢复",
+        "门禁未冻结或未通过：留候选，不能发布"
+      ],
+      "color": "gold",
+      "shape": "decision",
+      "detail": "",
+      "example": ""
+    },
+    {
+      "id": "release",
+      "x": 590,
+      "y": 5870,
+      "w": 740,
+      "h": 110,
+      "title": "审批激活兼容版本并保留发布审计",
+      "lines": [
+        "知识 / 规则 / Router / Prompt 由各所属领域拥有",
+        "失败保留或回退已验证版本；撤权优先"
+      ],
+      "color": "purple",
+      "shape": "rect",
+      "detail": "",
+      "example": ""
+    },
+    {
+      "id": "nextrequest",
+      "x": 210,
+      "y": 6040,
+      "w": 650,
+      "h": 110,
+      "title": "新请求读取已发布版本并验证改进",
+      "lines": [
+        "反馈 → 修复 → 回归 → 发布 → 新服务可追溯",
+        "这是下一轮请求，不是复活旧 Run"
+      ],
+      "color": "green",
+      "shape": "rect",
+      "detail": "",
+      "example": ""
+    },
+    {
+      "id": "mysql",
+      "x": 175,
+      "y": 6360,
+      "w": 460,
+      "h": 125,
+      "title": "D1 · MySQL",
+      "lines": [
+        "身份 / 会话 / Run / 业务 / 工单",
+        "知识元数据 / 版本 / Outbox / Inbox"
+      ],
+      "color": "green",
+      "shape": "db",
+      "detail": "",
+      "example": ""
+    },
+    {
+      "id": "minio",
+      "x": 685,
+      "y": 6360,
+      "w": 360,
+      "h": 125,
+      "title": "D2 · MinIO",
+      "lines": [
+        "知识原文 / 客户附件",
+        "按授权引用，非裸路径通行"
+      ],
+      "color": "cyan",
+      "shape": "db",
+      "detail": "",
+      "example": ""
+    },
+    {
+      "id": "milvus",
+      "x": 1095,
+      "y": 6360,
+      "w": 390,
+      "h": 125,
+      "title": "D3 · Milvus",
+      "lines": [
+        "已发布查询 / 候选构建",
+        "文档与 FAQ 派生检索索引"
+      ],
+      "color": "green",
+      "shape": "db",
+      "detail": "",
+      "example": ""
+    },
+    {
+      "id": "redis",
+      "x": 1535,
+      "y": 6360,
+      "w": 390,
+      "h": 125,
+      "title": "D4 · Redis / Streams",
+      "lines": [
+        "限流 / 缓存 / 临时投递",
+        "故障从事实与 Outbox 恢复"
+      ],
+      "color": "cyan",
+      "shape": "db",
+      "detail": "",
+      "example": ""
+    },
+    {
+      "id": "embed",
+      "x": 1975,
+      "y": 6360,
+      "w": 450,
+      "h": 125,
+      "title": "D5 · Embedding / Reranker",
+      "lines": [
+        "查询 / 块向量与候选重排",
+        "按选型基线，不复制示例模型版本"
+      ],
+      "color": "gold",
+      "shape": "rect",
+      "detail": "",
+      "example": ""
+    },
+    {
+      "id": "llm",
+      "x": 2475,
+      "y": 6360,
+      "w": 510,
+      "h": 125,
+      "title": "D6 · LLM / LangChain 调用",
+      "lines": [
+        "基于授权证据生成 / 必要摘要",
+        "没有交易执行权限"
+      ],
+      "color": "purple",
+      "shape": "rect",
+      "detail": "",
+      "example": ""
+    }
+  ],
+  "edges": [
+    {
+      "a": "user",
+      "b": "nginx",
+      "points": [
+        [
+          1585,
+          295
+        ],
+        [
+          1585,
+          345
+        ]
+      ],
+      "label": "",
+      "at": [
+        1740,
+        320.0
+      ],
+      "kind": "flow",
+      "color": "cyan"
+    },
+    {
+      "a": "nginx",
+      "b": "auth",
+      "points": [
+        [
+          1585,
+          430
+        ],
+        [
+          1585,
+          485
+        ]
+      ],
+      "label": "",
+      "at": [
+        1740,
+        457.5
+      ],
+      "kind": "flow",
+      "color": "cyan"
+    },
+    {
+      "a": "auth",
+      "b": "session",
+      "points": [
+        [
+          1585,
+          595
+        ],
+        [
+          1585,
+          665
+        ]
+      ],
+      "label": "聊天请求",
+      "at": [
+        1740,
+        630.0
+      ],
+      "kind": "flow",
+      "color": "cyan"
+    },
+    {
+      "a": "session",
+      "b": "router",
+      "points": [
+        [
+          1585,
+          775
+        ],
+        [
+          1585,
+          910
+        ]
+      ],
+      "label": "允许 AI 的本轮输入",
+      "at": [
+        1740,
+        842.5
+      ],
+      "kind": "flow",
+      "color": "cyan"
+    },
+    {
+      "a": "auth",
+      "b": "reject",
+      "points": [
+        [
+          1230,
+          540
+        ],
+        [
+          1000,
+          540
+        ],
+        [
+          1000,
+          435
+        ],
+        [
+          830,
+          435
+        ]
+      ],
+      "label": "认证或入口检查失败",
+      "at": [
+        1030,
+        405
+      ],
+      "kind": "flow",
+      "color": "red"
+    },
+    {
+      "a": "router",
+      "b": "clarify",
+      "points": [
+        [
+          1230,
+          970
+        ],
+        [
+          990,
+          970
+        ],
+        [
+          990,
+          750
+        ],
+        [
+          830,
+          750
+        ]
+      ],
+      "label": "需补充信息 / 明确拒绝",
+      "at": [
+        1000,
+        725
+      ],
+      "kind": "flow",
+      "color": "gold"
+    },
+    {
+      "a": "clarify",
+      "b": "clarifyresult",
+      "points": [
+        [
+          520,
+          805
+        ],
+        [
+          520,
+          875
+        ]
+      ],
+      "label": "",
+      "at": [
+        675,
+        840.0
+      ],
+      "kind": "flow",
+      "color": "cyan"
+    },
+    {
+      "a": "clarifyresult",
+      "b": "result",
+      "points": [
+        [
+          270,
+          918
+        ],
+        [
+          65,
+          918
+        ],
+        [
+          65,
+          4180
+        ],
+        [
+          1060,
+          4180
+        ],
+        [
+          1060,
+          4255
+        ],
+        [
+          1230,
+          4255
+        ]
+      ],
+      "label": "澄清也正式保存",
+      "at": [
+        285,
+        4058
+      ],
+      "kind": "flow",
+      "color": "green"
+    },
+    {
+      "a": "auth",
+      "b": "page",
+      "points": [
+        [
+          1940,
+          540
+        ],
+        [
+          2170,
+          540
+        ],
+        [
+          2170,
+          420
+        ],
+        [
+          2340,
+          420
+        ]
+      ],
+      "label": "非聊天页面 API",
+      "at": [
+        2120,
+        395
+      ],
+      "kind": "flow",
+      "color": "purple"
+    },
+    {
+      "a": "page",
+      "b": "pageread",
+      "points": [
+        [
+          2665,
+          475
+        ],
+        [
+          2665,
+          580
+        ]
+      ],
+      "label": "只读",
+      "at": [
+        2820,
+        527.5
+      ],
+      "kind": "flow",
+      "color": "cyan"
+    },
+    {
+      "a": "page",
+      "b": "pagewrite",
+      "points": [
+        [
+          2990,
+          420
+        ],
+        [
+          3030,
+          420
+        ],
+        [
+          3030,
+          845
+        ],
+        [
+          2990,
+          845
+        ]
+      ],
+      "label": "申请",
+      "at": [
+        3030,
+        745
+      ],
+      "kind": "flow",
+      "color": "purple"
+    },
+    {
+      "a": "router",
+      "b": "businessauth",
+      "points": [
+        [
+          1230,
+          990
+        ],
+        [
+          1060,
+          990
+        ],
+        [
+          1060,
+          1135
+        ],
+        [
+          530,
+          1135
+        ],
+        [
+          530,
+          1280
+        ]
+      ],
+      "label": "业务只读 / 混合咨询",
+      "at": [
+        690,
+        1112
+      ],
+      "kind": "flow",
+      "color": "cyan"
+    },
+    {
+      "a": "businessauth",
+      "b": "facts",
+      "points": [
+        [
+          530,
+          1390
+        ],
+        [
+          530,
+          1490
+        ]
+      ],
+      "label": "",
+      "at": [
+        685,
+        1440.0
+      ],
+      "kind": "flow",
+      "color": "cyan"
+    },
+    {
+      "a": "facts",
+      "b": "needpolicy",
+      "points": [
+        [
+          530,
+          1600
+        ],
+        [
+          530,
+          1710
+        ]
+      ],
+      "label": "",
+      "at": [
+        685,
+        1655.0
+      ],
+      "kind": "flow",
+      "color": "cyan"
+    },
+    {
+      "a": "needpolicy",
+      "b": "readresult",
+      "points": [
+        [
+          530,
+          1835
+        ],
+        [
+          530,
+          1980
+        ]
+      ],
+      "label": "只读",
+      "at": [
+        685,
+        1907.5
+      ],
+      "kind": "flow",
+      "color": "cyan"
+    },
+    {
+      "a": "needpolicy",
+      "b": "policycall",
+      "points": [
+        [
+          850,
+          1770
+        ],
+        [
+          900,
+          1770
+        ],
+        [
+          900,
+          2255
+        ],
+        [
+          850,
+          2255
+        ]
+      ],
+      "label": "混合",
+      "at": [
+        900,
+        2115
+      ],
+      "kind": "flow",
+      "color": "gold"
+    },
+    {
+      "a": "readresult",
+      "b": "result",
+      "points": [
+        [
+          210,
+          2035
+        ],
+        [
+          90,
+          2035
+        ],
+        [
+          90,
+          4168
+        ],
+        [
+          1080,
+          4168
+        ],
+        [
+          1080,
+          4255
+        ],
+        [
+          1230,
+          4255
+        ]
+      ],
+      "label": "",
+      "at": null,
+      "kind": "flow",
+      "color": "green"
+    },
+    {
+      "a": "rules",
+      "b": "eligibility",
+      "points": [
+        [
+          530,
+          2610
+        ],
+        [
+          530,
+          2720
+        ]
+      ],
+      "label": "",
+      "at": [
+        685,
+        2665.0
+      ],
+      "kind": "flow",
+      "color": "cyan"
+    },
+    {
+      "a": "eligibility",
+      "b": "result",
+      "points": [
+        [
+          210,
+          2775
+        ],
+        [
+          115,
+          2775
+        ],
+        [
+          115,
+          4158
+        ],
+        [
+          1100,
+          4158
+        ],
+        [
+          1100,
+          4255
+        ],
+        [
+          1230,
+          4255
+        ]
+      ],
+      "label": "咨询到此结束，不自动建单",
+      "at": [
+        550,
+        4135
+      ],
+      "kind": "flow",
+      "color": "green"
+    },
+    {
+      "a": "router",
+      "b": "kfwrap",
+      "points": [
+        [
+          1585,
+          1035
+        ],
+        [
+          1585,
+          1130
+        ],
+        [
+          1440,
+          1130
+        ],
+        [
+          1440,
+          1250
+        ]
+      ],
+      "label": "纯知识咨询",
+      "at": [
+        1680,
+        1120
+      ],
+      "kind": "flow",
+      "color": "cyan"
+    },
+    {
+      "a": "policycall",
+      "b": "kfwrap",
+      "points": [
+        [
+          850,
+          2255
+        ],
+        [
+          955,
+          2255
+        ],
+        [
+          955,
+          1305
+        ],
+        [
+          1050,
+          1305
+        ]
+      ],
+      "label": "N4 调 N6：最小业务属性",
+      "at": [
+        1010,
+        2310
+      ],
+      "kind": "flow",
+      "color": "gold"
+    },
+    {
+      "a": "kfwrap",
+      "b": "k0",
+      "points": [
+        [
+          1275,
+          1360
+        ],
+        [
+          1275,
+          1410
+        ]
+      ],
+      "label": "",
+      "at": null,
+      "kind": "flow",
+      "color": "cyan"
+    },
+    {
+      "a": "k0",
+      "b": "k1",
+      "points": [
+        [
+          1275,
+          1515
+        ],
+        [
+          1275,
+          1570
+        ]
+      ],
+      "label": "",
+      "at": [
+        1430,
+        1542.5
+      ],
+      "kind": "flow",
+      "color": "cyan"
+    },
+    {
+      "a": "k1",
+      "b": "direct",
+      "points": [
+        [
+          1050,
+          1625
+        ],
+        [
+          1015,
+          1625
+        ],
+        [
+          1015,
+          1802
+        ],
+        [
+          1030,
+          1802
+        ]
+      ],
+      "label": "直答",
+      "at": [
+        1017,
+        1715
+      ],
+      "kind": "flow",
+      "color": "cyan"
+    },
+    {
+      "a": "k1",
+      "b": "k2",
+      "points": [
+        [
+          1500,
+          1625
+        ],
+        [
+          1785,
+          1700
+        ],
+        [
+          1785,
+          1760
+        ]
+      ],
+      "label": "retrieval",
+      "at": [
+        1700,
+        1680
+      ],
+      "kind": "flow",
+      "color": "cyan"
+    },
+    {
+      "a": "k2",
+      "b": "k3",
+      "points": [
+        [
+          1785,
+          1865
+        ],
+        [
+          1530,
+          1910
+        ],
+        [
+          1530,
+          1950
+        ]
+      ],
+      "label": "",
+      "at": null,
+      "kind": "flow",
+      "color": "cyan"
+    },
+    {
+      "a": "k3",
+      "b": "faq",
+      "points": [
+        [
+          1270,
+          2002
+        ],
+        [
+          1180,
+          2090
+        ],
+        [
+          1180,
+          2150
+        ]
+      ],
+      "label": "可直出",
+      "at": [
+        1145,
+        2075
+      ],
+      "kind": "flow",
+      "color": "cyan"
+    },
+    {
+      "a": "k3",
+      "b": "k4",
+      "points": [
+        [
+          1790,
+          2002
+        ],
+        [
+          1840,
+          2080
+        ],
+        [
+          1840,
+          2150
+        ]
+      ],
+      "label": "未直出",
+      "at": [
+        1950,
+        2095
+      ],
+      "kind": "flow",
+      "color": "cyan"
+    },
+    {
+      "a": "k4",
+      "b": "k5",
+      "points": [
+        [
+          1840,
+          2255
+        ],
+        [
+          1840,
+          2330
+        ]
+      ],
+      "label": "",
+      "at": [
+        1995,
+        2292.5
+      ],
+      "kind": "flow",
+      "color": "cyan"
+    },
+    {
+      "a": "k5",
+      "b": "empty",
+      "points": [
+        [
+          1560,
+          2380
+        ],
+        [
+          1275,
+          2430
+        ],
+        [
+          1275,
+          2470
+        ]
+      ],
+      "label": "不足",
+      "at": [
+        1380,
+        2420
+      ],
+      "kind": "flow",
+      "color": "red"
+    },
+    {
+      "a": "k5",
+      "b": "k6",
+      "points": [
+        [
+          1840,
+          2435
+        ],
+        [
+          1962,
+          2480
+        ],
+        [
+          1962,
+          2530
+        ]
+      ],
+      "label": "有证据",
+      "at": [
+        2050,
+        2460
+      ],
+      "kind": "flow",
+      "color": "cyan"
+    },
+    {
+      "a": "k6",
+      "b": "k7",
+      "points": [
+        [
+          1962,
+          2635
+        ],
+        [
+          1962,
+          2760
+        ]
+      ],
+      "label": "候选答案",
+      "at": [
+        2117,
+        2697.5
+      ],
+      "kind": "flow",
+      "color": "cyan"
+    },
+    {
+      "a": "direct",
+      "b": "k7",
+      "points": [
+        [
+          1030,
+          1802
+        ],
+        [
+          1000,
+          1802
+        ],
+        [
+          1000,
+          2930
+        ],
+        [
+          1962,
+          2930
+        ],
+        [
+          1962,
+          2865
+        ]
+      ],
+      "label": "直答旁路 → 同一 K7",
+      "at": [
+        1400,
+        2920
+      ],
+      "kind": "flow",
+      "color": "green"
+    },
+    {
+      "a": "faq",
+      "b": "k7",
+      "points": [
+        [
+          1040,
+          2192
+        ],
+        [
+          1010,
+          2192
+        ],
+        [
+          1010,
+          2910
+        ],
+        [
+          1962,
+          2910
+        ],
+        [
+          1962,
+          2865
+        ]
+      ],
+      "label": "",
+      "at": null,
+      "kind": "flow",
+      "color": "green"
+    },
+    {
+      "a": "empty",
+      "b": "k7",
+      "points": [
+        [
+          1275,
+          2555
+        ],
+        [
+          1275,
+          2890
+        ],
+        [
+          1962,
+          2890
+        ],
+        [
+          1962,
+          2865
+        ]
+      ],
+      "label": "",
+      "at": null,
+      "kind": "flow",
+      "color": "red"
+    },
+    {
+      "a": "k7",
+      "b": "rules",
+      "points": [
+        [
+          1760,
+          2812
+        ],
+        [
+          1650,
+          2812
+        ],
+        [
+          1650,
+          2960
+        ],
+        [
+          945,
+          2960
+        ],
+        [
+          945,
+          2555
+        ],
+        [
+          850,
+          2555
+        ]
+      ],
+      "label": "混合：证据返回 N4，再由 N4 调 N5",
+      "at": [
+        1350,
+        2977
+      ],
+      "kind": "flow",
+      "color": "gold"
+    },
+    {
+      "a": "k7",
+      "b": "result",
+      "points": [
+        [
+          2165,
+          2812
+        ],
+        [
+          2240,
+          2812
+        ],
+        [
+          2240,
+          3020
+        ],
+        [
+          3115,
+          3020
+        ],
+        [
+          3115,
+          4225
+        ],
+        [
+          2060,
+          4225
+        ],
+        [
+          2060,
+          4255
+        ],
+        [
+          1940,
+          4255
+        ]
+      ],
+      "label": "纯知识 / 兜底结果 → R",
+      "at": [
+        2740,
+        3000
+      ],
+      "kind": "flow",
+      "color": "green"
+    },
+    {
+      "a": "router",
+      "b": "pending",
+      "points": [
+        [
+          1940,
+          970
+        ],
+        [
+          2190,
+          970
+        ],
+        [
+          2190,
+          1135
+        ],
+        [
+          2670,
+          1135
+        ],
+        [
+          2670,
+          1280
+        ]
+      ],
+      "label": "明确人工 / 高风险需人工",
+      "at": [
+        2510,
+        1115
+      ],
+      "kind": "flow",
+      "color": "gold"
+    },
+    {
+      "a": "pending",
+      "b": "ticket",
+      "points": [
+        [
+          2670,
+          1390
+        ],
+        [
+          2670,
+          1450
+        ]
+      ],
+      "label": "",
+      "at": [
+        2825,
+        1420.0
+      ],
+      "kind": "flow",
+      "color": "cyan"
+    },
+    {
+      "a": "ticket",
+      "b": "ticketack",
+      "points": [
+        [
+          2670,
+          1560
+        ],
+        [
+          2670,
+          1620
+        ]
+      ],
+      "label": "拿到真实 ticket_id",
+      "at": [
+        2825,
+        1590.0
+      ],
+      "kind": "flow",
+      "color": "cyan"
+    },
+    {
+      "a": "ticket",
+      "b": "ticketfailure",
+      "points": [
+        [
+          2350,
+          1505
+        ],
+        [
+          2250,
+          1505
+        ],
+        [
+          2250,
+          1100
+        ],
+        [
+          975,
+          1100
+        ],
+        [
+          975,
+          595
+        ],
+        [
+          830,
+          595
+        ]
+      ],
+      "label": "建单失败",
+      "at": [
+        2250,
+        1475
+      ],
+      "kind": "flow",
+      "color": "red"
+    },
+    {
+      "a": "ticketfailure",
+      "b": "result",
+      "points": [
+        [
+          210,
+          595
+        ],
+        [
+          50,
+          595
+        ],
+        [
+          50,
+          4188
+        ],
+        [
+          1040,
+          4188
+        ],
+        [
+          1040,
+          4275
+        ],
+        [
+          1230,
+          4275
+        ]
+      ],
+      "label": "",
+      "at": null,
+      "kind": "flow",
+      "color": "red"
+    },
+    {
+      "a": "ticketack",
+      "b": "result",
+      "points": [
+        [
+          2990,
+          1675
+        ],
+        [
+          3140,
+          1675
+        ],
+        [
+          3140,
+          4225
+        ],
+        [
+          2060,
+          4225
+        ],
+        [
+          2060,
+          4255
+        ],
+        [
+          1940,
+          4255
+        ]
+      ],
+      "label": "本轮受理结果",
+      "at": [
+        2990,
+        4050
+      ],
+      "kind": "flow",
+      "color": "green"
+    },
+    {
+      "a": "ticketack",
+      "b": "assign",
+      "points": [
+        [
+          2350,
+          1675
+        ],
+        [
+          2320,
+          1675
+        ],
+        [
+          2320,
+          1955
+        ],
+        [
+          2350,
+          1955
+        ]
+      ],
+      "label": "后续认领",
+      "at": [
+        2300,
+        1880
+      ],
+      "kind": "event",
+      "color": "gold"
+    },
+    {
+      "a": "assign",
+      "b": "human",
+      "points": [
+        [
+          2670,
+          2010
+        ],
+        [
+          2670,
+          2080
+        ]
+      ],
+      "label": "",
+      "at": [
+        2825,
+        2045.0
+      ],
+      "kind": "flow",
+      "color": "cyan"
+    },
+    {
+      "a": "human",
+      "b": "reply",
+      "points": [
+        [
+          2670,
+          2190
+        ],
+        [
+          2670,
+          2260
+        ]
+      ],
+      "label": "",
+      "at": [
+        2825,
+        2225.0
+      ],
+      "kind": "flow",
+      "color": "cyan"
+    },
+    {
+      "a": "reply",
+      "b": "replyworker",
+      "points": [
+        [
+          2670,
+          2370
+        ],
+        [
+          2670,
+          2450
+        ]
+      ],
+      "label": "",
+      "at": [
+        2825,
+        2410.0
+      ],
+      "kind": "event",
+      "color": "cyan"
+    },
+    {
+      "a": "replyworker",
+      "b": "inbox",
+      "points": [
+        [
+          2670,
+          2560
+        ],
+        [
+          2670,
+          2650
+        ]
+      ],
+      "label": "",
+      "at": [
+        2825,
+        2605.0
+      ],
+      "kind": "event",
+      "color": "cyan"
+    },
+    {
+      "a": "inbox",
+      "b": "humandelivered",
+      "points": [
+        [
+          2990,
+          2705
+        ],
+        [
+          3020,
+          2705
+        ],
+        [
+          3020,
+          3120
+        ],
+        [
+          2990,
+          3120
+        ]
+      ],
+      "label": "",
+      "at": null,
+      "kind": "event",
+      "color": "green"
+    },
+    {
+      "a": "session",
+      "b": "humaninbox",
+      "points": [
+        [
+          1940,
+          720
+        ],
+        [
+          2150,
+          720
+        ],
+        [
+          2150,
+          1090
+        ],
+        [
+          3085,
+          1090
+        ],
+        [
+          3085,
+          1825
+        ],
+        [
+          2990,
+          1825
+        ]
+      ],
+      "label": "HUMAN / 待人工：新消息通知人工，不开启 AI",
+      "at": [
+        2650,
+        1070
+      ],
+      "kind": "event",
+      "color": "gold"
+    },
+    {
+      "a": "humaninbox",
+      "b": "reply",
+      "points": [
+        [
+          2990,
+          1825
+        ],
+        [
+          3040,
+          1825
+        ],
+        [
+          3040,
+          2315
+        ],
+        [
+          2990,
+          2315
+        ]
+      ],
+      "label": "仅已 HUMAN：按有效分配回复",
+      "at": [
+        3060,
+        2410
+      ],
+      "kind": "event",
+      "color": "gold"
+    },
+    {
+      "a": "router",
+      "b": "draft",
+      "points": [
+        [
+          1230,
+          1015
+        ],
+        [
+          1085,
+          1015
+        ],
+        [
+          1085,
+          1135
+        ],
+        [
+          875,
+          1135
+        ],
+        [
+          875,
+          3200
+        ],
+        [
+          505,
+          3200
+        ],
+        [
+          505,
+          3350
+        ]
+      ],
+      "label": "已有 Workflow / 主动申请 → 相应步骤",
+      "at": [
+        580,
+        3177
+      ],
+      "kind": "flow",
+      "color": "gold"
+    },
+    {
+      "a": "draft",
+      "b": "preflight",
+      "points": [
+        [
+          800,
+          3405
+        ],
+        [
+          1190,
+          3440
+        ],
+        [
+          1190,
+          3480
+        ]
+      ],
+      "label": "收齐且可预检",
+      "at": [
+        1030,
+        3420
+      ],
+      "kind": "flow",
+      "color": "gold"
+    },
+    {
+      "a": "preflight",
+      "b": "confirm",
+      "points": [
+        [
+          1480,
+          3535
+        ],
+        [
+          1895,
+          3570
+        ],
+        [
+          1895,
+          3600
+        ]
+      ],
+      "label": "预检通过 → 展示摘要",
+      "at": [
+        1700,
+        3540
+      ],
+      "kind": "flow",
+      "color": "gold"
+    },
+    {
+      "a": "confirm",
+      "b": "submit",
+      "points": [
+        [
+          2200,
+          3662
+        ],
+        [
+          2645,
+          3700
+        ],
+        [
+          2645,
+          3730
+        ]
+      ],
+      "label": "明确确认",
+      "at": [
+        2420,
+        3678
+      ],
+      "kind": "flow",
+      "color": "gold"
+    },
+    {
+      "a": "confirm",
+      "b": "preflight",
+      "points": [
+        [
+          1895,
+          3725
+        ],
+        [
+          1895,
+          3890
+        ],
+        [
+          1190,
+          3890
+        ],
+        [
+          1190,
+          3590
+        ]
+      ],
+      "label": "修改 / 过期：返回预检；不提交",
+      "at": [
+        1490,
+        3870
+      ],
+      "kind": "flow",
+      "color": "red"
+    },
+    {
+      "a": "submit",
+      "b": "commandresult",
+      "points": [
+        [
+          2645,
+          3840
+        ],
+        [
+          2645,
+          3910
+        ]
+      ],
+      "label": "",
+      "at": [
+        2800,
+        3875.0
+      ],
+      "kind": "flow",
+      "color": "cyan"
+    },
+    {
+      "a": "submit",
+      "b": "preflight",
+      "points": [
+        [
+          2970,
+          3785
+        ],
+        [
+          3005,
+          3785
+        ],
+        [
+          3005,
+          4050
+        ],
+        [
+          1530,
+          4050
+        ],
+        [
+          1530,
+          3450
+        ],
+        [
+          1190,
+          3450
+        ],
+        [
+          1190,
+          3480
+        ]
+      ],
+      "label": "已明确拒绝的版本 / 凭据变化：重新预检和确认",
+      "at": [
+        2080,
+        4040
+      ],
+      "kind": "flow",
+      "color": "red"
+    },
+    {
+      "a": "commandresult",
+      "b": "result",
+      "points": [
+        [
+          2320,
+          3962
+        ],
+        [
+          2250,
+          3962
+        ],
+        [
+          2250,
+          4100
+        ],
+        [
+          1860,
+          4100
+        ],
+        [
+          1860,
+          4200
+        ]
+      ],
+      "label": "仅 CHAT：真实结果 / 待确认",
+      "at": [
+        2040,
+        4080
+      ],
+      "kind": "flow",
+      "color": "green"
+    },
+    {
+      "a": "commandresult",
+      "b": "pageresult",
+      "points": [
+        [
+          2645,
+          4015
+        ],
+        [
+          2645,
+          4090
+        ]
+      ],
+      "label": "仅 PAGE",
+      "at": [
+        2800,
+        4052.5
+      ],
+      "kind": "flow",
+      "color": "purple"
+    },
+    {
+      "a": "pagewrite",
+      "b": "preflight",
+      "points": [
+        [
+          2990,
+          845
+        ],
+        [
+          3160,
+          845
+        ],
+        [
+          3160,
+          3270
+        ],
+        [
+          1190,
+          3270
+        ],
+        [
+          1190,
+          3480
+        ]
+      ],
+      "label": "页面申请进入同一 N5 预检；不进入聊天草稿",
+      "at": [
+        2460,
+        3255
+      ],
+      "kind": "flow",
+      "color": "purple"
+    },
+    {
+      "a": "result",
+      "b": "save",
+      "points": [
+        [
+          1585,
+          4310
+        ],
+        [
+          1585,
+          4380
+        ]
+      ],
+      "label": "",
+      "at": [
+        1740,
+        4345.0
+      ],
+      "kind": "flow",
+      "color": "cyan"
+    },
+    {
+      "a": "save",
+      "b": "done",
+      "points": [
+        [
+          1585,
+          4490
+        ],
+        [
+          1585,
+          4560
+        ]
+      ],
+      "label": "正式保存成功",
+      "at": [
+        1740,
+        4525.0
+      ],
+      "kind": "flow",
+      "color": "cyan"
+    },
+    {
+      "a": "result",
+      "b": "outputfailure",
+      "points": [
+        [
+          1940,
+          4255
+        ],
+        [
+          2250,
+          4255
+        ],
+        [
+          2250,
+          4315
+        ],
+        [
+          2310,
+          4315
+        ]
+      ],
+      "label": "不满足发布条件",
+      "at": [
+        2130,
+        4220
+      ],
+      "kind": "flow",
+      "color": "red"
+    },
+    {
+      "a": "save",
+      "b": "outputfailure",
+      "points": [
+        [
+          1940,
+          4435
+        ],
+        [
+          2250,
+          4435
+        ],
+        [
+          2250,
+          4315
+        ],
+        [
+          2310,
+          4315
+        ]
+      ],
+      "label": "正式保存失败",
+      "at": [
+        2140,
+        4410
+      ],
+      "kind": "flow",
+      "color": "red"
+    },
+    {
+      "a": "done",
+      "b": "feedback",
+      "points": [
+        [
+          1230,
+          4615
+        ],
+        [
+          1050,
+          4615
+        ],
+        [
+          1050,
+          4565
+        ],
+        [
+          860,
+          4565
+        ]
+      ],
+      "label": "用户可选评价；运行证据持续采集",
+      "at": [
+        1230,
+        4720
+      ],
+      "kind": "event",
+      "color": "purple"
+    },
+    {
+      "a": "feedback",
+      "b": "worker",
+      "points": [
+        [
+          535,
+          4620
+        ],
+        [
+          535,
+          4770
+        ]
+      ],
+      "label": "",
+      "at": [
+        690,
+        4695.0
+      ],
+      "kind": "event",
+      "color": "cyan"
+    },
+    {
+      "a": "worker",
+      "b": "triage",
+      "points": [
+        [
+          535,
+          4880
+        ],
+        [
+          535,
+          4980
+        ]
+      ],
+      "label": "",
+      "at": [
+        690,
+        4930.0
+      ],
+      "kind": "event",
+      "color": "cyan"
+    },
+    {
+      "a": "page",
+      "b": "upload",
+      "points": [
+        [
+          2990,
+          450
+        ],
+        [
+          3180,
+          450
+        ],
+        [
+          3180,
+          4515
+        ],
+        [
+          2665,
+          4515
+        ],
+        [
+          2665,
+          4590
+        ]
+      ],
+      "label": "知识管理页面",
+      "at": [
+        2890,
+        4490
+      ],
+      "kind": "flow",
+      "color": "purple"
+    },
+    {
+      "a": "upload",
+      "b": "ready",
+      "points": [
+        [
+          2665,
+          4700
+        ],
+        [
+          2665,
+          4800
+        ]
+      ],
+      "label": "",
+      "at": [
+        2820,
+        4750.0
+      ],
+      "kind": "flow",
+      "color": "cyan"
+    },
+    {
+      "a": "triage",
+      "b": "fix",
+      "points": [
+        [
+          535,
+          5090
+        ],
+        [
+          535,
+          5195
+        ],
+        [
+          1115,
+          5195
+        ],
+        [
+          1115,
+          5260
+        ]
+      ],
+      "label": "",
+      "at": null,
+      "kind": "event",
+      "color": "purple"
+    },
+    {
+      "a": "fix",
+      "b": "upload",
+      "points": [
+        [
+          1450,
+          5315
+        ],
+        [
+          1900,
+          5315
+        ],
+        [
+          1900,
+          5120
+        ],
+        [
+          2220,
+          5120
+        ],
+        [
+          2220,
+          4645
+        ],
+        [
+          2340,
+          4645
+        ]
+      ],
+      "label": "修订原文也要检查 / READY 后才构建",
+      "at": [
+        1770,
+        5295
+      ],
+      "kind": "event",
+      "color": "purple"
+    },
+    {
+      "a": "ready",
+      "b": "build",
+      "points": [
+        [
+          2665,
+          4910
+        ],
+        [
+          2665,
+          5280
+        ]
+      ],
+      "label": "READY 原文构建任务",
+      "at": [
+        2810,
+        5170
+      ],
+      "kind": "event",
+      "color": "purple"
+    },
+    {
+      "a": "build",
+      "b": "candidate",
+      "points": [
+        [
+          2485,
+          5390
+        ],
+        [
+          2065,
+          5430
+        ],
+        [
+          2065,
+          5470
+        ]
+      ],
+      "label": "",
+      "at": null,
+      "kind": "event",
+      "color": "cyan"
+    },
+    {
+      "a": "candidate",
+      "b": "quality",
+      "points": [
+        [
+          2065,
+          5580
+        ],
+        [
+          1420,
+          5620
+        ],
+        [
+          1420,
+          5650
+        ]
+      ],
+      "label": "",
+      "at": null,
+      "kind": "event",
+      "color": "cyan"
+    },
+    {
+      "a": "quality",
+      "b": "release",
+      "points": [
+        [
+          1420,
+          5775
+        ],
+        [
+          960,
+          5820
+        ],
+        [
+          960,
+          5870
+        ]
+      ],
+      "label": "回归通过 + 审批",
+      "at": [
+        1230,
+        5810
+      ],
+      "kind": "event",
+      "color": "purple"
+    },
+    {
+      "a": "quality",
+      "b": "fix",
+      "points": [
+        [
+          1060,
+          5712
+        ],
+        [
+          990,
+          5712
+        ],
+        [
+          990,
+          5520
+        ],
+        [
+          1115,
+          5520
+        ],
+        [
+          1115,
+          5370
+        ]
+      ],
+      "label": "失败 → 回修复",
+      "at": [
+        1090,
+        5490
+      ],
+      "kind": "event",
+      "color": "red"
+    },
+    {
+      "a": "release",
+      "b": "nextrequest",
+      "points": [
+        [
+          960,
+          5980
+        ],
+        [
+          535,
+          6010
+        ],
+        [
+          535,
+          6040
+        ]
+      ],
+      "label": "",
+      "at": null,
+      "kind": "event",
+      "color": "green"
+    },
+    {
+      "a": "nextrequest",
+      "b": "user",
+      "points": [
+        [
+          210,
+          6095
+        ],
+        [
+          35,
+          6095
+        ],
+        [
+          35,
+          120
+        ],
+        [
+          2055,
+          120
+        ],
+        [
+          2055,
+          252
+        ],
+        [
+          1890,
+          252
+        ]
+      ],
+      "label": "下一轮服务：新请求 + 已发布版本",
+      "at": [
+        380,
+        160
+      ],
+      "kind": "event",
+      "color": "purple"
+    },
+    {
+      "a": "save",
+      "b": "mysql",
+      "points": [
+        [
+          1230,
+          4435
+        ],
+        [
+          975,
+          4435
+        ],
+        [
+          975,
+          5220
+        ],
+        [
+          70,
+          5220
+        ],
+        [
+          70,
+          6185
+        ],
+        [
+          405,
+          6185
+        ],
+        [
+          405,
+          6360
+        ]
+      ],
+      "label": "N2/N3/N4/N5/N6/N7：各域读写事实",
+      "at": [
+        580,
+        6170
+      ],
+      "kind": "resource",
+      "color": "green"
+    },
+    {
+      "a": "upload",
+      "b": "minio",
+      "points": [
+        [
+          2340,
+          4645
+        ],
+        [
+          2205,
+          4645
+        ],
+        [
+          2205,
+          5130
+        ],
+        [
+          3050,
+          5130
+        ],
+        [
+          3050,
+          6160
+        ],
+        [
+          865,
+          6160
+        ],
+        [
+          865,
+          6360
+        ]
+      ],
+      "label": "原文 / 附件读写",
+      "at": [
+        1970,
+        6145
+      ],
+      "kind": "resource",
+      "color": "cyan"
+    },
+    {
+      "a": "k4",
+      "b": "milvus",
+      "points": [
+        [
+          2120,
+          2205
+        ],
+        [
+          2225,
+          2205
+        ],
+        [
+          2225,
+          3208
+        ],
+        [
+          3070,
+          3208
+        ],
+        [
+          3070,
+          6195
+        ],
+        [
+          1290,
+          6195
+        ],
+        [
+          1290,
+          6360
+        ]
+      ],
+      "label": "N6：查询已发布索引 / 构建候选索引",
+      "at": [
+        2520,
+        6190
+      ],
+      "kind": "resource",
+      "color": "green"
+    },
+    {
+      "a": "worker",
+      "b": "redis",
+      "points": [
+        [
+          860,
+          4825
+        ],
+        [
+          950,
+          4825
+        ],
+        [
+          950,
+          5220
+        ],
+        [
+          3050,
+          5220
+        ],
+        [
+          3050,
+          6208
+        ],
+        [
+          1730,
+          6208
+        ],
+        [
+          1730,
+          6360
+        ]
+      ],
+      "label": "事件投递 / 临时状态",
+      "at": [
+        1850,
+        6285
+      ],
+      "kind": "resource",
+      "color": "cyan"
+    },
+    {
+      "a": "k3",
+      "b": "embed",
+      "points": [
+        [
+          1790,
+          2003
+        ],
+        [
+          2235,
+          2003
+        ],
+        [
+          2235,
+          3190
+        ],
+        [
+          3095,
+          3190
+        ],
+        [
+          3095,
+          6305
+        ],
+        [
+          2200,
+          6305
+        ],
+        [
+          2200,
+          6360
+        ]
+      ],
+      "label": "N6 检索 / 构建：向量与重排",
+      "at": [
+        2560,
+        6290
+      ],
+      "kind": "resource",
+      "color": "gold"
+    },
+    {
+      "a": "k6",
+      "b": "llm",
+      "points": [
+        [
+          2165,
+          2583
+        ],
+        [
+          2255,
+          2583
+        ],
+        [
+          2255,
+          3180
+        ],
+        [
+          3125,
+          3180
+        ],
+        [
+          3125,
+          6328
+        ],
+        [
+          2730,
+          6328
+        ],
+        [
+          2730,
+          6360
+        ]
+      ],
+      "label": "授权上下文 → 生成",
+      "at": [
+        2870,
+        6318
+      ],
+      "kind": "resource",
+      "color": "purple"
+    }
+  ],
+  "phases": [
+    {
+      "title": "统一入口与权限",
+      "ids": [
+        "user",
+        "nginx",
+        "auth",
+        "reject",
+        "page"
+      ],
+      "bounds": [
+        960,
+        130,
+        1280,
+        600
+      ],
+      "explanation": "聊天、客服台和管理台都经过统一入口。认证通过不代替后续业务资源校验。",
+      "example": "U01 登录成功，系统知道当前租户与用户；别人的订单不能查。"
+    },
+    {
+      "title": "正式消息与会话控制",
+      "ids": [
+        "auth",
+        "session",
+        "router",
+        "humaninbox"
+      ],
+      "bounds": [
+        990,
+        560,
+        1230,
+        570
+      ],
+      "explanation": "先保存本轮输入与控制快照。允许 AI 才交编排；已 HUMAN 的消息通知人工。",
+      "example": "C01 / epoch=7；原始历史只取正式、仍有权限的消息。"
+    },
+    {
+      "title": "路由与澄清出口",
+      "ids": [
+        "session",
+        "router",
+        "clarify",
+        "clarifyresult",
+        "businessauth",
+        "kfwrap",
+        "pending",
+        "draft"
+      ],
+      "bounds": [
+        110,
+        640,
+        2000,
+        710
+      ],
+      "explanation": "根据问题选路径，不是每个请求都经过所有业务模块。人工和已有工作流优先。",
+      "example": "问物流走事实；问材料走知识；问本单能否退走混合；我要申请走确认链。"
+    },
+    {
+      "title": "订单 / 物流等真实查询",
+      "ids": [
+        "businessauth",
+        "facts",
+        "needpolicy",
+        "readresult"
+      ],
+      "bounds": [
+        130,
+        1170,
+        820,
+        970
+      ],
+      "explanation": "先校验对象，再读事实。只读问题直接进入 R，模型不能补造物流状态。",
+      "example": "O1001 两个包裹：分别显示状态和更新时间。"
+    },
+    {
+      "title": "KF 前半：准备和 FAQ",
+      "ids": [
+        "kfwrap",
+        "k0",
+        "k1",
+        "direct",
+        "k2",
+        "k3",
+        "faq"
+      ],
+      "bounds": [
+        980,
+        1180,
+        1260,
+        1090
+      ],
+      "explanation": "保持原 KF 主干；确定性或 FAQ 标准答案满足条件可旁路，不强制调用 LLM。",
+      "example": "“退货材料有哪些？”若 FAQ 完整且适用，可直接取标准答案。"
+    },
+    {
+      "title": "KF 后半：文档、生成、统一收尾",
+      "ids": [
+        "k3",
+        "k4",
+        "k5",
+        "empty",
+        "k6",
+        "k7",
+        "direct",
+        "faq"
+      ],
+      "bounds": [
+        980,
+        2030,
+        1260,
+        980
+      ],
+      "explanation": "没直出才继续文档检索；证据不足不编造。K7 完成只是 N6 子调用完成。",
+      "example": "无依据时返回无法确认；不能把模型生成结束当平台正式保存成功。"
+    },
+    {
+      "title": "混合资格：事实 + 政策 + 批准规则",
+      "ids": [
+        "facts",
+        "needpolicy",
+        "policycall",
+        "kfwrap",
+        "k7",
+        "rules",
+        "eligibility"
+      ],
+      "bounds": [
+        130,
+        2150,
+        820,
+        840
+      ],
+      "explanation": "N4 顺序调 N5 事实、N6 政策、N5 批准规则，再组合答复；咨询不自动提交。",
+      "example": "演示 P003/RULE003 给出可申请：仍要用户主动申请并明确确认。"
+    },
+    {
+      "title": "申请草稿和统一预检",
+      "ids": [
+        "draft",
+        "preflight",
+        "pagewrite"
+      ],
+      "bounds": [
+        130,
+        3230,
+        1430,
+        480
+      ],
+      "explanation": "聊天草稿由 N4 管理；页面不建 Workflow。两入口调用同一 N5 预检。",
+      "example": "PF01 绑定 L1×1、理由、申请金额、载荷哈希与有效期。"
+    },
+    {
+      "title": "明确确认、幂等提交与结果查询",
+      "ids": [
+        "preflight",
+        "confirm",
+        "submit",
+        "commandresult",
+        "result",
+        "pageresult"
+      ],
+      "bounds": [
+        1490,
+        3480,
+        1580,
+        740
+      ],
+      "explanation": "明确确认才提交。变更重新预检；提交超时查原命令，不能新建另一笔。",
+      "example": "CMD01 成功创建 AS001 待审核；不是退款到账。页面结果直接回页面。"
+    },
+    {
+      "title": "R：检查 → 正式保存 → 浏览器完成",
+      "ids": [
+        "result",
+        "save",
+        "done",
+        "outputfailure"
+      ],
+      "bounds": [
+        1020,
+        4080,
+        2040,
+        730
+      ],
+      "explanation": "N3 事务保存正式消息与通知后，才发平台完成。最终文本替换草稿，不重复追加。",
+      "example": "KF 已 end 但消息保存失败：只补同一答案发布，不重跑申请。"
+    },
+    {
+      "title": "人工本轮：待人工 → 真实受理",
+      "ids": [
+        "pending",
+        "ticket",
+        "ticketack",
+        "ticketfailure",
+        "result"
+      ],
+      "bounds": [
+        2290,
+        1170,
+        790,
+        650
+      ],
+      "explanation": "先隔离旧 AI，再建单；真实拿到工单 ID 才说已受理，本轮不等客服处理完。",
+      "example": "HD01 重试仍对应 TK01；建单失败不能编造排队位置。"
+    },
+    {
+      "title": "人工后续：握手 → 公开回复 → 可靠送达",
+      "ids": [
+        "humaninbox",
+        "assign",
+        "human",
+        "reply",
+        "replyworker",
+        "inbox",
+        "humandelivered"
+      ],
+      "bounds": [
+        2290,
+        1730,
+        790,
+        1470
+      ],
+      "explanation": "N3 确认 HUMAN 后才公开回复。N7 原稿经事件交 N3 正式保存，内部备注不走此线。",
+      "example": "EVT01 已写 M07 但 ACK 丢失：重投仍只显示同一条消息。"
+    },
+    {
+      "title": "独立页面入口",
+      "ids": [
+        "auth",
+        "page",
+        "pageread",
+        "pagewrite",
+        "upload"
+      ],
+      "bounds": [
+        2270,
+        180,
+        810,
+        870
+      ],
+      "explanation": "页面操作直达所属领域；不是所有页面都先走聊天与 RAG。",
+      "example": "售后页与聊天都看同一个 N5 申请，不能各自创建一套事实。"
+    },
+    {
+      "title": "反馈与错误归因",
+      "ids": [
+        "done",
+        "feedback",
+        "worker",
+        "triage",
+        "fix"
+      ],
+      "bounds": [
+        130,
+        4420,
+        830,
+        800
+      ],
+      "explanation": "原始反馈和错误证据经过可靠事件进入责任领域；收到差评不等于已经修复。",
+      "example": "物流数据错交 N5 修链路；不是只改 Prompt 掩盖。"
+    },
+    {
+      "title": "知识原文与候选构建",
+      "ids": [
+        "upload",
+        "ready",
+        "build",
+        "candidate"
+      ],
+      "bounds": [
+        1640,
+        4450,
+        1420,
+        1150
+      ],
+      "explanation": "检查原文就绪后才解析、切片、向量化。候选索引不能立即用于正式查询。",
+      "example": "上传 P004 后构建 KB004 候选，线上仍读 KB003。"
+    },
+    {
+      "title": "回归、审批、发布和下一轮验证",
+      "ids": [
+        "triage",
+        "fix",
+        "build",
+        "candidate",
+        "quality",
+        "release",
+        "nextrequest",
+        "user"
+      ],
+      "bounds": [
+        130,
+        5430,
+        2310,
+        730
+      ],
+      "explanation": "独立回归与审批通过才激活兼容版本；失败回修复或保留已验证版本。",
+      "example": "FB01 → 修订 P004 → KB004 回归与审批 → 新 R09 验证改善。"
+    },
+    {
+      "title": "底部存储 / 模型及横切保障",
+      "ids": [
+        "mysql",
+        "minio",
+        "milvus",
+        "redis",
+        "embed",
+        "llm"
+      ],
+      "bounds": [
+        130,
+        6220,
+        2930,
+        330
+      ],
+      "explanation": "虚线是资源依赖，不是业务处理顺序。各领域只写自己的数据；N9 全程关联脱敏日志与 Trace。",
+      "example": "MySQL 是正式事实；MinIO 原文；Milvus 派生索引；Redis 投递 / 缓存；模型不能直接退款。"
+    }
+  ]
+}
