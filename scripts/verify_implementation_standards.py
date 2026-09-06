@@ -120,17 +120,28 @@ def validate_documents(root: Path, contents: dict[Path, str]) -> tuple[list[str]
     scenarios = re.findall(r"^\| (SCN-\d{2}) \|", business, re.MULTILINE)
     if sorted(scenarios) != [f"SCN-{number:02}" for number in range(1, 23)]:
         errors.append("Business scenario sequence must be SCN-01 through SCN-22")
-    return errors, {"rules": len(definitions), "acceptance_cases": len(cases), "json_examples": json_count}
+    return errors, {
+        "rules": len(definitions),
+        "acceptance_cases": len(cases),
+        "json_examples": json_count,
+    }
 
 
 def load_documents(root: Path) -> dict[Path, str]:
     """Load only this documentation set and explicitly maintained indexes."""
     paths = [STANDARD_DIR / "README.md", STANDARD_DIR / "业务范围与验收映射.md"]
     paths.extend(STANDARD_DIR / filename for filename in STANDARD_FILES.values())
-    paths.extend(Path(name) for name in (
-        "docs/README.md", "docs/api/README.md", "docs/architecture/README.md",
-        "docs/testing/README.md", "tests/README.md", "packages/contracts/README.md",
-    ))
+    paths.extend(
+        Path(name)
+        for name in (
+            "docs/README.md",
+            "docs/api/README.md",
+            "docs/architecture/README.md",
+            "docs/testing/README.md",
+            "tests/README.md",
+            "packages/contracts/README.md",
+        )
+    )
     return {path: (root / path).read_text(encoding="utf-8") for path in paths}
 
 

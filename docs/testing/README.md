@@ -1,5 +1,7 @@
 # 测试文档
 
+- [M00.4 CI 骨架与本地命令](m00-4-ci.md)：真实检查、未实现占位、激活条件与安全边界。
+
 保存测试策略、场景矩阵、Golden Set、性能基线、安全门禁和发布验收记录。测试数据必须脱敏。
 
 - [Definition of Done](definition-of-done.md)

@@ -1,0 +1,9 @@
+# CI/dev tooling only. Runtime applications acquire their own gates in M02/M14.
+target-version = "py312"
+line-length = 100
+
+[lint]
+select = ["E4", "E7", "E9", "F"]
+
+[format]
+line-ending = "lf"

@@ -5,8 +5,8 @@
 ## 当前进度
 
 - 已完成：`M00.1 开发基线初始化`、`M00.2 项目目录骨架`、`M00.3 项目治理规则`
-- 下一任务：`M00.4 GitHub CI 骨架`
-- 状态：开发基线、模块边界和项目治理规则均已验证并推送
+- 当前任务：`M00.4 GitHub CI 骨架`（实施与验证中）
+- 状态：衔接标准 1.1 与流程图已验证并推送；业务模块尚未构建
 - V1 目标：前后端、业务服务、KF RAG 知识引擎、人工工单和数据闭环在局域网内完整运行
 
 ## 开发目录
@@ -66,6 +66,10 @@ F:\heima\ai\python\day01\Anaconda\envs\intelligent-commerce-support-v1\python.ex
 详细规则见 [模块边界](docs/architecture/module-boundaries.md) 和 [项目目录](docs/architecture/project-layout.md)。
 
 ## 项目治理
+
+- [当前实施流程图](docs/architecture/v1-review-20260905/V1平台端到端详细流程.html)
+- [V1 标准 1.1](docs/implementation-standards/v1/README.md)
+- [CI 骨架说明与本地命令](docs/testing/m00-4-ci.md)
 
 - [贡献与提交规范](CONTRIBUTING.md)
 - [安全报告规则](SECURITY.md)

@@ -85,7 +85,9 @@ def main() -> int:
             print(f"- {item}")
         return 1
 
-    print(f"structure-check: OK ({len(REQUIRED_DIRECTORIES)} directories, {len(REQUIRED_FILES)} files)")
+    print(
+        f"structure-check: OK ({len(REQUIRED_DIRECTORIES)} directories, {len(REQUIRED_FILES)} files)"
+    )
     return 0
 
 

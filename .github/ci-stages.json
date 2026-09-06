@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "stages": {
+    "backend": {"state": "NOT_IMPLEMENTED", "enable_by": "M02 first runtime source", "markers": ["apps/**/*.py", "packages/domain/**/*.py", "pyproject.toml"]},
+    "frontend": {"state": "NOT_IMPLEMENTED", "enable_by": "M14 first frontend source", "markers": ["package.json", "pnpm-workspace.yaml", "apps/web-*/**/*.vue", "apps/web-*/**/*.ts", "apps/web-*/**/*.js", "apps/web-*/package.json"]},
+    "contracts": {"state": "NOT_IMPLEMENTED", "enable_by": "M02.3 first machine contract", "markers": ["packages/contracts/**/*.json", "packages/contracts/**/*.yaml", "packages/contracts/**/*.yml", "packages/contracts/**/*.py"]},
+    "security-audit": {"state": "NOT_IMPLEMENTED", "enable_by": "first runtime source/dependencies", "markers": ["pyproject.toml", "package.json", "apps/**/*.py", "apps/**/*.toml", "apps/**/requirements*.txt", "apps/**/package.json", "apps/**/*.vue", "apps/**/*.ts", "apps/**/*.js"]},
+    "image-build": {"state": "NOT_IMPLEMENTED", "enable_by": "first application Dockerfile", "markers": ["Dockerfile*", "apps/**/Dockerfile*", "deploy/**/Dockerfile*"]}
+  }
+}
