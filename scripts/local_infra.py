@@ -17,9 +17,6 @@ import sys
 import uuid
 from pathlib import Path
 
-import boto3
-from botocore.config import Config
-from botocore.exceptions import BotoCoreError, ClientError
 import storage_config
 import storage_probe
 import verify_infra
@@ -402,6 +399,14 @@ def storage_credentials(root: Path = ROOT) -> storage_config.StorageCredentials:
 
 def initialize_buckets(config: dict[str, str], credentials: dict) -> None:
     """Create only the two fixed empty buckets through the admin identity."""
+    try:
+        import boto3
+        from botocore.config import Config
+        from botocore.exceptions import BotoCoreError, ClientError
+    except ImportError:
+        raise InfraError(
+            "S3 runtime SDK is not installed; use the hash-locked infra requirements"
+        ) from None
     try:
         client = boto3.client(
             "s3",
