@@ -14,14 +14,16 @@
 
 ## 构建
 
-在本目录执行：
+在项目根目录、独立 Conda 环境中执行（构建并扫描，不启动服务）：
 
 ```powershell
-docker build --platform linux/amd64 --progress plain -t intelligent-commerce/seaweedfs:4.45-m01-security.1 .
-docker run --rm intelligent-commerce/seaweedfs:4.45-m01-security.1 version
+python scripts/storage_image.py build
+python scripts/storage_image.py verify
 ```
 
 首次模块下载与静态编译耗时较长。无 `latest`、不执行 `go get -u` 或 `go mod tidy`，不拉取浮动分支；修改锁定输入必须重新评审与扫描。重现范围为固定源码、工具链、依赖和配置输入，不承诺 Docker 构建时间元数据导致的镜像 ID 字节一致。
+
+本地固定 tag 为 `ics-seaweedfs:4.45-m01-security.1`。入口验证归档、镜像 ID、配方与报告绑定，扫描记录 7 天到期；证据仅保存在本机忽略目录。它尚未接入三服务 Compose，不是完整 M01 启停入口。
 
 ## 运行边界
 

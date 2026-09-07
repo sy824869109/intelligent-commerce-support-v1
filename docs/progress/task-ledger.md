@@ -21,6 +21,9 @@
 
 ### M01.1 安全评估与验收工具增量（2026-09-07）
 
+- 镜像配方提交 `501766a` 已推送；[CI 34071349513 成功](https://github.com/sy824869109/intelligent-commerce-support-v1/actions/runs/34071349513)，包含双平台基础检查及真实镜像构建扫描。
+- 新增独立本地镜像证据入口，实际 build/verify 通过；44 个新增测试本机通过 39、权限原因跳过 5。完整证据与 Milvus 自维护发行包的决策边界见 [记录](../testing/m01-storage-image-security.md)。不修改现有三服务 Compose，不宣布 M01.2–M01.4 完成。
+
 - 新增 [安全评估记录](../testing/m01-security-evaluation-20260907.md)、无 I/O 配置生成器、S3/Milvus 合成探针、SDK 哈希锁及 23 项探针单测；本地完整 CI 共 102 项通过。
 - 原 SeaweedFS 4.45 实扫 2 HIGH/23 UNKNOWN；Milvus 2.5.27 实扫 3 CRITICAL/51 HIGH。未把隔离或版本较新当作修复，派生安全构建/维护版本继续核查。
 - 本增量不复制未准入 Compose、不启动新知识存储，不推进 M01.2。实现 `1c9a861` 已推送；[双平台 CI 34047165219 成功](https://github.com/sy824869109/intelligent-commerce-support-v1/actions/runs/34047165219)。
