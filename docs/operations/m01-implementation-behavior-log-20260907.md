@@ -1,4 +1,4 @@
-# M01 实施行为全记录（2026-09-06—2026-09-07）
+# M01 实施行为全记录（2026-09-06—2026-09-08）
 
 ## 1. 结论与操作边界
 
@@ -12,7 +12,7 @@
 
 - 修改：`.github/ci-stages.json`、`.github/workflows/ci.yml`、`deploy/compose/.env.example`、`deploy/compose/images.lock.json`、`deploy/compose/infra.compose.yml`、`scripts/verify_ci.py`、`scripts/verify_infra.py`、`tests/unit/test_ci_image.py`、`tests/unit/test_infra.py`。
 - 新增：`deploy/images/mysql/`、`redis/`、`etcd/`、`milvus/` 下的 Dockerfile、README 和源锁；Milvus 另含 `go.mod.lock`、`go.sum.lock`、`modules.sha256`。既有 `deploy/images/seaweedfs/` 保持为第五份审查配方。
-- 结果：MySQL、Redis、etcd、SeaweedFS、Milvus 使用本地安全派生镜像，tag 与镜像 ID 双锁；GitHub 五路矩阵真实构建、导出并以固定 Trivy 镜像阻断 HIGH/CRITICAL。
+- 结果：MySQL、Redis、etcd、SeaweedFS、Milvus 使用本地安全派生镜像，tag 与镜像 ID 双锁；GitHub 五路矩阵真实构建、导出并以固定 Trivy 镜像阻断 HIGH/CRITICAL。Milvus 的完整远端构建经历超时修正，历史取消记录均保留在第 6 节。
 
 ### M01.2：初始化、真实探针与持久化
 
@@ -100,6 +100,7 @@ Milvus 首次导出包含 BuildKit attestation，严格归档绑定校验拒绝�
 6. 首次完整 M01 推送 `70ceb7513be9e76b3dad5f5a08804733676bcc79` 的运行 `34122732595` 因纯 CI 环境缺少 boto3 导入失败，未伪装成功；修正为仅在实际 S3 初始化时加载运行 SDK。
 7. 修正提交 `3dc1b003dbe81903364792e27f54e663e48d76a0` 的运行 `34123971915` 中，双平台基础门禁和四个镜像通过，Milvus 在第三方 GNU libiconv 官方镜像 502/超时后失败；新增最多三次、间隔 15 秒的同命令有界重试，第三次仍失败即阻断，未放宽扫描。
 8. 有界重试提交 `81d9738c7acda59c67671def316f72abf652462f` 的运行 `34127584714` 中，Milvus 在单线程 OpenBLAS/C++ 依赖编译时达到 90 分钟并被取消；日志显示仍在正常编译而非测试失败。考虑同一配方本地真实构建约 53 分钟、GitHub 双核 runner 性能差异及重试预算，将单镜像硬上限调整为 180 分钟；仍禁止无限运行和跳过扫描。
+9. 180 分钟修正提交 `fdd9dfb33d95d3694ed55d5d286b0787aa03cdd0` 的运行 `34136809211` 中，双平台基础门禁与 MySQL、Redis、etcd、SeaweedFS 构建/扫描全部成功；Milvus 无编译错误，但在 OpenBLAS/Milvus 原生编译中耗尽 180 分钟并被取消。复核发现 `MAKEFLAGS=-j1` 将普通 Make 子构建固定为单线程，与其他工具的双线程限制不一致；调整为有界 `-j2`，不改 Milvus 源码提交、Go/模块锁、基础镜像、最终运行内容或安全门禁。最终修正提交和运行链接以交付回复为准。
 
 ## 7. 最终验证
 
@@ -120,4 +121,4 @@ Milvus 首次导出包含 BuildKit attestation，严格归档绑定校验拒绝�
 
 ## 9. GitHub 交付
 
-分支：`codex/v1-greenfield`，远端：`sy824869109/intelligent-commerce-support-v1`。M01 主实现提交为 `70ceb7513be9e76b3dad5f5a08804733676bcc79`，运行期 SDK 边界修正为 `3dc1b003dbe81903364792e27f54e663e48d76a0`，有界下载重试提交为 `81d9738c7acda59c67671def316f72abf652462f`。最终 180 分钟预算修正和 Actions 运行链接以本文件所在分支的后续提交及最终交付回复为准；历史失败/取消运行均保留，未删除或重跑成假成功。
+分支：`codex/v1-greenfield`，远端：`sy824869109/intelligent-commerce-support-v1`。M01 主实现提交为 `70ceb7513be9e76b3dad5f5a08804733676bcc79`，运行期 SDK 边界修正为 `3dc1b003dbe81903364792e27f54e663e48d76a0`，有界下载重试提交为 `81d9738c7acda59c67671def316f72abf652462f`，180 分钟预算修正为 `fdd9dfb33d95d3694ed55d5d286b0787aa03cdd0`。最终有界并行修正和 Actions 运行链接以本文件所在分支的后续提交及最终交付回复为准；历史失败/取消运行均保留，未删除或重跑成假成功。

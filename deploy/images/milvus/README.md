@@ -16,11 +16,11 @@
 
 Go 1.27 还要求 Sonic 1.15.2。Milvus 内嵌 etcd 3.5.23 仍调用旧版 `otelgrpc` 拦截器；Google Cloud 模块会通过最小版本选择把它提升到已删除该接口的 0.61.0。因此锁文件使用 Go `replace` 将实际实现固定为保留所需接口的 otelgrpc 0.60.0，同时核心 OpenTelemetry 使用 1.44.0；最终安全性仍以镜像复扫为准。构建门禁检查二进制中 `v0.61.0 => v0.60.0` 的替换记录，不能只检查根模块声明。镜像构建只预取主模块，其他模块由实际编译按需读取并按 `go.sum.lock` 校验，避免下载与产物无关的测试工具依赖。
 
-`build-cpp` 与 `build-go` 必须顺序执行。并行运行 Milvus 顶层目标会让 Go 链接在 C++ 库和 pkg-config 文件生成前启动，属于构建竞态，不作为有效失败或通过证据。
+`build-cpp` 与 `build-go` 必须顺序执行。并行运行这两个 Milvus 顶层目标会让 Go 链接在 C++ 库和 pkg-config 文件生成前启动，属于构建竞态，不作为有效失败或通过证据。
 
 Conan 1 在构建中断后可能保留失效锁。配方对专用、独占的 BuildKit 缓存执行 `conan remove --locks` 后再构建；该操作只清理本配方缓存锁，不删除依赖，不访问容器或业务数据卷。
 
-构建器对不同构建工具分别限制并发：Go 使用 `GOFLAGS=-p=2`（同时保留只读锁等选项）和 `GOMAXPROCS=2`，Rust 使用 `CARGO_BUILD_JOBS=2`，Conan 使用 `CONAN_CPU_COUNT=2`，CMake 使用 `CMAKE_BUILD_PARALLEL_LEVEL=2`。Milvus 的 `scripts/core_build.sh` 显式执行 `make -j ${jobs}`，因此必须另外设置小写变量 `jobs=2`；单独设置 MAKEFLAGS 无法覆盖该脚本的显式参数。顶层 `MAKEFLAGS=-j1` 保证前置目标顺序执行。
+构建器对不同构建工具统一限制为最多两个并发任务：Go 使用 `GOFLAGS=-p=2`（同时保留只读锁等选项）和 `GOMAXPROCS=2`，Rust 使用 `CARGO_BUILD_JOBS=2`，Conan 使用 `CONAN_CPU_COUNT=2`，CMake 使用 `CMAKE_BUILD_PARALLEL_LEVEL=2`，普通 Make 使用 `MAKEFLAGS=-j2`。Milvus 的 `scripts/core_build.sh` 显式执行 `make -j ${jobs}`，因此另设小写变量 `jobs=2`。`build-cpp` 和 `build-go` 仍由 Dockerfile 中两个连续命令严格串行执行，并发只发生在各目标内部。
 
 此前构建出现过 Docker RPC EOF 和引擎无响应；资源压力是待验证的可能原因，尚无证据认定为 OOM。限制并发用于降低资源峰值，不改变功能源码或依赖版本，也不能代替构建成功、安全扫描和运行验证。Docker 恢复后已检查原 KF 六个服务健康；新候选镜像未替换原服务。
 

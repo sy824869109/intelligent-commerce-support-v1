@@ -39,6 +39,12 @@ class ImageWorkflowTests(unittest.TestCase):
         self.assertEqual([], self.validate())
         self.assertEqual("ACTIVE", self.stages["stages"]["image-build"]["state"])
 
+    def test_milvus_build_parallelism_is_bounded_and_not_single_threaded(self):
+        dockerfile = (ROOT / "deploy/images/milvus/Dockerfile").read_text(encoding="utf-8")
+        self.assertIn("ENV MAKEFLAGS=-j2", dockerfile)
+        self.assertIn("ENV jobs=2", dockerfile)
+        self.assertNotIn("ENV MAKEFLAGS=-j1", dockerfile)
+
     def test_image_job_cannot_be_skipped(self):
         self.job["if"] = "${{ false }}"
         self.assert_rejected()
