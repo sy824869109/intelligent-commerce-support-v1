@@ -60,4 +60,4 @@ S3/Milvus 实际服务和读写/检索尚未运行，持久化与环境/生命�
 
 只读源码核查表明，Milvus 的 `Makefile` 虽有单独 `build-go`，但明确要求 CGO 和已有 C++ 产物；`internal/storagev2/packed/ffi_common.go` 要求 `milvus_core` / `milvus-storage`，`type.go` 引用 Arrow C ABI。源码固定在 `bfa1bc34f93df2ccd20fa7c060463c6c6812d355`。不能把 SeaweedFS 的纯 Go 静态构建配方直接套到 Milvus，也不能只更新镜像系统包就宣称修复二进制内的 gRPC。
 
-若要继续自建修补版 Milvus，需补充可复现 C++/Go 构建、依赖来源与 ABI 验证、许可证、性能与数据兼容回归，以及后续安全补丁维护责任。这超出普通镜像版本替换；本次没有开始该构建，没有修改 KF 检索核心，也没有降低准入门槛。需用户确认是否承担此维护方向，再继续 M01.1；M01.2–M01.4 和 93 条业务验收仍未完成。
+上述评估提出的维护决策现已由用户确认，见 [ADR-0005](../decisions/ADR-0005-maintained-milvus-security-build.md)。自维护构建已开始，但尚未完成最终镜像复扫和运行兼容；构建状态及双制品扫描工具见 [候选记录](m01-milvus-build-candidate.md)。仍需补齐可复现 C++/Go 构建、依赖来源与 ABI 验证、许可证、性能和数据兼容回归。不修改 KF 检索核心、不降低准入门槛；M01.2–M01.4 和 93 条业务验收仍未完成。

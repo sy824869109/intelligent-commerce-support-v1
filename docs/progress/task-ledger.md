@@ -26,6 +26,8 @@
 
 ### M01.1 安全评估与验收工具增量（2026-09-07）
 
+- 自维护构建已开始，尚未产出通过全部门禁的 Milvus 镜像。新增双制品扫描验收工具及 14 项离线测试，详见 [构建候选记录](../testing/m01-milvus-build-candidate.md)；原 KF 六个服务恢复后均健康，原源码/配置/数据未改。M01.1 保持 IN_PROGRESS，M01.2–M01.4 不提前推进。
+
 - 镜像配方提交 `501766a` 已推送；[CI 34071349513 成功](https://github.com/sy824869109/intelligent-commerce-support-v1/actions/runs/34071349513)，包含双平台基础检查及真实镜像构建扫描。
 - 新增独立本地镜像证据入口，实际 build/verify 通过；44 个新增测试本机通过 39、权限原因跳过 5。完整证据与 Milvus 自维护发行包的决策边界见 [记录](../testing/m01-storage-image-security.md)。不修改现有三服务 Compose，不宣布 M01.2–M01.4 完成。
 
