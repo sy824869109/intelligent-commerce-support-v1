@@ -76,9 +76,9 @@ Milvus v2.6.23 与 SeaweedFS 4.45 的固定源码、Go 工具链和基础镜像�
 | Redis | `sha256:a3bf2dc42d377fd2afbe6e620d0a948b1f4ecc9fba88df84a7eef9cced1c7788` | 40,148,324 | 0/0 |
 | etcd | `sha256:0ffa356147517f233a637a66505730876595746db5d1850401ee5611e7fbd6b2` | 46,377,883 | 0/0 |
 | SeaweedFS | `sha256:dfac2e817ad5b9b2c6ee725127905f3893787089690318772c942f4239989c00` | 49,251,364 | 0/0 |
-| Milvus | `sha256:224967fbdaa1303852bf821cd48f5255078fb1552795065eb33bb79ec652c1b1` | 505,066,084 | 0/0 |
+| Milvus | `sha256:2438dbd963d8373bdd1a1cc75bb054db219b4c279b5bba2dd92cac443e8a37c2` | 505,066,180 | 0/0 |
 
-证据目录：`artifact_work\infra-maintained-evidence\`、`milvus-evidence\` 和既有 `seaweedfs-evidence\`。最终 Milvus tar 为 `ics-milvus-final.tar`（SHA-256 `E9D1D91AD018B65FE91AD8A6F5624FA214D76B5F6236BE8B0ED7C53DE7981003`），报告为 `ics-milvus-final.trivy.json`（SHA-256 `451A7176562F164977C0F3921E9B7C40749A01A85DCA03B936386B7E2AB91EDE`）。MySQL 最终证据为 `mysql-final.tar` 和 `mysql-final.trivy.json`；Redis/etcd 对应同名 tar/json。
+证据目录：`artifact_work\infra-maintained-evidence\`、`milvus-evidence-j2\` 和既有 `seaweedfs-evidence\`。最终有界双线程 Milvus tar 为 `ics-milvus-j2.tar`（505,082,880 字节，SHA-256 `ECF48484D7A526AD2DAFD9E19DA9A274399F0151A198BF3CB039CE635AB5C878`），报告为 `ics-milvus-j2.trivy.json`（661,470 字节，SHA-256 `4F34D2373C9A5959EBCF3492A1D0D58E460075F6760E83CFA6C6F4A5811DD1E8`）；报告含 3 个目标，HIGH/CRITICAL 为 0。MySQL 最终证据为 `mysql-final.tar` 和 `mysql-final.trivy.json`；Redis/etcd 对应同名 tar/json。旧的单线程 Milvus 证据保留作历史记录，不再作为当前镜像锁。
 
 Milvus 首次导出包含 BuildKit attestation，严格归档绑定校验拒绝；随后以 `--provenance=false --sbom=false` 重建、重新导出、重新扫描并通过。没有降低扫描严重度或忽略未修复漏洞。
 
@@ -101,10 +101,11 @@ Milvus 首次导出包含 BuildKit attestation，严格归档绑定校验拒绝�
 7. 修正提交 `3dc1b003dbe81903364792e27f54e663e48d76a0` 的运行 `34123971915` 中，双平台基础门禁和四个镜像通过，Milvus 在第三方 GNU libiconv 官方镜像 502/超时后失败；新增最多三次、间隔 15 秒的同命令有界重试，第三次仍失败即阻断，未放宽扫描。
 8. 有界重试提交 `81d9738c7acda59c67671def316f72abf652462f` 的运行 `34127584714` 中，Milvus 在单线程 OpenBLAS/C++ 依赖编译时达到 90 分钟并被取消；日志显示仍在正常编译而非测试失败。考虑同一配方本地真实构建约 53 分钟、GitHub 双核 runner 性能差异及重试预算，将单镜像硬上限调整为 180 分钟；仍禁止无限运行和跳过扫描。
 9. 180 分钟修正提交 `fdd9dfb33d95d3694ed55d5d286b0787aa03cdd0` 的运行 `34136809211` 中，双平台基础门禁与 MySQL、Redis、etcd、SeaweedFS 构建/扫描全部成功；Milvus 无编译错误，但在 OpenBLAS/Milvus 原生编译中耗尽 180 分钟并被取消。复核发现 `MAKEFLAGS=-j1` 将普通 Make 子构建固定为单线程，与其他工具的双线程限制不一致；调整为有界 `-j2`，不改 Milvus 源码提交、Go/模块锁、基础镜像、最终运行内容或安全门禁。最终修正提交和运行链接以交付回复为准。
+10. 有界并行提交 `ca42802479f784f391b19bd1a3726b23b043d547` 后，本机构建已成功产出新镜像；统一镜像工具随后因旧 ID 锁不匹配而按设计失败，这不是编译失败。新镜像经完整归档扫描确认 3 个目标、HIGH/CRITICAL 为 0 后，才更新 Compose 与 `images.lock.json` 双锁；未复用旧扫描报告，也未在扫描前替换运行容器。
 
 ## 7. 最终验证
 
-- `scripts/ci.py`：PASS；结构、治理、48 条规则/93 条用例文档引用、CI/Compose 静态守卫、Ruff 与 203 个单测全部通过。Windows 因宿主权限跳过 5 个符号链接用例，Linux CI必须执行。
+- `scripts/ci.py`：PASS；结构、治理、48 条规则/93 条用例文档引用、CI/Compose 静态守卫、Ruff 与 204 个单测全部通过。Windows 因宿主权限跳过 5 个符号链接用例，Linux CI必须执行。
 - `scripts/local_infra.py health`：PASS；MySQL/Redis/etcd 认证写读删，S3/Milvus 45 项合成契约通过。
 - `restart-test`：PASS；五类数据跨 stop/start 保留并清理。
 - `upgrade`：PASS；五类数据跨五容器强制重建保留并清理。

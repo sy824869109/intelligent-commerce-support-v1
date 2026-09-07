@@ -95,7 +95,7 @@ services:
 
   milvus:
     <<: *runtime
-    image: ics-milvus:2.6.23-ics.1@sha256:224967fbdaa1303852bf821cd48f5255078fb1552795065eb33bb79ec652c1b1
+    image: ics-milvus:2.6.23-ics.1@sha256:2438dbd963d8373bdd1a1cc75bb054db219b4c279b5bba2dd92cac443e8a37c2
     pull_policy: never
     networks: [infra, local]
     command: [milvus, run, standalone]
