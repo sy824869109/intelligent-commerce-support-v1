@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "artifact": "3.6.14-security.1",
+  "upstream": {
+    "tag": "v3.6.14",
+    "source_url": "https://github.com/etcd-io/etcd/archive/refs/tags/v3.6.14.tar.gz",
+    "source_sha256": "a7ac1ed4192c6e53e4716df3e08bc75e4f929fcb186a9d9e5b0aaf11c96b067a"
+  },
+  "builder": "docker.io/library/golang:1.27.1-alpine3.24@sha256:cf6fca6641884b8433441b2b0652976f975e1d0fdd26d177eaaf8596087f3125",
+  "patched_modules": {
+    "google.golang.org/grpc": "v1.83.1",
+    "golang.org/x/crypto": "v0.55.0",
+    "golang.org/x/net": "v0.58.0",
+    "golang.org/x/text": "v0.41.0"
+  },
+  "verified_at": "2026-09-07"
+}

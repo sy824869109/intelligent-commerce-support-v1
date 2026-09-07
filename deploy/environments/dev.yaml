@@ -1,0 +1,7 @@
+schema_version: 1
+environment: dev
+hosts: {mysql: 127.0.0.1, redis: 127.0.0.1, s3: 127.0.0.1, milvus: 127.0.0.1}
+ports: {mysql: 23306, redis: 26379, s3: 28333, milvus: 29530}
+tls_required: false
+secret_contract: local_ignored_files
+data_class: synthetic_development_only

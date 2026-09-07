@@ -4,9 +4,9 @@
 
 ## 当前进度
 
-- 已完成：`M00.1 开发基线初始化`、`M00.2 项目目录骨架`、`M00.3 项目治理规则`、`M00.4 GitHub CI 骨架`
-- 当前任务：`M01.1 本地基础设施 Compose`（IN_PROGRESS）
-- 状态：独立 MySQL/Redis/etcd 已启动，宿主连接/认证读写/停止重启通过，本地 79 项基础测试通过；S3 先评估替代、Milvus 暂不启动。93 条业务用例仍未执行
+- 已完成：M00.1–M00.4 与 M01.1–M01.4
+- 当前任务：`M02.1 后端工程骨架与统一配置`（尚未开始）
+- 状态：新平台独立 MySQL、Redis、etcd、SeaweedFS、Milvus 全部健康；认证读写、S3/向量数据闭环、停止重启与强制重建持久化通过，本地 203 项工具单测通过。93 条业务用例仍未执行
 - V1 目标：前后端、业务服务、KF RAG 知识引擎、人工工单和数据闭环在局域网内完整运行
 
 ## 开发目录
@@ -47,10 +47,10 @@ F:\heima\ai\python\day01\Anaconda\envs\intelligent-commerce-support-v1\python.ex
 
 ## 项目标准
 
-- [M01.1 运行方法与边界](deploy/compose/README.md)
-- [M01.1 验证证据](docs/testing/m01-1-infrastructure.md)
-- [S3 替代评估（尚未采用）](docs/operations/s3-alternative-evaluation.md)
-- [ADR-0004：安全准入暂停](docs/decisions/ADR-0004-object-storage-security-gate.md)
+- [M01 五服务运行方法与边界](deploy/compose/README.md)
+- [M01 最终验收](docs/testing/m01-final-validation.md)
+- [M01 完整行为记录](docs/operations/m01-implementation-behavior-log-20260907.md)
+- [ADR-0005：自维护 Milvus 安全构建](docs/decisions/ADR-0005-maintained-milvus-security-build.md)
 
 - [渐进式重构总控提示词](docs/baseline/00_智能电商客服平台_渐进式重构总控提示词.md)
 - [V1 架构与开发方向](docs/baseline/01_智能电商客服平台_V1重构理解与初步架构.md)

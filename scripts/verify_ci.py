@@ -20,27 +20,35 @@ ACTION_REFS = {
     "conda-incubator/setup-miniconda": "fc2d68f6413eb2d87b895e92f8584b5b94a10167",
 }
 STAGES = {"backend", "frontend", "contracts", "security-audit", "image-build"}
-IMAGE_DOCKERFILE = "deploy/images/seaweedfs/Dockerfile"
+IMAGE_DOCKERFILES = [
+    "deploy/images/etcd/Dockerfile",
+    "deploy/images/milvus/Dockerfile",
+    "deploy/images/mysql/Dockerfile",
+    "deploy/images/redis/Dockerfile",
+    "deploy/images/seaweedfs/Dockerfile",
+]
 IMAGE_MARKERS = ["Dockerfile*", "apps/**/Dockerfile*", "deploy/**/Dockerfile*"]
 TRIVY_IMAGE = (
     "aquasec/trivy:0.74.0@sha256:62b1e65e8869bc4b4c6aa4fa2b21595256c7c2f6018a9d9ad61caf87187c1969"
 )
 IMAGE_BUILD_COMMAND = (
-    "docker build --pull --progress=plain --platform=linux/amd64 "
-    "--file deploy/images/seaweedfs/Dockerfile --tag ics-seaweedfs:ci deploy/images/seaweedfs"
+    "docker build --pull --provenance=false --sbom=false --progress=plain "
+    '--platform=linux/amd64 --file "deploy/images/${{ matrix.path }}/Dockerfile" '
+    '--tag "ics-${{ matrix.path }}:ci" "deploy/images/${{ matrix.path }}"'
 )
 IMAGE_EXPORT_COMMAND = (
     'mkdir -p "$RUNNER_TEMP/ics-image-scan"\n'
-    'docker image save --output "$RUNNER_TEMP/ics-image-scan/seaweedfs.tar" ics-seaweedfs:ci'
+    'docker image save --output "$RUNNER_TEMP/ics-image-scan/${{ matrix.path }}.tar" '
+    '"ics-${{ matrix.path }}:ci"'
 )
 IMAGE_SCAN_COMMAND = (
     'docker run --rm --read-only --user "$(id -u):$(id -g)" --cap-drop=ALL '
     "--security-opt=no-new-privileges --tmpfs /tmp:rw,nosuid,nodev,size=3g \\\n"
     '  --mount "type=bind,src=$RUNNER_TEMP/ics-image-scan,dst=/scan,readonly" \\\n'
     f"  {TRIVY_IMAGE} \\\n"
-    "  image --input /scan/seaweedfs.tar --cache-dir /tmp/trivy --scanners vuln "
+    '  image --input "/scan/${{ matrix.path }}.tar" --cache-dir /tmp/trivy --scanners vuln '
     "--severity HIGH,CRITICAL --exit-code 1 --ignore-unfixed=false "
-    "--ignorefile /dev/null --timeout 15m"
+    "--ignorefile /dev/null --timeout 20m"
 )
 FORBIDDEN_PARTS = {
     "references",
@@ -98,13 +106,13 @@ def parse_workflow(content: str) -> dict:
 
 
 def validate_image_job(job: dict, stage: dict, root: Path) -> list[str]:
-    """Only the reviewed source-built dependency image is active; no fake build/scan."""
+    """All five reviewed dependency recipes are built and scanned; no fake build/scan."""
     errors = []
     expected_stage = {
         "state": "ACTIVE",
-        "enable_by": "M01 reviewed SeaweedFS dependency Dockerfile",
+        "enable_by": "M01 reviewed five-service dependency recipes",
         "markers": IMAGE_MARKERS,
-        "reviewed_inputs": [IMAGE_DOCKERFILE],
+        "reviewed_inputs": IMAGE_DOCKERFILES,
     }
     if stage != expected_stage:
         errors.append("Image stage must preserve reviewed ACTIVE state and all runtime markers")
@@ -115,17 +123,29 @@ def validate_image_job(job: dict, stage: dict, root: Path) -> list[str]:
         for path in root.glob(pattern)
         if path.is_file()
     }
-    if actual_inputs != {IMAGE_DOCKERFILE}:
-        errors.append("Image inputs must match the reviewed dependency recipe; review new images")
+    if actual_inputs != set(IMAGE_DOCKERFILES):
+        errors.append("Image inputs must match all five reviewed dependency recipes")
     expected_job = {
-        "name": "Reviewed SeaweedFS dependency image build and vulnerability gate",
+        "name": "Reviewed ${{ matrix.name }} image build and vulnerability gate",
         "needs": "foundation",
         "runs-on": "ubuntu-24.04",
-        "timeout-minutes": "45",
+        "timeout-minutes": "90",
+        "strategy": {
+            "fail-fast": "false",
+            "matrix": {
+                "include": [
+                    {"name": "MySQL", "path": "mysql"},
+                    {"name": "Redis", "path": "redis"},
+                    {"name": "etcd", "path": "etcd"},
+                    {"name": "SeaweedFS", "path": "seaweedfs"},
+                    {"name": "Milvus", "path": "milvus"},
+                ]
+            },
+        },
         "defaults": {"run": {"shell": "bash"}},
         "steps": [
             {
-                "name": "Checkout reviewed image recipe",
+                "name": "Checkout reviewed image recipes",
                 "uses": "actions/checkout@" + ACTION_REFS["actions/checkout"],
                 "with": {"persist-credentials": "false", "fetch-depth": "2"},
             },
@@ -175,7 +195,7 @@ def validate_workflow(workflow: dict, stages: dict, root: Path) -> list[str]:
         if "continue-on-error" in job or "permissions" in job:
             errors.append(f"Job must not bypass failures or expand permissions: {name}")
         try:
-            timeout_limit = 45 if name == "image-build" else 15
+            timeout_limit = 90 if name == "image-build" else 15
             if not 1 <= int(job.get("timeout-minutes", 0)) <= timeout_limit:
                 errors.append(f"Job requires bounded timeout: {name}")
         except (ValueError, TypeError):

@@ -15,7 +15,19 @@
 | M00.2 项目目录骨架 | DONE | 应用、共享包、部署、文档、测试目录，环境模板、边界文档和结构检查 | 已推送 `origin/codex/v1-greenfield`；实现提交 `367debb` |
 | M00.3 项目治理规则 | DONE | ADR、变更日志、版本策略、完成定义、安全与 PR 规则及自动治理检查 | 已推送 `origin/codex/v1-greenfield`；实现提交 `37004a4` |
 | M00.4 GitHub CI 骨架 | DONE | 双平台工作流、哈希锁定工具、配置/资产守卫、34 个基础测试及文档通过 | 实现 9842543；Windows 修正 1193aa2；[运行 34011335143 成功](https://github.com/sy824869109/intelligent-commerce-support-v1/actions/runs/34011335143) |
-| M01.1 本地基础设施 Compose | IN_PROGRESS | 三服务健康/认证读写/宿主连接/停止重启通过，79 项基础测试通过；S3 先评估替代，Milvus 未启动 | 实现 `4774ce2` 已推送；[双平台 CI 34027009809 成功](https://github.com/sy824869109/intelligent-commerce-support-v1/actions/runs/34027009809)；五服务任务未完成 |
+| M01.1 本地基础设施 Compose | DONE | 五服务 Compose、固定安全镜像、loopback/内部网络边界与真实闭环通过 | M01 最终提交与 CI 见下方收口记录 |
+| M01.2 初始化与持久化 | DONE | 两个固定 S3 桶、非 root 卷准备、五类哨兵 stop/start 持久化与精准清理通过 | M01 最终提交与 CI 见下方收口记录 |
+| M01.3 环境配置分层 | DONE | dev/test/prod 无密钥配置，开发仅 loopback，生产 TLS/外部密钥契约 | M01 最终提交与 CI 见下方收口记录 |
+| M01.4 生命周期与升级演练 | DONE | 统一启动/健康/停止/重启测试/强制重建入口，五类数据跨重建保留 | M01 最终提交与 CI 见下方收口记录 |
+
+## M01 最终收口（2026-09-07）
+
+- 五个新平台容器均为 healthy；MySQL、Redis、etcd 认证读写及 S3/Milvus 45 项合成契约通过。
+- stop/start 与 `--force-recreate` 两轮五类持久化哨兵验证通过并精准清理；未删除任何卷。
+- 五个安全派生镜像完整归档扫描均为 0 HIGH/CRITICAL；配方、源锁和五路 GitHub 构建扫描已纳入仓库。
+- 本地结构、治理、48 条标准引用、格式、静态检查和 203 项单测通过；Windows 跳过 5 个符号链接权限用例，由 Linux CI 覆盖。
+- 三份只读参考归档 SHA-256 与基线完全一致，原 KF 六个容器均 healthy。详细清单见 [行为记录](../operations/m01-implementation-behavior-log-20260907.md) 与 [最终验收](../testing/m01-final-validation.md)。
+- 93 条业务用例仍为 NOT_RUN；下一任务是 M02.1，不提前声称业务系统已建成。
 
 ## 补充文档交付
 

@@ -87,26 +87,40 @@ jobs:
     steps:
       - run: echo "Runtime SAST and dependency audits are not implemented."
   image-build:
-    name: Reviewed SeaweedFS dependency image build and vulnerability gate
+    name: Reviewed ${{ matrix.name }} image build and vulnerability gate
     needs: foundation
     runs-on: ubuntu-24.04
-    timeout-minutes: 45
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: MySQL
+            path: mysql
+          - name: Redis
+            path: redis
+          - name: etcd
+            path: etcd
+          - name: SeaweedFS
+            path: seaweedfs
+          - name: Milvus
+            path: milvus
     defaults:
       run:
         shell: bash
     steps:
-      - name: Checkout reviewed image recipe
+      - name: Checkout reviewed image recipes
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
           fetch-depth: 2
       # Context is only the dependency recipe, never the workspace or local secrets.
       - name: Build reviewed dependency image without publishing
-        run: docker build --pull --progress=plain --platform=linux/amd64 --file deploy/images/seaweedfs/Dockerfile --tag ics-seaweedfs:ci deploy/images/seaweedfs
+        run: docker build --pull --provenance=false --sbom=false --progress=plain --platform=linux/amd64 --file "deploy/images/${{ matrix.path }}/Dockerfile" --tag "ics-${{ matrix.path }}:ci" "deploy/images/${{ matrix.path }}"
       - name: Export only the built image for isolated scanning
         run: |
           mkdir -p "$RUNNER_TEMP/ics-image-scan"
-          docker image save --output "$RUNNER_TEMP/ics-image-scan/seaweedfs.tar" ics-seaweedfs:ci
+          docker image save --output "$RUNNER_TEMP/ics-image-scan/${{ matrix.path }}.tar" "ics-${{ matrix.path }}:ci"
       # Scanner sees an image archive read-only, not Docker's socket or the repository.
       # No ignore-unfixed or ignore file: any HIGH/CRITICAL finding blocks this job.
       - name: Scan locked image archive and fail on HIGH or CRITICAL
@@ -114,4 +128,4 @@ jobs:
           docker run --rm --read-only --user "$(id -u):$(id -g)" --cap-drop=ALL --security-opt=no-new-privileges --tmpfs /tmp:rw,nosuid,nodev,size=3g \
             --mount "type=bind,src=$RUNNER_TEMP/ics-image-scan,dst=/scan,readonly" \
             aquasec/trivy:0.74.0@sha256:62b1e65e8869bc4b4c6aa4fa2b21595256c7c2f6018a9d9ad61caf87187c1969 \
-            image --input /scan/seaweedfs.tar --cache-dir /tmp/trivy --scanners vuln --severity HIGH,CRITICAL --exit-code 1 --ignore-unfixed=false --ignorefile /dev/null --timeout 15m
+            image --input "/scan/${{ matrix.path }}.tar" --cache-dir /tmp/trivy --scanners vuln --severity HIGH,CRITICAL --exit-code 1 --ignore-unfixed=false --ignorefile /dev/null --timeout 20m

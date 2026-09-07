@@ -23,9 +23,10 @@ class ImageWorkflowTests(unittest.TestCase):
         self.directory = tempfile.TemporaryDirectory(prefix="ics-image-ci-policy-")
         self.addCleanup(self.directory.cleanup)
         self.root = Path(self.directory.name)
-        marker = self.root / ci.IMAGE_DOCKERFILE
-        marker.parent.mkdir(parents=True)
-        marker.write_text("# Synthetic path marker only; never built.\n", encoding="utf-8")
+        for relative in ci.IMAGE_DOCKERFILES:
+            marker = self.root / relative
+            marker.parent.mkdir(parents=True, exist_ok=True)
+            marker.write_text("# Synthetic path marker only; never built.\n", encoding="utf-8")
         self.job = self.workflow["jobs"]["image-build"]
 
     def validate(self):
@@ -138,8 +139,8 @@ class ImageWorkflowTests(unittest.TestCase):
         del self.job["needs"]
         self.assert_rejected()
 
-    def test_image_timeout_cannot_exceed_45_minutes(self):
-        self.job["timeout-minutes"] = "46"
+    def test_image_timeout_cannot_exceed_90_minutes(self):
+        self.job["timeout-minutes"] = "91"
         self.assert_rejected()
 
     def test_foundation_timeout_not_relaxed(self):
@@ -151,7 +152,7 @@ class ImageWorkflowTests(unittest.TestCase):
         self.assert_rejected()
 
     def test_image_marker_globs_cannot_be_removed(self):
-        self.stages["stages"]["image-build"]["markers"] = [ci.IMAGE_DOCKERFILE]
+        self.stages["stages"]["image-build"]["markers"] = [ci.IMAGE_DOCKERFILES[0]]
         self.assert_rejected()
 
     def test_approved_input_cannot_expand_silently(self):

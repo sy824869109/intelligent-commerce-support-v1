@@ -1,27 +1,26 @@
-# M01.1 的可执行子集。对象存储与 Milvus 等待 ADR-0004 评估，不能启用旧 MinIO。
-# 不读取原 KF 配置，不加入旧网络，不复用旧数据卷。镜像同时固定 tag 与 registry digest。
+# M01 complete local infrastructure. All resources are new-platform owned.
 name: ics-v1-dev
 
 x-runtime: &runtime
   labels:
     org.ics.instance: ${INFRA_INSTANCE_ID:?INFRA_INSTANCE_ID required}
+    org.ics.environment: ${INFRA_ENV:-dev}
   restart: unless-stopped
   networks: [infra]
   security_opt: [no-new-privileges:true]
   logging:
     driver: json-file
-    options:
-      max-size: 10m
-      max-file: '3'
+    options: {max-size: 10m, max-file: '3'}
 
 services:
   mysql:
     <<: *runtime
+    image: ics-mysql:8.4.11-ics.1@sha256:30522be8a94e195f37d43a72638449d206a0b0ce57f9502f8999cdef8cfa9ec5
+    pull_policy: never
     networks: [infra, local]
-    image: mysql:8.4.11@sha256:b3b90af2a6552ae30c266fdb7d5dd55f3afb72404bb78d37fe8a23eb857fd3fb
     environment:
-      MYSQL_DATABASE: ${MYSQL_DATABASE:?Run python scripts/local_infra.py init first}
-      MYSQL_USER: ${MYSQL_USER:?Run python scripts/local_infra.py init first}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:?MYSQL_DATABASE required}
+      MYSQL_USER: ${MYSQL_USER:?MYSQL_USER required}
       MYSQL_ROOT_PASSWORD_FILE: /run/secrets/mysql_root_password
       MYSQL_PASSWORD_FILE: /run/secrets/mysql_password
       TZ: UTC
@@ -30,7 +29,6 @@ services:
     ports: ['127.0.0.1:${MYSQL_PORT:?MYSQL_PORT required}:3306']
     volumes: [mysql_data:/var/lib/mysql]
     healthcheck:
-      # mysqladmin ping 遇到 Access denied 仍可能成功；必须执行已认证 SELECT。
       test: [CMD-SHELL, 'MYSQL_PWD="$$(cat /run/secrets/mysql_root_password)" mysql --protocol=TCP -h127.0.0.1 -uroot -Nse "SELECT 1" | grep -qx 1']
       interval: 10s
       timeout: 5s
@@ -40,9 +38,9 @@ services:
 
   redis:
     <<: *runtime
+    image: ics-redis:8.8.2-ics.1@sha256:a3bf2dc42d377fd2afbe6e620d0a948b1f4ecc9fba88df84a7eef9cced1c7788
+    pull_policy: never
     networks: [infra, local]
-    image: redis:8.2.6@sha256:3055dc25265b0c19ec90a1756dad4e0faff6f79e2557a6ac3d1274e39ee906f6
-    # 密码在本地 secret 配置中；不能展开为 redis-server 的命令行参数。
     command: [redis-server, /run/secrets/redis_config]
     secrets: [redis_password, redis_config]
     ports: ['127.0.0.1:${REDIS_PORT:?REDIS_PORT required}:6379']
@@ -57,62 +55,87 @@ services:
 
   etcd:
     <<: *runtime
-    image: quay.io/coreos/etcd:v3.5.18@sha256:d0a641d5fbcc89678c931a61b7de7b8a1cf097149f135c9c73bc81d076a1494b
+    image: ics-etcd:3.6.14-ics.1@sha256:0ffa356147517f233a637a66505730876595746db5d1850401ee5611e7fbd6b2
+    pull_policy: never
     environment:
       ETCD_AUTO_COMPACTION_MODE: revision
       ETCD_AUTO_COMPACTION_RETENTION: '1000'
       ETCD_QUOTA_BACKEND_BYTES: '4294967296'
       ETCD_SNAPSHOT_COUNT: '50000'
-    command:
-      - etcd
-      - --name=ics-etcd
-      - --data-dir=/etcd
-      - --advertise-client-urls=http://etcd:2379
-      - --listen-client-urls=http://0.0.0.0:2379
-      - --listen-peer-urls=http://127.0.0.1:2380
-      - --initial-advertise-peer-urls=http://127.0.0.1:2380
-      - --initial-cluster=ics-etcd=http://127.0.0.1:2380
+    command: [--name=ics-etcd, --data-dir=/etcd, --advertise-client-urls=http://etcd:2379, --listen-client-urls=http://0.0.0.0:2379, --listen-peer-urls=http://127.0.0.1:2380, --initial-advertise-peer-urls=http://127.0.0.1:2380, --initial-cluster=ics-etcd=http://127.0.0.1:2380]
     volumes: [etcd_data:/etcd]
     healthcheck:
-      test: [CMD, etcdctl, --endpoints=http://127.0.0.1:2379, endpoint, health]
+      test: [CMD, /usr/local/bin/etcdctl, --endpoints=http://127.0.0.1:2379, endpoint, health]
       interval: 10s
       timeout: 5s
-      retries: 6
-      start_period: 10s
-    mem_limit: 384m
+      retries: 8
+      start_period: 15s
+    mem_limit: 512m
+
+  seaweedfs:
+    <<: *runtime
+    image: ics-seaweedfs:4.45-m01-security.1@sha256:dfac2e817ad5b9b2c6ee725127905f3893787089690318772c942f4239989c00
+    pull_policy: never
+    networks: [infra, local]
+    command: [server, -dir=/data, -master.dir=/data/master, -ip=seaweedfs, -ip.bind=0.0.0.0, -master.port=9333, -volume.port=8080, -volume.max=32, -filer.port=8888, -filer.disableDirListing=true, -filer.exposeDirectoryData=false, -master.telemetry=false, -s3, -s3.port=8333, -s3.ip.bind=0.0.0.0, -s3.config=/run/secrets/seaweed_s3_config, -s3.iam=false, -s3.autoCreateBucket=false, -webdav=false]
+    secrets:
+      - {source: seaweed_s3_config, target: /run/secrets/seaweed_s3_config}
+      - {source: seaweed_security_config, target: /etc/seaweedfs/security.toml}
+    ports: ['127.0.0.1:${S3_PORT:?S3_PORT required}:8333']
+    volumes: [seaweedfs_data:/data]
+    read_only: true
+    tmpfs: ['/tmp:rw,nosuid,nodev,size=64m']
+    healthcheck:
+      test: [CMD, /bin/busybox, wget, -q, -T, '2', -O, /dev/null, http://127.0.0.1:8333/healthz]
+      interval: 10s
+      timeout: 5s
+      retries: 18
+      start_period: 45s
+    mem_limit: 1024m
+
+  milvus:
+    <<: *runtime
+    image: ics-milvus:2.6.23-ics.1@sha256:224967fbdaa1303852bf821cd48f5255078fb1552795065eb33bb79ec652c1b1
+    pull_policy: never
+    networks: [infra, local]
+    command: [milvus, run, standalone]
+    depends_on:
+      etcd: {condition: service_healthy}
+      seaweedfs: {condition: service_healthy}
+    secrets:
+      - {source: milvus_config, target: /milvus/configs/user.yaml}
+    ports: ['127.0.0.1:${MILVUS_PORT:?MILVUS_PORT required}:19530']
+    volumes: [milvus_data:/var/lib/milvus]
+    healthcheck:
+      test: [CMD, curl, --fail, --silent, http://127.0.0.1:9091/healthz]
+      interval: 15s
+      timeout: 8s
+      retries: 20
+      start_period: 90s
+    mem_limit: 3072m
 
 networks:
-  # internal-only 在本机 Engine 不建立宿主端口映射。仅 MySQL/Redis 加本机访问桥。
-  # 不使用 host 网络，不修改防火墙；显式 loopback 发布仍是对局域网的访问边界。
   local:
     driver: bridge
-    driver_opts:
-      com.docker.network.bridge.host_binding_ipv4: '127.0.0.1'
-    labels:
-      org.ics.instance: ${INFRA_INSTANCE_ID:?INFRA_INSTANCE_ID required}
+    driver_opts: {com.docker.network.bridge.host_binding_ipv4: '127.0.0.1'}
+    labels: {org.ics.instance: '${INFRA_INSTANCE_ID:?INFRA_INSTANCE_ID required}'}
   infra:
     internal: true
-    labels:
-      org.ics.instance: ${INFRA_INSTANCE_ID:?INFRA_INSTANCE_ID required}
+    labels: {org.ics.instance: '${INFRA_INSTANCE_ID:?INFRA_INSTANCE_ID required}'}
 
 volumes:
-  mysql_data:
-    labels:
-      org.ics.instance: ${INFRA_INSTANCE_ID:?INFRA_INSTANCE_ID required}
-  redis_data:
-    labels:
-      org.ics.instance: ${INFRA_INSTANCE_ID:?INFRA_INSTANCE_ID required}
-  etcd_data:
-    labels:
-      org.ics.instance: ${INFRA_INSTANCE_ID:?INFRA_INSTANCE_ID required}
+  mysql_data: {labels: {org.ics.instance: '${INFRA_INSTANCE_ID:?INFRA_INSTANCE_ID required}'}}
+  redis_data: {labels: {org.ics.instance: '${INFRA_INSTANCE_ID:?INFRA_INSTANCE_ID required}'}}
+  etcd_data: {labels: {org.ics.instance: '${INFRA_INSTANCE_ID:?INFRA_INSTANCE_ID required}'}}
+  seaweedfs_data: {labels: {org.ics.instance: '${INFRA_INSTANCE_ID:?INFRA_INSTANCE_ID required}'}}
+  milvus_data: {labels: {org.ics.instance: '${INFRA_INSTANCE_ID:?INFRA_INSTANCE_ID required}'}}
 
-# Compose 本地 secrets 是只读文件挂载，不是加密密钥库；Docker 管理员仍可读取。
 secrets:
-  mysql_root_password:
-    file: ./secrets/mysql_root_password
-  mysql_password:
-    file: ./secrets/mysql_password
-  redis_password:
-    file: ./secrets/redis_password
-  redis_config:
-    file: ./secrets/redis_config
+  mysql_root_password: {file: ./secrets/mysql_root_password}
+  mysql_password: {file: ./secrets/mysql_password}
+  redis_password: {file: ./secrets/redis_password}
+  redis_config: {file: ./secrets/redis_config}
+  seaweed_s3_config: {file: ./secrets/seaweed_s3_config}
+  seaweed_security_config: {file: ./secrets/seaweed_security_config}
+  milvus_config: {file: ./secrets/milvus_config}
+  milvus_root_password: {file: ./secrets/milvus_root_password}

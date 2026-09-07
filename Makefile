@@ -1,7 +1,7 @@
-.PHONY: help check ci env-check governance-check structure-check
+.PHONY: help check ci env-check governance-check structure-check infra-images infra-config infra-up infra-health infra-stop infra-restart-test infra-upgrade
 
 help:
-	@echo "Available targets: check, ci, env-check, governance-check, structure-check"
+	@echo "Available targets: check, ci, infra-images, infra-config, infra-up, infra-health, infra-stop, infra-restart-test, infra-upgrade"
 
 check: env-check structure-check governance-check
 
@@ -17,3 +17,24 @@ structure-check:
 
 governance-check:
 	@python scripts/verify_governance.py
+
+infra-images:
+	@python scripts/infra_images.py verify
+
+infra-config:
+	@python scripts/local_infra.py config
+
+infra-up:
+	@python scripts/local_infra.py up
+
+infra-health:
+	@python scripts/local_infra.py health
+
+infra-stop:
+	@python scripts/local_infra.py stop
+
+infra-restart-test:
+	@python scripts/local_infra.py restart-test
+
+infra-upgrade:
+	@python scripts/local_infra.py upgrade

@@ -281,10 +281,14 @@ def _milvus_objects(client: Any, collection_id: Any) -> None:
                         segment = parts[position + 3]
                         _require(segment.isdecimal())
                         data_segments.add(segment)
-            # Index path: index_log/build/version/partition/segment/file; it does
-            # not include collection ID, so a mere nonempty bucket proves nothing.
-            if "index_log" in parts:
-                position = parts.index("index_log")
+            # Milvus 2.5 uses index_log and 2.6 uses index_files. Both paths are
+            # family/build/version/partition/segment/file and omit collection ID,
+            # so a mere nonempty bucket still proves nothing.
+            index_family = next(
+                (family for family in ("index_log", "index_files") if family in parts), None
+            )
+            if index_family:
+                position = parts.index(index_family)
                 if len(parts) > position + 5:
                     segment = parts[position + 4]
                     _require(segment.isdecimal())
@@ -548,12 +552,26 @@ def run_checks(
                     Bucket=KNOWLEDGE_BUCKET, Key=abort_key, UploadId=upload_id
                 )
                 uploads.discard((abort_key, upload_id))
-                _absent(
-                    lambda: knowledge.list_parts(
+                # AWS returns NoSuchUpload after abort. SeaweedFS 4.45 returns a
+                # successful empty listing instead; accept only that exact empty
+                # state, never an arbitrary 2xx response or residual part.
+                try:
+                    aborted = knowledge.list_parts(
                         Bucket=KNOWLEDGE_BUCKET, Key=abort_key, UploadId=upload_id
-                    ),
-                    client_error,
-                )
+                    )
+                except client_error:
+                    _absent(
+                        lambda: knowledge.list_parts(
+                            Bucket=KNOWLEDGE_BUCKET, Key=abort_key, UploadId=upload_id
+                        ),
+                        client_error,
+                    )
+                else:
+                    _require(
+                        aborted.get("ResponseMetadata", {}).get("HTTPStatusCode") == 200
+                        and not aborted.get("Parts")
+                        and not aborted.get("IsTruncated", False)
+                    )
                 _absent(
                     lambda: knowledge.head_object(Bucket=KNOWLEDGE_BUCKET, Key=abort_key),
                     client_error,

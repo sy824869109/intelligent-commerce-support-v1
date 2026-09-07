@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "upstream": {
+    "repository": "https://github.com/milvus-io/milvus",
+    "release": "v2.6.23",
+    "commit": "bfa1bc34f93df2ccd20fa7c060463c6c6812d355",
+    "source_url": "https://github.com/milvus-io/milvus/archive/bfa1bc34f93df2ccd20fa7c060463c6c6812d355.tar.gz",
+    "source_sha256": "47d14ac523d2503d9581facb225499cdc81c9ba9cffc1d923b7877ec5b3737e6"
+  },
+  "builder": {
+    "image": "docker.io/milvusdb/milvus-env:ubuntu22.04-20260603-5baf83b",
+    "linux_amd64_digest": "sha256:4d0ea84b1ccbbbbd9fbe99a467412fa8d1a93cb8b37632d8eb5019745d56214d"
+  },
+  "runtime": {
+    "image": "docker.io/milvusdb/milvus:v2.6.23",
+    "linux_amd64_digest": "sha256:60e96d5abe7ea9199dd8a4d0d0506f9b57a7056cf57683327b8c7ae7f489ed17"
+  },
+  "go": {
+    "version": "1.27.1",
+    "archive": "go1.27.1.linux-amd64.tar.gz",
+    "archive_sha256": "63d339f0da5ab53635a56f2490a7984dfe12dfcff22ad749f63edaf590168445"
+  },
+  "patch_release": "2.6.23-ics.1"
+}

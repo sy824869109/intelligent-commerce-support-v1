@@ -4,7 +4,7 @@
 被 Git 忽略的 secrets 目录、访问控制及容器启动，不可打印返回值。
 
 SeaweedFS 4.45: weed/command/scaffold/security.toml、weed/s3api/auth_credentials.go。
-Milvus 2.5.15: configs/milvus.yaml、pkg/util/paramtable/base_table.go。
+Milvus 2.6.23: configs/milvus.yaml、pkg/util/paramtable/base_table.go。
 milvus_config 挂载 /milvus/configs/user.yaml，保留镜像内原始 milvus.yaml 默认值。
 seaweed_security_config 挂载 /etc/seaweedfs/security.toml，单进程各组件共享。
 JWT 自动由组件读取并用于内部签名；不需要另传签名 flag。不启用不适用于
@@ -111,7 +111,7 @@ def _security_text(keys: dict[str, str]) -> str:
 def _milvus_text(account: S3Credential, root_password: str) -> str:
     # Only the canonical generated values enter YAML; no arbitrary interpolation.
     return (
-        "# Milvus 2.5.15 user.yaml overlay; S3 provider name remains minio.\n"
+        "# Milvus 2.6.23 user.yaml overlay; S3 provider name remains minio.\n"
         "# Local synthetic development only; HTTP stays on isolated/local networks.\n"
         "etcd:\n  endpoints:\n    - etcd:2379\n"
         f"  rootPath: {ETCD_ROOT_PATH}\n"
@@ -213,7 +213,11 @@ def validate_secrets(contents: dict[str, str]) -> None:
         "milvus_config": _milvus_text(accounts["milvus"], root_password),
         "milvus_root_password": root_password + "\n",
     }
-    if contents != expected:
+    normalized = dict(contents)
+    normalized["milvus_config"] = normalized["milvus_config"].replace(
+        "# Milvus 2.5.15 user.yaml overlay;", "# Milvus 2.6.23 user.yaml overlay;", 1
+    )
+    if normalized != expected:
         raise StorageConfigError("Storage configuration differs from the restricted fixed template")
     # Parse the generated overlay too: a future template syntax error must fail locally.
     try:

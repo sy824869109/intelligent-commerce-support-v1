@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "artifact": "8.4.11-security.1",
+  "base": "docker.io/library/mysql:8.4.11-oraclelinux9@sha256:b3b90af2a6552ae30c266fdb7d5dd55f3afb72404bb78d37fe8a23eb857fd3fb",
+  "gosu": {
+    "version": "1.19",
+    "source_url": "https://github.com/tianon/gosu/archive/refs/tags/1.19.tar.gz",
+    "source_sha256": "cd9719b775dbfedae53923c9b0dc792b66d42c51e0b36652ed6f747fbadc0164",
+    "go_builder": "docker.io/library/golang:1.27.1-alpine3.24@sha256:cf6fca6641884b8433441b2b0652976f975e1d0fdd26d177eaaf8596087f3125"
+  },
+  "verified_at": "2026-09-07"
+}

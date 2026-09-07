@@ -306,7 +306,7 @@ class OwnershipTests(unittest.TestCase):
         ):
             runtime.stop_owned(["docker"], {})
             self.assertEqual(
-                ["docker", "stop", "--time", "30", "synthetic-id"], call.call_args.args[0]
+                ["docker", "stop", "--timeout", "30", "synthetic-id"], call.call_args.args[0]
             )
             self.assertFalse(any("volume" in item.args[0] for item in call.call_args_list))
 
@@ -317,18 +317,36 @@ class HostProbeTests(unittest.TestCase):
         mysql.__enter__.return_value.recv.return_value = b"\x20\x00\x00\x00\x0a8.4.11\x00"
         redis = MagicMock()
         redis.__enter__.return_value.recv.return_value = b"-NOAUTH Authentication required.\r\n"
+        s3 = MagicMock()
+        milvus = MagicMock()
         with (
-            patch.object(runtime.socket, "create_connection", side_effect=[mysql, redis]),
+            patch.object(
+                runtime.socket, "create_connection", side_effect=[mysql, redis, s3, milvus]
+            ),
             patch("builtins.print"),
         ):
-            runtime.host_probe({"MYSQL_PORT": "23306", "REDIS_PORT": "26379"})
+            runtime.host_probe(
+                {
+                    "MYSQL_PORT": "23306",
+                    "REDIS_PORT": "26379",
+                    "S3_PORT": "28333",
+                    "MILVUS_PORT": "29530",
+                }
+            )
 
     def test_wrong_service_on_host_port_refused(self):
         connection = MagicMock()
         connection.__enter__.return_value.recv.return_value = b"HTTP/1.1 200 OK"
         with patch.object(runtime.socket, "create_connection", return_value=connection):
             with self.assertRaises(runtime.InfraError):
-                runtime.host_probe({"MYSQL_PORT": "23306", "REDIS_PORT": "26379"})
+                runtime.host_probe(
+                    {
+                        "MYSQL_PORT": "23306",
+                        "REDIS_PORT": "26379",
+                        "S3_PORT": "28333",
+                        "MILVUS_PORT": "29530",
+                    }
+                )
 
 
 if __name__ == "__main__":

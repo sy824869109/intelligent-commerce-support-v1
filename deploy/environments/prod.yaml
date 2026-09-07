@@ -1,0 +1,7 @@
+schema_version: 1
+environment: prod
+hosts: {mysql: mysql.internal, redis: redis.internal, s3: s3.internal, milvus: milvus.internal}
+ports: {mysql: 3306, redis: 6379, s3: 443, milvus: 19530}
+tls_required: true
+secret_contract: external_secret_files
+data_class: approved_business_data

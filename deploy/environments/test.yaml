@@ -1,0 +1,7 @@
+schema_version: 1
+environment: test
+hosts: {mysql: mysql, redis: redis, s3: seaweedfs, milvus: milvus}
+ports: {mysql: 3306, redis: 6379, s3: 8333, milvus: 19530}
+tls_required: false
+secret_contract: ci_ephemeral_secret_files
+data_class: synthetic_test_only

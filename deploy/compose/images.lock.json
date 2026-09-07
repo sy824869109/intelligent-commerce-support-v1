@@ -1,16 +1,15 @@
 {
-  "schema_version": 1,
-  "verified_at": "2026-09-06",
-  "verification": "docker buildx imagetools inspect against the named official registry; OCI index digests",
-  "runtime_verified_platform": "linux/amd64",
+  "schema_version": 2,
+  "verified_at": "2026-09-07",
+  "runtime_platform": "linux/amd64",
+  "scanner": "Trivy 0.74.0 complete archive; no ignored HIGH/CRITICAL",
   "images": {
-    "mysql": "mysql:8.4.11@sha256:b3b90af2a6552ae30c266fdb7d5dd55f3afb72404bb78d37fe8a23eb857fd3fb",
-    "redis": "redis:8.2.6@sha256:3055dc25265b0c19ec90a1756dad4e0faff6f79e2557a6ac3d1274e39ee906f6",
-    "etcd": "quay.io/coreos/etcd:v3.5.18@sha256:d0a641d5fbcc89678c931a61b7de7b8a1cf097149f135c9c73bc81d076a1494b"
+    "mysql": "ics-mysql:8.4.11-ics.1@sha256:30522be8a94e195f37d43a72638449d206a0b0ce57f9502f8999cdef8cfa9ec5",
+    "redis": "ics-redis:8.8.2-ics.1@sha256:a3bf2dc42d377fd2afbe6e620d0a948b1f4ecc9fba88df84a7eef9cced1c7788",
+    "etcd": "ics-etcd:3.6.14-ics.1@sha256:0ffa356147517f233a637a66505730876595746db5d1850401ee5611e7fbd6b2",
+    "seaweedfs": "ics-seaweedfs:4.45-m01-security.1@sha256:dfac2e817ad5b9b2c6ee725127905f3893787089690318772c942f4239989c00",
+    "milvus": "ics-milvus:2.6.23-ics.1@sha256:224967fbdaa1303852bf821cd48f5255078fb1552795065eb33bb79ec652c1b1"
   },
-  "deferred": {
-    "object_storage": "User requested maintained S3 alternative evaluation; do not start baseline MinIO",
-    "milvus": "Keep 2.5.15 compatibility target; not started until object-storage decision and validation"
-  },
-  "security_scan": "NOT_RUN: registry digest verification is not an image vulnerability scan"
+  "high_critical": {"mysql": 0, "redis": 0, "etcd": 0, "seaweedfs": 0, "milvus": 0},
+  "local_only": true
 }

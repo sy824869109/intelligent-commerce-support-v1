@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "artifact": "8.8.2-security.1",
+  "base": "docker.io/library/redis:8.8.2-alpine3.23@sha256:96cb544fa0af5aa898d160cffb7dae70c3df117190fc123831c64712cda425ff",
+  "packages": {
+    "libcrypto3": "3.5.8-r0",
+    "libssl3": "3.5.8-r0",
+    "setpriv": "2.41.6-r1"
+  },
+  "verified_at": "2026-09-07"
+}

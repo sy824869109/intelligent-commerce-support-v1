@@ -1,4 +1,4 @@
-"""Run foundation checks and M01.1 static configuration guards locally and in CI.
+"""Run foundation checks and completed M01 static configuration guards locally and in CI.
 
 Fail on the first broken gate. Never start application services, read reference
 archives, publish images or claim that business acceptance cases have run.
@@ -73,7 +73,7 @@ def main() -> int:
         return 1
     message = (
         "Foundation checks PASS. Backend/frontend/runtime contracts/SAST/dependency "
-        "audit are NOT_IMPLEMENTED; the separate Linux image job builds and scans storage. "
+        "audit are NOT_IMPLEMENTED; Linux image jobs build and scan all five M01 dependencies. "
         "93 business cases remain NOT_RUN.\n"
     )
     print(message)

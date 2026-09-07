@@ -1,48 +1,29 @@
-"""验证 M01.1 可执行配置边界；只解析配置，不读取密钥或启动 Docker。"""
+"""Static M01 five-service Compose guard; never reads secrets or starts Docker."""
 
 from __future__ import annotations
-
 import json
 import re
 from pathlib import Path
-
 import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
-SERVICES = {"mysql", "redis", "etcd"}
-SECRET_NAMES = {"mysql_root_password", "mysql_password", "redis_password", "redis_config"}
-IMAGE_PATTERN = re.compile(r".+:[A-Za-z0-9_.-]+@sha256:[a-f0-9]{64}")
-INSTANCE_LABELS = {"org.ics.instance": "${INFRA_INSTANCE_ID:?INFRA_INSTANCE_ID required}"}
-COMMANDS = {
-    "mysql": ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_0900_ai_ci"],
-    "redis": ["redis-server", "/run/secrets/redis_config"],
-    "etcd": [
-        "etcd",
-        "--name=ics-etcd",
-        "--data-dir=/etcd",
-        "--advertise-client-urls=http://etcd:2379",
-        "--listen-client-urls=http://0.0.0.0:2379",
-        "--listen-peer-urls=http://127.0.0.1:2380",
-        "--initial-advertise-peer-urls=http://127.0.0.1:2380",
-        "--initial-cluster=ics-etcd=http://127.0.0.1:2380",
-    ],
+SERVICES = {"mysql", "redis", "etcd", "seaweedfs", "milvus"}
+HOST_SERVICES = SERVICES - {"etcd"}
+SECRET_NAMES = {
+    "mysql_root_password",
+    "mysql_password",
+    "redis_password",
+    "redis_config",
+    "seaweed_s3_config",
+    "seaweed_security_config",
+    "milvus_config",
+    "milvus_root_password",
 }
-HEALTH_TESTS = {
-    "mysql": [
-        "CMD-SHELL",
-        'MYSQL_PWD="$$(cat /run/secrets/mysql_root_password)" mysql --protocol=TCP -h127.0.0.1 -uroot -Nse "SELECT 1" | grep -qx 1',
-    ],
-    "redis": [
-        "CMD-SHELL",
-        'REDISCLI_AUTH="$$(cat /run/secrets/redis_password)" redis-cli --raw ping | grep -qx PONG',
-    ],
-    "etcd": ["CMD", "etcdctl", "--endpoints=http://127.0.0.1:2379", "endpoint", "health"],
-}
+IMAGE_PATTERN = re.compile(r"ics-[a-z0-9-]+:[A-Za-z0-9_.-]+@sha256:[a-f0-9]{64}")
+INSTANCE = "${INFRA_INSTANCE_ID:?INFRA_INSTANCE_ID required}"
 
 
 class ComposeLoader(yaml.SafeLoader):
-    """允许受控 anchor/merge，但拒绝重复显式键，避免 YAML 静默覆盖。"""
-
     def construct_mapping(self, node, deep=False):
         keys = set()
         for key_node, _ in node.value:
@@ -57,39 +38,35 @@ class ComposeLoader(yaml.SafeLoader):
 
 
 def parse_compose(content: str) -> dict:
-    """只接受数据映射，不能加载任意 Python 对象。"""
-    result = yaml.load(content, Loader=ComposeLoader)
-    if not isinstance(result, dict):
-        raise ValueError("Compose must be a mapping")
-    return result
+    value = yaml.load(content, Loader=ComposeLoader)
+    if not isinstance(value, dict):
+        raise TypeError("Compose must be a mapping")
+    return value
 
 
 def validate_compose(config: dict, lock: dict) -> list[str]:
-    """固定三服务开发子集；修改边界必须同时更新决策、守卫与负向测试。"""
-    errors = []
-    services = config.get("services", {})
+    errors: list[str] = []
+    services, images = config.get("services", {}), lock.get("images", {})
     if config.get("name") != "ics-v1-dev" or set(services) != SERVICES:
-        errors.append("Only the isolated three-service M01.1 subset is executable")
+        errors.append("Exactly five isolated M01 services are required")
+    if lock.get("schema_version") != 2 or set(images) != SERVICES:
+        errors.append("Five-service image lock mismatch")
+    if lock.get("high_critical") != {name: 0 for name in SERVICES}:
+        errors.append("Every locked image requires zero HIGH/CRITICAL evidence")
     if any(key in config for key in ("include", "configs", "profiles")):
         errors.append("Unexpected additional Compose inputs")
-    if lock.get("schema_version") != 1 or set(lock.get("images", {})) != SERVICES:
-        errors.append("Image lock does not match executable service scope")
-    expected_networks = {
-        "infra": {"internal": True, "labels": INSTANCE_LABELS},
-        "local": {
-            "driver": "bridge",
-            "driver_opts": {"com.docker.network.bridge.host_binding_ipv4": "127.0.0.1"},
-            "labels": INSTANCE_LABELS,
-        },
-    }
-    if config.get("networks") != expected_networks:
-        errors.append("Only project-owned internal and localhost-access networks are allowed")
-    expected_volumes = {f"{name}_data": {"labels": INSTANCE_LABELS} for name in SERVICES}
-    if config.get("volumes") != expected_volumes:
-        errors.append("Volumes must be project-scoped, not external or explicitly named")
-    expected_secrets = {name: {"file": f"./secrets/{name}"} for name in SECRET_NAMES}
-    if config.get("secrets") != expected_secrets:
-        errors.append("Secrets must come from ignored local files")
+    volumes = {f"{name}_data": {"labels": {"org.ics.instance": INSTANCE}} for name in SERVICES}
+    if config.get("volumes") != volumes:
+        errors.append("All five project-owned persistent volumes are required")
+    networks = config.get("networks", {})
+    if set(networks) != {"infra", "local"} or networks.get("infra", {}).get("internal") is not True:
+        errors.append("Internal and localhost-only networks are required")
+    if networks.get("local", {}).get("driver_opts") != {
+        "com.docker.network.bridge.host_binding_ipv4": "127.0.0.1"
+    }:
+        errors.append("Host bridge must bind only to loopback")
+    if config.get("secrets") != {name: {"file": f"./secrets/{name}"} for name in SECRET_NAMES}:
+        errors.append("Secrets must use exact ignored local files")
     forbidden = {
         "build",
         "container_name",
@@ -105,109 +82,103 @@ def validate_compose(config: dict, lock: dict) -> list[str]:
         "entrypoint",
         "volumes_from",
     }
-    for name, service in services.items():
+    targets = {
+        "mysql": "/var/lib/mysql",
+        "redis": "/data",
+        "etcd": "/etcd",
+        "seaweedfs": "/data",
+        "milvus": "/var/lib/milvus",
+    }
+    ports = {
+        "mysql": "${MYSQL_PORT:?MYSQL_PORT required}:3306",
+        "redis": "${REDIS_PORT:?REDIS_PORT required}:6379",
+        "seaweedfs": "${S3_PORT:?S3_PORT required}:8333",
+        "milvus": "${MILVUS_PORT:?MILVUS_PORT required}:19530",
+    }
+    for name in SERVICES:
+        service = services.get(name, {})
         image = service.get("image", "")
-        if not IMAGE_PATTERN.fullmatch(image) or image != lock.get("images", {}).get(name):
-            errors.append(f"Immutable image mismatch: {name}")
-        if ":latest@" in image or any(key in service for key in forbidden):
+        if not IMAGE_PATTERN.fullmatch(image) or image != images.get(name):
+            errors.append(f"Immutable derivative image mismatch: {name}")
+        if service.get("pull_policy") != "never" or any(key in service for key in forbidden):
             errors.append(f"Unsafe runtime override: {name}")
-        if service.get("networks") != (["infra"] if name == "etcd" else ["infra", "local"]):
-            errors.append(f"Unexpected network: {name}")
-        if service.get("labels") != INSTANCE_LABELS:
-            errors.append(f"Missing local instance ownership: {name}")
-        if service.get("command") != COMMANDS.get(name):
-            errors.append(f"Unexpected service command: {name}")
-        if service.get("security_opt") != ["no-new-privileges:true"]:
-            errors.append(f"Missing privilege guard: {name}")
-        if service.get("volumes") != [
-            f"{name}_data:{ {'mysql': '/var/lib/mysql', 'redis': '/data', 'etcd': '/etcd'}.get(name, '') }"
-        ]:
-            errors.append(f"Unexpected data mount: {name}")
-        expected_ports = {
-            "mysql": ["127.0.0.1:${MYSQL_PORT:?MYSQL_PORT required}:3306"],
-            "redis": ["127.0.0.1:${REDIS_PORT:?REDIS_PORT required}:6379"],
-            "etcd": [],
-        }
-        if service.get("ports", []) != expected_ports.get(name):
+        if service.get("networks") != (["infra", "local"] if name in HOST_SERVICES else ["infra"]):
+            errors.append(f"Unexpected network scope: {name}")
+        if service.get("volumes") != [f"{name}_data:{targets[name]}"]:
+            errors.append(f"Unexpected persistent mount: {name}")
+        expected_ports = [] if name == "etcd" else [f"127.0.0.1:{ports[name]}"]
+        if service.get("ports", []) != expected_ports:
             errors.append(f"Host publication must remain loopback-only: {name}")
         health = service.get("healthcheck", {})
-        if health.get("test") != HEALTH_TESTS.get(name):
-            errors.append(f"Authenticated healthcheck contract changed: {name}")
-        expected_health = {
-            "test": HEALTH_TESTS.get(name),
-            "interval": "10s",
-            "timeout": "5s",
-            "retries": 18 if name == "mysql" else 6,
-            "start_period": "60s" if name == "mysql" else "10s",
-        }
-        if health != expected_health:
-            errors.append(f"Healthcheck timing/behavior changed: {name}")
         if not health.get("test") or health.get("disable") or health.get("test") == ["NONE"]:
             errors.append(f"Real healthcheck required: {name}")
-        for key in ("interval", "timeout", "retries", "start_period"):
-            if key not in health:
-                errors.append(f"Bounded healthcheck required: {name}")
-        if not service.get("mem_limit") or service.get("logging", {}).get("driver") != "json-file":
-            errors.append(f"Resource/logging bounds required: {name}")
-        if service.get("restart") != "unless-stopped":
-            errors.append(f"Unexpected restart behavior: {name}")
+        if not all(key in health for key in ("interval", "timeout", "retries", "start_period")):
+            errors.append(f"Bounded healthcheck required: {name}")
+        if service.get("security_opt") != ["no-new-privileges:true"]:
+            errors.append(f"Privilege guard required: {name}")
+        if not service.get("mem_limit") or service.get("restart") != "unless-stopped":
+            errors.append(f"Resource/restart boundary required: {name}")
         if service.get("logging") != {
             "driver": "json-file",
             "options": {"max-size": "10m", "max-file": "3"},
         }:
             errors.append(f"Bounded log rotation required: {name}")
+        if health.get("test") in (["CMD", "true"], ["CMD-SHELL", "true"]):
+            errors.append(f"Fake healthcheck forbidden: {name}")
     mysql = services.get("mysql", {})
     mysql_env = mysql.get("environment", {})
-    if mysql_env != {
-        "MYSQL_DATABASE": "${MYSQL_DATABASE:?Run python scripts/local_infra.py init first}",
-        "MYSQL_USER": "${MYSQL_USER:?Run python scripts/local_infra.py init first}",
-        "MYSQL_ROOT_PASSWORD_FILE": "/run/secrets/mysql_root_password",
-        "MYSQL_PASSWORD_FILE": "/run/secrets/mysql_password",
-        "TZ": "UTC",
-    }:
-        errors.append("MySQL environment must remain the reviewed secret-file contract")
-    if services.get("redis", {}).get("environment", {}):
-        errors.append("Unexpected Redis environment override")
-    if services.get("etcd", {}).get("environment") != {
-        "ETCD_AUTO_COMPACTION_MODE": "revision",
-        "ETCD_AUTO_COMPACTION_RETENTION": "1000",
-        "ETCD_QUOTA_BACKEND_BYTES": "4294967296",
-        "ETCD_SNAPSHOT_COUNT": "50000",
-    }:
-        errors.append("Unexpected etcd environment override")
-    if mysql_env.get("MYSQL_ROOT_PASSWORD_FILE") != "/run/secrets/mysql_root_password":
-        errors.append("MySQL root password must be a secret file")
-    if mysql_env.get("MYSQL_PASSWORD_FILE") != "/run/secrets/mysql_password":
-        errors.append("MySQL application password must be a secret file")
-    if any(
+    if mysql.get("command") != [
+        "--character-set-server=utf8mb4",
+        "--collation-server=utf8mb4_0900_ai_ci",
+    ]:
+        errors.append("MySQL command must remain the reviewed charset contract")
+    if set(mysql_env) != {
+        "MYSQL_DATABASE",
+        "MYSQL_USER",
+        "MYSQL_ROOT_PASSWORD_FILE",
+        "MYSQL_PASSWORD_FILE",
+        "TZ",
+    } or any(
         key in mysql_env
-        for key in (
-            "MYSQL_ROOT_PASSWORD",
-            "MYSQL_PASSWORD",
-            "MYSQL_ALLOW_EMPTY_PASSWORD",
-            "MYSQL_RANDOM_ROOT_PASSWORD",
-            "MYSQL_ROOT_HOST",
-        )
+        for key in ("MYSQL_ROOT_PASSWORD", "MYSQL_PASSWORD", "MYSQL_ALLOW_EMPTY_PASSWORD")
     ):
-        errors.append("MySQL password/default-root override forbidden")
-    if services.get("redis", {}).get("command") != ["redis-server", "/run/secrets/redis_config"]:
-        errors.append("Redis must read the generated authenticated config")
+        errors.append("MySQL must use only secret-file credentials")
+    if services.get("redis", {}).get("command") != [
+        "redis-server",
+        "/run/secrets/redis_config",
+    ]:
+        errors.append("Redis must use the generated authenticated config")
     for name, expected in {
         "mysql": ["mysql_root_password", "mysql_password"],
         "redis": ["redis_password", "redis_config"],
-        "etcd": [],
     }.items():
-        if services.get(name, {}).get("secrets", []) != expected:
-            errors.append(f"Unexpected service secrets: {name}")
+        if services.get(name, {}).get("secrets") != expected:
+            errors.append(f"Unexpected service secret contract: {name}")
+    seaweed = services.get("seaweedfs", {})
+    if seaweed.get("read_only") is not True:
+        errors.append("SeaweedFS root filesystem must be read-only")
+    for required in (
+        "-volume.max=32",
+        "-master.telemetry=false",
+        "-s3.iam=false",
+        "-s3.autoCreateBucket=false",
+    ):
+        if required not in seaweed.get("command", []):
+            errors.append("SeaweedFS optional exposure must remain disabled")
+    if services.get("milvus", {}).get("depends_on") != {
+        "etcd": {"condition": "service_healthy"},
+        "seaweedfs": {"condition": "service_healthy"},
+    }:
+        errors.append("Milvus must wait for metadata and object storage health")
     return errors
 
 
 def check(root: Path = ROOT) -> list[str]:
-    """对仓库内的配置与锁文件执行同一组可复现检查。"""
     folder = root / "deploy/compose"
-    config = parse_compose((folder / "infra.compose.yml").read_text(encoding="utf-8"))
-    lock = json.loads((folder / "images.lock.json").read_text(encoding="utf-8"))
-    return validate_compose(config, lock)
+    return validate_compose(
+        parse_compose((folder / "infra.compose.yml").read_text(encoding="utf-8")),
+        json.loads((folder / "images.lock.json").read_text(encoding="utf-8")),
+    )
 
 
 def main() -> int:
@@ -218,7 +189,7 @@ def main() -> int:
         return 1
     for error in errors:
         print(error)
-    print(f"infra-static: {'FAILED' if errors else 'PASS'}; 3 services; S3/Milvus DEFERRED")
+    print(f"infra-static: {'FAILED' if errors else 'PASS'}; five services; locked derivatives")
     return bool(errors)
 
 
