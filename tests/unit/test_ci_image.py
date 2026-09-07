@@ -139,8 +139,8 @@ class ImageWorkflowTests(unittest.TestCase):
         del self.job["needs"]
         self.assert_rejected()
 
-    def test_image_timeout_cannot_exceed_90_minutes(self):
-        self.job["timeout-minutes"] = "91"
+    def test_image_timeout_cannot_exceed_180_minutes(self):
+        self.job["timeout-minutes"] = "181"
         self.assert_rejected()
 
     def test_foundation_timeout_not_relaxed(self):

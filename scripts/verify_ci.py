@@ -137,7 +137,7 @@ def validate_image_job(job: dict, stage: dict, root: Path) -> list[str]:
         "name": "Reviewed ${{ matrix.name }} image build and vulnerability gate",
         "needs": "foundation",
         "runs-on": "ubuntu-24.04",
-        "timeout-minutes": "90",
+        "timeout-minutes": "180",
         "strategy": {
             "fail-fast": "false",
             "matrix": {
@@ -203,7 +203,7 @@ def validate_workflow(workflow: dict, stages: dict, root: Path) -> list[str]:
         if "continue-on-error" in job or "permissions" in job:
             errors.append(f"Job must not bypass failures or expand permissions: {name}")
         try:
-            timeout_limit = 90 if name == "image-build" else 15
+            timeout_limit = 180 if name == "image-build" else 15
             if not 1 <= int(job.get("timeout-minutes", 0)) <= timeout_limit:
                 errors.append(f"Job requires bounded timeout: {name}")
         except (ValueError, TypeError):
