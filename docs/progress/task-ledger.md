@@ -19,6 +19,11 @@
 
 ## 补充文档交付
 
+### M01.1 Milvus 自维护构建决策（2026-09-07）
+
+- 用户确认采用 [ADR-0005](../decisions/ADR-0005-maintained-milvus-security-build.md)：以签名的 Milvus v2.6.23 为功能基线，自建并维护安全修补镜像。
+- 当前只确认构建、扫描、兼容和退出策略；候选尚未生成或接入 Compose，M01.1 保持 IN_PROGRESS，M01.2–M01.4 仍未开始。
+
 ### M01.1 安全评估与验收工具增量（2026-09-07）
 
 - 镜像配方提交 `501766a` 已推送；[CI 34071349513 成功](https://github.com/sy824869109/intelligent-commerce-support-v1/actions/runs/34071349513)，包含双平台基础检查及真实镜像构建扫描。
