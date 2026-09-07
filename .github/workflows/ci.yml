@@ -116,7 +116,16 @@ jobs:
           fetch-depth: 2
       # Context is only the dependency recipe, never the workspace or local secrets.
       - name: Build reviewed dependency image without publishing
-        run: docker build --pull --provenance=false --sbom=false --progress=plain --platform=linux/amd64 --file "deploy/images/${{ matrix.path }}/Dockerfile" --tag "ics-${{ matrix.path }}:ci" "deploy/images/${{ matrix.path }}"
+        run: |
+          for attempt in 1 2 3; do
+            if docker build --pull --provenance=false --sbom=false --progress=plain --platform=linux/amd64 --file "deploy/images/${{ matrix.path }}/Dockerfile" --tag "ics-${{ matrix.path }}:ci" "deploy/images/${{ matrix.path }}"; then
+              exit 0
+            fi
+            if [ "$attempt" -eq 3 ]; then
+              exit 1
+            fi
+            sleep 15
+          done
       - name: Export only the built image for isolated scanning
         run: |
           mkdir -p "$RUNNER_TEMP/ics-image-scan"

@@ -32,9 +32,17 @@ TRIVY_IMAGE = (
     "aquasec/trivy:0.74.0@sha256:62b1e65e8869bc4b4c6aa4fa2b21595256c7c2f6018a9d9ad61caf87187c1969"
 )
 IMAGE_BUILD_COMMAND = (
-    "docker build --pull --provenance=false --sbom=false --progress=plain "
+    "for attempt in 1 2 3; do\n"
+    "  if docker build --pull --provenance=false --sbom=false --progress=plain "
     '--platform=linux/amd64 --file "deploy/images/${{ matrix.path }}/Dockerfile" '
-    '--tag "ics-${{ matrix.path }}:ci" "deploy/images/${{ matrix.path }}"'
+    '--tag "ics-${{ matrix.path }}:ci" "deploy/images/${{ matrix.path }}"; then\n'
+    "    exit 0\n"
+    "  fi\n"
+    '  if [ "$attempt" -eq 3 ]; then\n'
+    "    exit 1\n"
+    "  fi\n"
+    "  sleep 15\n"
+    "done"
 )
 IMAGE_EXPORT_COMMAND = (
     'mkdir -p "$RUNNER_TEMP/ics-image-scan"\n'

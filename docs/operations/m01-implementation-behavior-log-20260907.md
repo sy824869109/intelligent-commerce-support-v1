@@ -97,6 +97,8 @@ Milvus 首次导出包含 BuildKit attestation，严格归档绑定校验拒绝�
 3. 旧三服务卷由 root 创建，非 root etcd/SeaweedFS 无法写入；新增只针对两个精确归属卷的临时 helper 修正 UID 1000 所有权，不删除数据。
 4. SeaweedFS multipart abort 与 AWS 返回差异、Milvus 2.6 对象目录变化均通过严格兼容分支处理，没有放宽到“任意成功”。
 5. Docker Desktop 在验证期间重启过一次；随后确认原 KF 六服务全部恢复 healthy，再继续新平台验证。
+6. 首次完整 M01 推送 `70ceb7513be9e76b3dad5f5a08804733676bcc79` 的运行 `34122732595` 因纯 CI 环境缺少 boto3 导入失败，未伪装成功；修正为仅在实际 S3 初始化时加载运行 SDK。
+7. 修正提交 `3dc1b003dbe81903364792e27f54e663e48d76a0` 的运行 `34123971915` 中，双平台基础门禁和四个镜像通过，Milvus 在第三方 GNU libiconv 官方镜像 502/超时后失败；新增最多三次、间隔 15 秒的同命令有界重试，第三次仍失败即阻断，未放宽扫描。
 
 ## 7. 最终验证
 
@@ -117,4 +119,4 @@ Milvus 首次导出包含 BuildKit attestation，严格归档绑定校验拒绝�
 
 ## 9. GitHub 交付
 
-分支：`codex/v1-greenfield`，远端：`sy824869109/intelligent-commerce-support-v1`。最终提交 SHA 和 Actions 运行号在推送、远端验证完成后补入本节；未通过远端门禁前不把“GitHub 交付完成”作为事实。
+分支：`codex/v1-greenfield`，远端：`sy824869109/intelligent-commerce-support-v1`。M01 主实现提交为 `70ceb7513be9e76b3dad5f5a08804733676bcc79`，运行期 SDK 边界修正为 `3dc1b003dbe81903364792e27f54e663e48d76a0`。最终有界重试提交和 Actions 运行链接以本文件所在分支的后续提交及最终交付回复为准；历史失败运行均保留，未删除或重跑成假成功。
