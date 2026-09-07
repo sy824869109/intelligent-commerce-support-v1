@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "artifact": "4.45-m01-security.1",
+  "upstream": {
+    "repository": "https://github.com/seaweedfs/seaweedfs",
+    "tag": "4.45",
+    "commit": "79b87202136cebdaaa7db4d94eaa5915ad381276",
+    "archive_url": "https://codeload.github.com/seaweedfs/seaweedfs/tar.gz/79b87202136cebdaaa7db4d94eaa5915ad381276",
+    "archive_sha256": "d577baa0509178554b35350be261e8a6bebf440c51f0cfb1532a075cf843f1dd",
+    "license": "Apache-2.0",
+    "build_reference": "docker/Dockerfile.go_build",
+    "variant": "normal",
+    "build_tags": []
+  },
+  "builder": {
+    "image": "docker.io/library/golang:1.27.1-alpine3.24",
+    "index_digest": "sha256:cf6fca6641884b8433441b2b0652976f975e1d0fdd26d177eaaf8596087f3125",
+    "linux_amd64_manifest": "sha256:f86f1a6701e3dcc445fec097a42f78b758f15950ccf032c2d3e54e2754d32fdb",
+    "go_version": "1.27.1",
+    "cgo_enabled": false,
+    "toolchain_auto_download": false
+  },
+  "runtime": {
+    "image": "docker.io/library/alpine:3.24.1",
+    "index_digest": "sha256:28bd5fe8b56d1bd048e5babf5b10710ebe0bae67db86916198a6eec434943f8b",
+    "linux_amd64_manifest": "sha256:79ff19e9084a00eece421b2523fb93e22d730e2c0e525905de047e848e56d95f",
+    "extra_apk_packages": [],
+    "removed_packages": ["apk-tools", "ssl_client", "libapk", "libssl3", "libcrypto3"],
+    "ca_bundle": "copied from the pinned official Go builder after package removal",
+    "user": "1000:1000"
+  },
+  "module_changes": [
+    {"module": "github.com/apache/thrift", "version": "v0.24.0", "remove_upstream_replace": true, "advisory": "CVE-2026-43871"},
+    {"module": "golang.org/x/image", "from": "v0.44.0", "version": "v0.45.0", "advisory": "CVE-2026-46603"},
+    {"module": "golang.org/x/crypto", "from": "v0.55.0", "version": "v0.56.0", "advisories": ["CVE-2026-56855", "CVE-2026-78662"]}
+  ],
+  "module_files": {
+    "upstream_go_mod_sha256": "d324e3382f048f161f49604716bc54f4364b74db33a600da7210cb98efbaa68a",
+    "upstream_go_sum_sha256": "39d6ee6c9696ce04c50faf7e23d6527b55324116e3d92369a91812bb2a13a0da",
+    "patched_go_mod_sha256": "f4a22ee7701aa3af011301546459c5e4146be2a184ad735331a7e01d93f9c5f1",
+    "patched_go_sum_sha256": "ffdcca484ee3457b20aabf5d5f53cb4128c23247e29ad7db575d1ca7a6931a28",
+    "language_directive_normalization": "go 1.26 -> go 1.26.0, same language version"
+  },
+  "verified_at": "2026-09-06",
+  "registry_verification": "docker buildx imagetools inspect against docker.io official library repositories",
+  "scope": "new-platform deployment artifact; original KF, old project and reference assets unchanged"
+}

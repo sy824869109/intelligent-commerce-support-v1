@@ -73,7 +73,8 @@ def main() -> int:
         return 1
     message = (
         "Foundation checks PASS. Backend/frontend/runtime contracts/SAST/dependency "
-        "audit/image build are NOT_IMPLEMENTED; 93 business cases remain NOT_RUN.\n"
+        "audit are NOT_IMPLEMENTED; the separate Linux image job builds and scans storage. "
+        "93 business cases remain NOT_RUN.\n"
     )
     print(message)
     # GitHub-provided summary destination only; no arbitrary user file argument.

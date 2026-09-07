@@ -6,3 +6,10 @@
 *.json text eol=lf
 *.sh text eol=lf
 *.ps1 text eol=crlf
+# Security build hashes must survive a Windows checkout unchanged.
+*.lock text eol=lf
+*.patch text eol=lf
+*.sha256 text eol=lf
+Dockerfile text eol=lf
+# Unified-diff context has a significant leading space before tabs/empty lines.
+deploy/images/seaweedfs/dependencies.patch whitespace=-blank-at-eol,-space-before-tab

@@ -6,6 +6,8 @@
 
 ### Added
 
+- 增加独立 SeaweedFS 安全派生构建配方、完整模块锁、许可证和镜像扫描记录；本地复扫 0 HIGH/CRITICAL、保留 1 UNKNOWN。激活真实 GitHub 镜像构建/扫描，不上传镜像、不启动未准入数据库。M01 尚未完成。
+
 - M01.1 增加纯函数存储配置、2048 行 HNSW/S3 安全合成探针、23 项离线单测和哈希锁定 SDK；完整本地基础测试增至 102 项。镜像安全评估发现新阻断，五服务未启动，M01.1 仍 IN_PROGRESS。
 
 - M01.1 增加独立 MySQL/Redis/etcd Compose、tag+digest、随机本地文件密钥、资源归属/内部网络/loopback/健康门禁、开发验证入口及静态正反测试。对象存储和 Milvus 未启动，M01.1 仍 IN_PROGRESS。

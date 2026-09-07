@@ -1,4 +1,4 @@
-"""Validate the M00.4 workflow and scan tracked assets, without exposing matches.
+"""Validate foundation/M01 image CI and scan tracked assets without exposing matches.
 
 This is a small repository safety baseline, not full SAST, vulnerability scanning,
 Git-history secret scanning or business acceptance. YAML is parsed, never executed.
@@ -20,6 +20,28 @@ ACTION_REFS = {
     "conda-incubator/setup-miniconda": "fc2d68f6413eb2d87b895e92f8584b5b94a10167",
 }
 STAGES = {"backend", "frontend", "contracts", "security-audit", "image-build"}
+IMAGE_DOCKERFILE = "deploy/images/seaweedfs/Dockerfile"
+IMAGE_MARKERS = ["Dockerfile*", "apps/**/Dockerfile*", "deploy/**/Dockerfile*"]
+TRIVY_IMAGE = (
+    "aquasec/trivy:0.74.0@sha256:62b1e65e8869bc4b4c6aa4fa2b21595256c7c2f6018a9d9ad61caf87187c1969"
+)
+IMAGE_BUILD_COMMAND = (
+    "docker build --pull --progress=plain --platform=linux/amd64 "
+    "--file deploy/images/seaweedfs/Dockerfile --tag ics-seaweedfs:ci deploy/images/seaweedfs"
+)
+IMAGE_EXPORT_COMMAND = (
+    'mkdir -p "$RUNNER_TEMP/ics-image-scan"\n'
+    'docker image save --output "$RUNNER_TEMP/ics-image-scan/seaweedfs.tar" ics-seaweedfs:ci'
+)
+IMAGE_SCAN_COMMAND = (
+    'docker run --rm --read-only --user "$(id -u):$(id -g)" --cap-drop=ALL '
+    "--security-opt=no-new-privileges --tmpfs /tmp:rw,nosuid,nodev,size=3g \\\n"
+    '  --mount "type=bind,src=$RUNNER_TEMP/ics-image-scan,dst=/scan,readonly" \\\n'
+    f"  {TRIVY_IMAGE} \\\n"
+    "  image --input /scan/seaweedfs.tar --cache-dir /tmp/trivy --scanners vuln "
+    "--severity HIGH,CRITICAL --exit-code 1 --ignore-unfixed=false "
+    "--ignorefile /dev/null --timeout 15m"
+)
 FORBIDDEN_PARTS = {
     "references",
     "legacy",
@@ -75,16 +97,74 @@ def parse_workflow(content: str) -> dict:
     return result
 
 
-def validate_workflow(workflow: dict, stages: dict, root: Path) -> list[str]:
-    """Enforce the current skeleton; activation requires new real jobs/tests."""
+def validate_image_job(job: dict, stage: dict, root: Path) -> list[str]:
+    """Only the reviewed source-built dependency image is active; no fake build/scan."""
     errors = []
+    expected_stage = {
+        "state": "ACTIVE",
+        "enable_by": "M01 reviewed SeaweedFS dependency Dockerfile",
+        "markers": IMAGE_MARKERS,
+        "reviewed_inputs": [IMAGE_DOCKERFILE],
+    }
+    if stage != expected_stage:
+        errors.append("Image stage must preserve reviewed ACTIVE state and all runtime markers")
+    # Scan the full existing marker set: a new application image needs its own review.
+    actual_inputs = {
+        path.relative_to(root).as_posix()
+        for pattern in IMAGE_MARKERS
+        for path in root.glob(pattern)
+        if path.is_file()
+    }
+    if actual_inputs != {IMAGE_DOCKERFILE}:
+        errors.append("Image inputs must match the reviewed dependency recipe; review new images")
+    expected_job = {
+        "name": "Reviewed SeaweedFS dependency image build and vulnerability gate",
+        "needs": "foundation",
+        "runs-on": "ubuntu-24.04",
+        "timeout-minutes": "45",
+        "defaults": {"run": {"shell": "bash"}},
+        "steps": [
+            {
+                "name": "Checkout reviewed image recipe",
+                "uses": "actions/checkout@" + ACTION_REFS["actions/checkout"],
+                "with": {"persist-credentials": "false", "fetch-depth": "2"},
+            },
+            {
+                "name": "Build reviewed dependency image without publishing",
+                "run": IMAGE_BUILD_COMMAND,
+            },
+            {
+                "name": "Export only the built image for isolated scanning",
+                "run": IMAGE_EXPORT_COMMAND,
+            },
+            {
+                "name": "Scan locked image archive and fail on HIGH or CRITICAL",
+                "run": IMAGE_SCAN_COMMAND,
+            },
+        ],
+    }
+    normalized_job = dict(job)
+    normalized_job["steps"] = [dict(step) for step in job.get("steps", [])]
+    for step in normalized_job["steps"]:
+        if isinstance(step.get("run"), str):
+            step["run"] = step["run"].strip()
+    if normalized_job != expected_job:
+        errors.append("Image build/scan must use the exact unskipped least-privilege real commands")
+    return errors
+
+
+def validate_workflow(workflow: dict, stages: dict, root: Path) -> list[str]:
+    """Keep application placeholders honest and enforce the reviewed image activation."""
+    errors = []
+    if set(workflow) != {"name", "on", "permissions", "concurrency", "jobs"}:
+        errors.append("Unexpected workflow-level overrides, environment or execution inputs")
     triggers = workflow.get("on", {})
     if set(triggers) != {"push", "pull_request", "workflow_dispatch"}:
         errors.append("Only push/pull_request/workflow_dispatch triggers are allowed")
     if workflow.get("permissions") != {"contents": "read"}:
         errors.append("Workflow must use contents: read only")
     for event in ("push", "pull_request"):
-        if triggers.get(event, {}).get("branches") != ["main", "codex/**"]:
+        if triggers.get(event, {}) != {"branches": ["main", "codex/**"]}:
             errors.append(f"Missing branch coverage: {event}")
     jobs = workflow.get("jobs", {})
     if set(jobs) != STAGES | {"foundation"}:
@@ -95,7 +175,8 @@ def validate_workflow(workflow: dict, stages: dict, root: Path) -> list[str]:
         if "continue-on-error" in job or "permissions" in job:
             errors.append(f"Job must not bypass failures or expand permissions: {name}")
         try:
-            if not 1 <= int(job.get("timeout-minutes", 0)) <= 15:
+            timeout_limit = 45 if name == "image-build" else 15
+            if not 1 <= int(job.get("timeout-minutes", 0)) <= timeout_limit:
                 errors.append(f"Job requires bounded timeout: {name}")
         except (ValueError, TypeError):
             errors.append(f"Invalid timeout: {name}")
@@ -144,6 +225,9 @@ def validate_workflow(workflow: dict, stages: dict, root: Path) -> list[str]:
     ]:
         errors.append("Linux and Windows runners are required")
     for name, stage in stages.get("stages", {}).items():
+        if name == "image-build":
+            errors.extend(validate_image_job(jobs.get(name, {}), stage, root))
+            continue
         if stage.get("state") != "NOT_IMPLEMENTED" or not stage.get("markers"):
             errors.append(f"Stage activation requires replacing its skeleton contract: {name}")
         if jobs.get(name, {}).get("if") != "${{ false }}":

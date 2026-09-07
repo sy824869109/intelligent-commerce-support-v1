@@ -23,7 +23,8 @@
 
 - 新增 [安全评估记录](../testing/m01-security-evaluation-20260907.md)、无 I/O 配置生成器、S3/Milvus 合成探针、SDK 哈希锁及 23 项探针单测；本地完整 CI 共 102 项通过。
 - 原 SeaweedFS 4.45 实扫 2 HIGH/23 UNKNOWN；Milvus 2.5.27 实扫 3 CRITICAL/51 HIGH。未把隔离或版本较新当作修复，派生安全构建/维护版本继续核查。
-- 本增量不复制未准入 Compose、不启动新知识存储，不推进 M01.2。GitHub 提交/CI 完成后补记证据。
+- 本增量不复制未准入 Compose、不启动新知识存储，不推进 M01.2。实现 `1c9a861` 已推送；[双平台 CI 34047165219 成功](https://github.com/sy824869109/intelligent-commerce-support-v1/actions/runs/34047165219)。
+- 后续独立镜像增量：SeaweedFS 三项依赖修补及最小运行系统已构建，完整本地复扫为 0 HIGH/CRITICAL、1 UNKNOWN；见 [验证记录](../testing/m01-storage-image-security.md)。新增真实镜像构建/扫描 CI，但 S3/Milvus 运行和 M01.2–M01.4 仍未完成。
 
 ### M01.1 当前增量（2026-09-06）
 

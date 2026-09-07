@@ -87,9 +87,31 @@ jobs:
     steps:
       - run: echo "Runtime SAST and dependency audits are not implemented."
   image-build:
-    name: Application image build (NOT IMPLEMENTED - first Dockerfile)
-    if: ${{ false }}
+    name: Reviewed SeaweedFS dependency image build and vulnerability gate
+    needs: foundation
     runs-on: ubuntu-24.04
-    timeout-minutes: 5
+    timeout-minutes: 45
+    defaults:
+      run:
+        shell: bash
     steps:
-      - run: echo "No application Dockerfile exists; no image is built or published."
+      - name: Checkout reviewed image recipe
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+          fetch-depth: 2
+      # Context is only the dependency recipe, never the workspace or local secrets.
+      - name: Build reviewed dependency image without publishing
+        run: docker build --pull --progress=plain --platform=linux/amd64 --file deploy/images/seaweedfs/Dockerfile --tag ics-seaweedfs:ci deploy/images/seaweedfs
+      - name: Export only the built image for isolated scanning
+        run: |
+          mkdir -p "$RUNNER_TEMP/ics-image-scan"
+          docker image save --output "$RUNNER_TEMP/ics-image-scan/seaweedfs.tar" ics-seaweedfs:ci
+      # Scanner sees an image archive read-only, not Docker's socket or the repository.
+      # No ignore-unfixed or ignore file: any HIGH/CRITICAL finding blocks this job.
+      - name: Scan locked image archive and fail on HIGH or CRITICAL
+        run: |
+          docker run --rm --read-only --user "$(id -u):$(id -g)" --cap-drop=ALL --security-opt=no-new-privileges --tmpfs /tmp:rw,nosuid,nodev,size=3g \
+            --mount "type=bind,src=$RUNNER_TEMP/ics-image-scan,dst=/scan,readonly" \
+            aquasec/trivy:0.74.0@sha256:62b1e65e8869bc4b4c6aa4fa2b21595256c7c2f6018a9d9ad61caf87187c1969 \
+            image --input /scan/seaweedfs.tar --cache-dir /tmp/trivy --scanners vuln --severity HIGH,CRITICAL --exit-code 1 --ignore-unfixed=false --ignorefile /dev/null --timeout 15m
