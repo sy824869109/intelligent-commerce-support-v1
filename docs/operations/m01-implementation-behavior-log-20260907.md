@@ -52,7 +52,9 @@
 
 ### 下载到审计工作区（不提交 Git）
 
-根目录：`C:\Users\111\Documents\智能电商客服重构\artifact_work\`。
+根目录：`F:\heima\ai\python\project\i\_local_artifacts\`。该目录随项目存放但被 Git 整体忽略，避免镜像归档、工具链、缓存和审查副本误上传。
+
+2026-09-08 按项目统一存放要求，将原 `C:\Users\111\Documents\智能电商客服重构\artifact_work\` 完整迁移至上述目录。迁移前基线为 148,297 个文件、7,735,112,422 字节；跨盘移动首次受 Windows 权限/合并语义影响而仅完成部分文件，随后以精确源/目标增量复制。删除 C 盘残留前确认目标文件数和总字节与基线一致、全部剩余相对路径与长度一致，并复核关键源码包及 Milvus 证据 SHA-256；最终 C 盘原路径已不存在。没有把 `_local_artifacts` 纳入 Git。
 
 | 文件 | 字节 | SHA-256 | 用途 |
 |---|---:|---|---|
@@ -78,7 +80,7 @@ Milvus v2.6.23 与 SeaweedFS 4.45 的固定源码、Go 工具链和基础镜像�
 | SeaweedFS | `sha256:dfac2e817ad5b9b2c6ee725127905f3893787089690318772c942f4239989c00` | 49,251,364 | 0/0 |
 | Milvus | `sha256:2438dbd963d8373bdd1a1cc75bb054db219b4c279b5bba2dd92cac443e8a37c2` | 505,066,180 | 0/0 |
 
-证据目录：`artifact_work\infra-maintained-evidence\`、`milvus-evidence-j2\` 和既有 `seaweedfs-evidence\`。最终有界双线程 Milvus tar 为 `ics-milvus-j2.tar`（505,082,880 字节，SHA-256 `ECF48484D7A526AD2DAFD9E19DA9A274399F0151A198BF3CB039CE635AB5C878`），报告为 `ics-milvus-j2.trivy.json`（661,470 字节，SHA-256 `4F34D2373C9A5959EBCF3492A1D0D58E460075F6760E83CFA6C6F4A5811DD1E8`）；报告含 3 个目标，HIGH/CRITICAL 为 0。MySQL 最终证据为 `mysql-final.tar` 和 `mysql-final.trivy.json`；Redis/etcd 对应同名 tar/json。旧的单线程 Milvus 证据保留作历史记录，不再作为当前镜像锁。
+证据目录：`_local_artifacts\infra-maintained-evidence\`、`_local_artifacts\milvus-evidence-j2\` 和既有 `_local_artifacts\seaweedfs-evidence\`。最终有界双线程 Milvus tar 为 `ics-milvus-j2.tar`（505,082,880 字节，SHA-256 `ECF48484D7A526AD2DAFD9E19DA9A274399F0151A198BF3CB039CE635AB5C878`），报告为 `ics-milvus-j2.trivy.json`（661,470 字节，SHA-256 `4F34D2373C9A5959EBCF3492A1D0D58E460075F6760E83CFA6C6F4A5811DD1E8`）；报告含 3 个目标，HIGH/CRITICAL 为 0。MySQL 最终证据为 `mysql-final.tar` 和 `mysql-final.trivy.json`；Redis/etcd 对应同名 tar/json。旧的单线程 Milvus 证据保留作历史记录，不再作为当前镜像锁。
 
 Milvus 首次导出包含 BuildKit attestation，严格归档绑定校验拒绝；随后以 `--provenance=false --sbom=false` 重建、重新导出、重新扫描并通过。没有降低扫描严重度或忽略未修复漏洞。
 
