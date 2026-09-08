@@ -17,7 +17,7 @@ M01.1–M01.4 的本地开发基础设施已实施完成：五服务静态边界
 | 环境分层 | PASS | dev/test/prod 三份无密钥配置通过；dev 仅 loopback；prod 强制 TLS/外部密钥契约 |
 | 镜像安全 | PASS | 五个本地镜像均与锁定 ID 一致，完整 tar 扫描 HIGH=0、CRITICAL=0 |
 | 本地质量门禁 | PASS | 结构、治理、48 条标准引用、格式、静态检查和 209 个单测通过；Windows 权限限制导致 5 个符号链接用例跳过，由 Linux CI 覆盖 |
-| GitHub push CI | PASS/分层 | Windows/Linux 基础门禁及四个轻量镜像真实构建扫描；Milvus 公共 runner 超时后改为人工触发的受控构建机审计，push 中明确显示 skipped，不冒充通过 |
+| GitHub CI | PASS/分层 | 完整五镜像运行 `34153937684` SUCCESS，Milvus 构建/导出/扫描约 2 小时 35 分；随后日常 push 仅真实构建扫描四个轻量镜像，Milvus 改为受控构建机人工审计，skipped 不冒充新的通过 |
 
 ## 真实闭环示例
 

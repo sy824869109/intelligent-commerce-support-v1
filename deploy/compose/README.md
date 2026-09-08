@@ -48,4 +48,4 @@ Makefile 同步提供 `infra-images`、`infra-config`、`infra-up`、`infra-heal
 - 不要执行 `down -v`、全局 prune、停止全部容器或删除卷。密钥丢失、卷归属不符、镜像摘要不符时先保留现场。
 - SeaweedFS 4.45 在 multipart abort 后可能返回严格空列表而非 AWS 404；探针只接受这两种无残留结果。Milvus 2.6 使用 `index_files` 对象路径，探针同时兼容旧 `index_log` 以识别真实索引对象。
 
-完整验收与行为记录见 `docs/testing/m01-final-validation.md` 和 `docs/operations/m01-implementation-behavior-log-20260907.md`。209 个工具单测和 45 项 S3/Milvus 合成检查不等于 93 条业务验收；业务用例仍为 NOT_RUN。每次 push 会真实构建并扫描 MySQL、Redis、etcd、SeaweedFS；Milvus 完整源码构建因公共 runner 两次分别耗尽 90/180 分钟，改为只在带 `ics-image-builder` 标签的受控 Linux 构建机上人工触发。push 中跳过状态保持可见，不能写成远端 Milvus 审计通过。
+完整验收与行为记录见 `docs/testing/m01-final-validation.md` 和 `docs/operations/m01-implementation-behavior-log-20260907.md`。209 个工具单测和 45 项 S3/Milvus 合成检查不等于 93 条业务验收；业务用例仍为 NOT_RUN。完整五镜像远端运行 `34153937684` 已成功，但 Milvus 单项耗时约 2 小时 35 分；因此每次 push 只真实构建并扫描 MySQL、Redis、etcd、SeaweedFS，Milvus 完整源码审计只在带 `ics-image-builder` 标签的受控 Linux 构建机上人工触发。push 中跳过状态保持可见，不能写成一次新的远端 Milvus 审计通过。

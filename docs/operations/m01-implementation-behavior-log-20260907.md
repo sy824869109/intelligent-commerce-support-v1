@@ -102,7 +102,7 @@ Milvus 首次导出包含 BuildKit attestation，严格归档绑定校验拒绝�
 8. 有界重试提交 `81d9738c7acda59c67671def316f72abf652462f` 的运行 `34127584714` 中，Milvus 在单线程 OpenBLAS/C++ 依赖编译时达到 90 分钟并被取消；日志显示仍在正常编译而非测试失败。考虑同一配方本地真实构建约 53 分钟、GitHub 双核 runner 性能差异及重试预算，将单镜像硬上限调整为 180 分钟；仍禁止无限运行和跳过扫描。
 9. 180 分钟修正提交 `fdd9dfb33d95d3694ed55d5d286b0787aa03cdd0` 的运行 `34136809211` 中，双平台基础门禁与 MySQL、Redis、etcd、SeaweedFS 构建/扫描全部成功；Milvus 无编译错误，但在 OpenBLAS/Milvus 原生编译中耗尽 180 分钟并被取消。复核发现 `MAKEFLAGS=-j1` 将普通 Make 子构建固定为单线程，与其他工具的双线程限制不一致；调整为有界 `-j2`，不改 Milvus 源码提交、Go/模块锁、基础镜像、最终运行内容或安全门禁。最终修正提交和运行链接以交付回复为准。
 10. 有界并行提交 `ca42802479f784f391b19bd1a3726b23b043d547` 后，本机构建已成功产出新镜像；统一镜像工具随后因旧 ID 锁不匹配而按设计失败，这不是编译失败。新镜像经完整归档扫描确认 3 个目标、HIGH/CRITICAL 为 0 后，才更新 Compose 与 `images.lock.json` 双锁；未复用旧扫描报告，也未在扫描前替换运行容器。
-11. 最终锁提交 `564beba6fd65b655fc4c7d7fb42dd85fd719fe9b` 的公共 runner 运行 `34153937684` 在 120 分钟后仍处于 Milvus 编译步骤；结合前两次 90/180 分钟取消证据，确认 GitHub 公共双核 runner 不适合作为每次 push 的 Milvus 源码构建器。将日常 CI 分层为：每次 push 阻断式构建扫描 MySQL、Redis、etcd、SeaweedFS，并静态验证全部五份配方、锁与审计策略；Milvus 完整构建扫描仅在人工 `workflow_dispatch` 且标签为 `self-hosted/linux/x64/ics-image-builder` 的受控构建机执行。没有将跳过写成 PASS，本机第 5 节的完整 Milvus 证据仍是本轮实际验收依据。
+11. 最终锁提交 `564beba6fd65b655fc4c7d7fb42dd85fd719fe9b` 的完整五镜像公共 runner 运行 `34153937684` 最终 SUCCESS。Milvus 作业从 2026-09-08 03:03:41 到 05:38:34（Asia/Shanghai），总计约 2 小时 35 分；构建、镜像导出、固定 Trivy HIGH/CRITICAL 扫描均成功。该结果证明远端可复现，但结合前两次 90/180 分钟取消和本次耗时，公共双核 runner 不适合作为每次 push 的 Milvus 源码构建器。因此日常 CI 分层为：每次 push 阻断式构建扫描 MySQL、Redis、etcd、SeaweedFS，并静态验证全部五份配方、锁与审计策略；Milvus 完整构建扫描改在人工 `workflow_dispatch` 且标签为 `self-hosted/linux/x64/ics-image-builder` 的受控构建机执行。push 中跳过保持可见，不能冒充一次新的 Milvus 审计通过。
 
 ## 7. 最终验证
 
