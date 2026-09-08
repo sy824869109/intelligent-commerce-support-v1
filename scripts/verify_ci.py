@@ -20,6 +20,7 @@ ACTION_REFS = {
     "conda-incubator/setup-miniconda": "fc2d68f6413eb2d87b895e92f8584b5b94a10167",
 }
 STAGES = {"backend", "frontend", "contracts", "security-audit", "image-build"}
+WORKFLOW_JOBS = STAGES | {"foundation", "milvus-audit"}
 IMAGE_DOCKERFILES = [
     "deploy/images/etcd/Dockerfile",
     "deploy/images/milvus/Dockerfile",
@@ -58,6 +59,9 @@ IMAGE_SCAN_COMMAND = (
     "--severity HIGH,CRITICAL --exit-code 1 --ignore-unfixed=false "
     "--ignorefile /dev/null --timeout 20m"
 )
+MILVUS_BUILD_COMMAND = IMAGE_BUILD_COMMAND.replace("${{ matrix.path }}", "milvus")
+MILVUS_EXPORT_COMMAND = IMAGE_EXPORT_COMMAND.replace("${{ matrix.path }}", "milvus")
+MILVUS_SCAN_COMMAND = IMAGE_SCAN_COMMAND.replace("${{ matrix.path }}", "milvus")
 FORBIDDEN_PARTS = {
     "references",
     "legacy",
@@ -137,7 +141,7 @@ def validate_image_job(job: dict, stage: dict, root: Path) -> list[str]:
         "name": "Reviewed ${{ matrix.name }} image build and vulnerability gate",
         "needs": "foundation",
         "runs-on": "ubuntu-24.04",
-        "timeout-minutes": "180",
+        "timeout-minutes": "45",
         "strategy": {
             "fail-fast": "false",
             "matrix": {
@@ -146,7 +150,6 @@ def validate_image_job(job: dict, stage: dict, root: Path) -> list[str]:
                     {"name": "Redis", "path": "redis"},
                     {"name": "etcd", "path": "etcd"},
                     {"name": "SeaweedFS", "path": "seaweedfs"},
-                    {"name": "Milvus", "path": "milvus"},
                 ]
             },
         },
@@ -181,6 +184,47 @@ def validate_image_job(job: dict, stage: dict, root: Path) -> list[str]:
     return errors
 
 
+def validate_milvus_audit(job: dict) -> list[str]:
+    """Keep the heavy audit real, manual and bound to a controlled Linux builder."""
+    expected = {
+        "name": "Milvus full source audit (manual, self-hosted)",
+        "if": "github.event_name == 'workflow_dispatch'",
+        "needs": "foundation",
+        "runs-on": ["self-hosted", "linux", "x64", "ics-image-builder"],
+        "timeout-minutes": "180",
+        "defaults": {"run": {"shell": "bash"}},
+        "steps": [
+            {
+                "name": "Checkout reviewed Milvus recipe",
+                "uses": "actions/checkout@" + ACTION_REFS["actions/checkout"],
+                "with": {"persist-credentials": "false", "fetch-depth": "2"},
+            },
+            {
+                "name": "Build reviewed Milvus image without publishing",
+                "run": MILVUS_BUILD_COMMAND,
+            },
+            {
+                "name": "Export only the built Milvus image for isolated scanning",
+                "run": MILVUS_EXPORT_COMMAND,
+            },
+            {
+                "name": "Scan locked Milvus archive and fail on HIGH or CRITICAL",
+                "run": MILVUS_SCAN_COMMAND,
+            },
+        ],
+    }
+    normalized = dict(job)
+    normalized["steps"] = [dict(step) for step in job.get("steps", [])]
+    for step in normalized["steps"]:
+        if isinstance(step.get("run"), str):
+            step["run"] = step["run"].strip()
+    return (
+        []
+        if normalized == expected
+        else ["Milvus audit must remain a real manual build/scan on the controlled image builder"]
+    )
+
+
 def validate_workflow(workflow: dict, stages: dict, root: Path) -> list[str]:
     """Keep application placeholders honest and enforce the reviewed image activation."""
     errors = []
@@ -195,7 +239,7 @@ def validate_workflow(workflow: dict, stages: dict, root: Path) -> list[str]:
         if triggers.get(event, {}) != {"branches": ["main", "codex/**"]}:
             errors.append(f"Missing branch coverage: {event}")
     jobs = workflow.get("jobs", {})
-    if set(jobs) != STAGES | {"foundation"}:
+    if set(jobs) != WORKFLOW_JOBS:
         errors.append("Workflow job set does not match the foundation contract")
     if stages.get("schema_version") != 1 or set(stages.get("stages", {})) != STAGES:
         errors.append("CI stage manifest schema or stages do not match")
@@ -203,7 +247,7 @@ def validate_workflow(workflow: dict, stages: dict, root: Path) -> list[str]:
         if "continue-on-error" in job or "permissions" in job:
             errors.append(f"Job must not bypass failures or expand permissions: {name}")
         try:
-            timeout_limit = 180 if name == "image-build" else 15
+            timeout_limit = 180 if name == "milvus-audit" else 45 if name == "image-build" else 15
             if not 1 <= int(job.get("timeout-minutes", 0)) <= timeout_limit:
                 errors.append(f"Job requires bounded timeout: {name}")
         except (ValueError, TypeError):
@@ -252,6 +296,7 @@ def validate_workflow(workflow: dict, stages: dict, root: Path) -> list[str]:
         "windows-2022",
     ]:
         errors.append("Linux and Windows runners are required")
+    errors.extend(validate_milvus_audit(jobs.get("milvus-audit", {})))
     for name, stage in stages.get("stages", {}).items():
         if name == "image-build":
             errors.extend(validate_image_job(jobs.get(name, {}), stage, root))

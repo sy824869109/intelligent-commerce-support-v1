@@ -28,6 +28,7 @@ class ImageWorkflowTests(unittest.TestCase):
             marker.parent.mkdir(parents=True, exist_ok=True)
             marker.write_text("# Synthetic path marker only; never built.\n", encoding="utf-8")
         self.job = self.workflow["jobs"]["image-build"]
+        self.audit_job = self.workflow["jobs"]["milvus-audit"]
 
     def validate(self):
         return ci.validate_workflow(self.workflow, self.stages, self.root)
@@ -145,8 +146,28 @@ class ImageWorkflowTests(unittest.TestCase):
         del self.job["needs"]
         self.assert_rejected()
 
-    def test_image_timeout_cannot_exceed_180_minutes(self):
-        self.job["timeout-minutes"] = "181"
+    def test_regular_image_timeout_cannot_exceed_45_minutes(self):
+        self.job["timeout-minutes"] = "46"
+        self.assert_rejected()
+
+    def test_milvus_audit_cannot_run_implicitly_on_push(self):
+        del self.audit_job["if"]
+        self.assert_rejected()
+
+    def test_milvus_audit_requires_controlled_builder(self):
+        self.audit_job["runs-on"] = "ubuntu-24.04"
+        self.assert_rejected()
+
+    def test_milvus_audit_cannot_fake_build(self):
+        self.audit_job["steps"][1]["run"] = 'echo "milvus passed"'
+        self.assert_rejected()
+
+    def test_milvus_audit_cannot_skip_scan(self):
+        self.audit_job["steps"][-1]["if"] = "${{ false }}"
+        self.assert_rejected()
+
+    def test_milvus_audit_timeout_cannot_exceed_180_minutes(self):
+        self.audit_job["timeout-minutes"] = "181"
         self.assert_rejected()
 
     def test_foundation_timeout_not_relaxed(self):

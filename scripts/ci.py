@@ -73,7 +73,8 @@ def main() -> int:
         return 1
     message = (
         "Foundation checks PASS. Backend/frontend/runtime contracts/SAST/dependency "
-        "audit are NOT_IMPLEMENTED; Linux image jobs build and scan all five M01 dependencies. "
+        "audit are NOT_IMPLEMENTED; push CI builds/scans four bounded images and validates "
+        "the Milvus policy, while its full source audit is manual on the controlled builder. "
         "93 business cases remain NOT_RUN.\n"
     )
     print(message)
