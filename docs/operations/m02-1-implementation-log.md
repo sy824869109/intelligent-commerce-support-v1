@@ -2,6 +2,10 @@
 
 日期：2026-09-08。范围：网关应用工厂、健康与错误响应、关联日志、后端质量门禁。
 
+交付结果：M02.1 已完成，实施提交 `acc5fb3` 已推送至 `codex/v1-greenfield`。
+[远端验收运行 34187050206](https://github.com/sy824869109/intelligent-commerce-support-v1/actions/runs/34187050206) 全部必需作业通过。
+随后仅同步 README、台账、验收、行为记录与变更日志的完成状态；不提前实施 M02.2。
+
 ## 写入文件与作用
 
 - apps/api-gateway/ics_gateway：settings 配置边界、responses 返回结构、middleware 请求关联/脱敏日志、app 应用与生命周期。
@@ -61,7 +65,7 @@ $env:PYTHONDONTWRITEBYTECODE='1'
 5. pip-audit 不识别假定的 PIP_AUDIT_CACHE_DIR，初次审计在 C 盘自动生成 67 个临时缓存文件。
    已改为显式 --cache-dir 指向项目 `_local_artifacts/caches/pip-audit`，复扫通过且无缓存写入警告。
    只针对本轮新文件尝试迁移，因 Windows 加密属性失败；后续精确清理被自动安全检查拦截。
-   原 C 盘临时缓存保留待处理，不声称已经清空；既有 Docker 数据和旧依赖没有迁移或删除。
+   原 C 盘临时缓存保留待处理（67 个文件，共 605,910 字节，位于 C:\Users\111\AppData\Local\pip-audit\Cache），不声称已经清空；既有 Docker 数据和旧依赖没有迁移或删除。
 
 本轮后台启动网关供本机审查，创建时 PID 为 27980。日志位于 `_local_artifacts/m02-1/gateway.stdout.log`
 和 `gateway.stderr.log`；可先核对进程命令行再停止该实例，不应按 Python 程序名全局停止。

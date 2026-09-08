@@ -6,7 +6,7 @@
 
 ### Added
 
-- M02.1 新网关应用工厂、生命周期健康、统一错误返回、请求关联与脱敏 JSON 日志；项目内独立 Conda 环境及运行/工具哈希锁。24 项后端测试、本机 HTTP、Bandit/pip-audit 已通过，激活 Windows/Linux 后端与 Python 安全 CI；数据库事务、业务接口和 93 条业务验收尚未完成。
+- M02.1 新网关应用工厂、生命周期健康、统一错误返回、请求关联与脱敏 JSON 日志；项目内独立 Conda 环境及运行/工具哈希锁。24 项后端测试、本机 HTTP、Bandit/pip-audit 已通过，Windows/Linux 后端与 Python 安全 CI 远端通过（运行 34187050206，实施提交 acc5fb3），M02.1 完成；数据库事务、业务接口和 93 条业务验收尚未完成。
 
 - 完成 M01.1–M01.4：新平台五服务 Compose、五份锁定安全镜像、SeaweedFS S3 与 Milvus 数据闭环、dev/test/prod 配置层、密钥初始化、健康检查、停止重启和强制重建持久化演练、统一运行命令及完整行为审计。五镜像 HIGH/CRITICAL 为 0，本地 203 项工具单测通过；93 条业务用例仍为 NOT_RUN。
 

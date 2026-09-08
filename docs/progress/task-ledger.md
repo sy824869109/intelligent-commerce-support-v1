@@ -19,9 +19,9 @@
 | M01.2 初始化与持久化 | DONE | 两个固定 S3 桶、非 root 卷准备、五类哨兵 stop/start 持久化与精准清理通过 | M01 最终提交与 CI 见下方收口记录 |
 | M01.3 环境配置分层 | DONE | dev/test/prod 无密钥配置，开发仅 loopback，生产 TLS/外部密钥契约 | M01 最终提交与 CI 见下方收口记录 |
 | M01.4 生命周期与升级演练 | DONE | 统一启动/健康/停止/重启测试/强制重建入口，五类数据跨重建保留 | M01 最终提交与 CI 见下方收口记录 |
-| M02.1 后端应用骨架 | IN_PROGRESS | 应用工厂、健康/错误/关联日志、24 项后端测试、Bandit/pip-audit、本机 HTTP 通过 | 等待本阶段提交的双平台后端与安全门禁 |
+| M02.1 后端应用骨架 | DONE | 应用工厂、健康/错误/关联日志、24 项后端测试、Bandit/pip-audit、本机 HTTP 通过 | acc5fb3；GitHub Actions 34187050206 双平台后端与安全门禁 SUCCESS |
 
-M02.1 新环境在项目 `_local_artifacts/dependencies/platform`，新缓存留在项目内；既有 Docker 数据不迁移。
+M02.1 新环境在项目 `_local_artifacts/dependencies/platform`，后续缓存已固定到项目内；首次审计误生成的 C 盘缓存因迁移失败和清理被安全检查拦截而暂留，详见行为记录。既有 Docker 数据不迁移。
 本阶段尚未实施 M02.2 数据库事务/迁移、M02.3 事件合同或 M02.4 完整观测库。
 详见 [M02.1 行为记录](../operations/m02-1-implementation-log.md) 和 [验收](../testing/m02-1-gateway.md)。
 
@@ -32,7 +32,7 @@ M02.1 新环境在项目 `_local_artifacts/dependencies/platform`，新缓存留
 - 五个安全派生镜像完整归档扫描均为 0 HIGH/CRITICAL；配方、源锁和五路 GitHub 构建扫描已纳入仓库。
 - 本地结构、治理、48 条标准引用、格式、静态检查和 203 项单测通过；Windows 跳过 5 个符号链接权限用例，由 Linux CI 覆盖。
 - 三份只读参考归档 SHA-256 与基线完全一致，原 KF 六个容器均 healthy。详细清单见 [行为记录](../operations/m01-implementation-behavior-log-20260907.md) 与 [最终验收](../testing/m01-final-validation.md)。
-- 93 条业务用例仍为 NOT_RUN；下一任务是 M02.1，不提前声称业务系统已建成。
+- 93 条业务用例仍为 NOT_RUN；下一任务是 M02.2，不提前声称业务系统已建成。
 
 ## 补充文档交付
 

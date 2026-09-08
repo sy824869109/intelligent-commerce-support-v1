@@ -1,6 +1,11 @@
 # M02.1 网关验收
 
-本地验收已通过，等待本提交 GitHub 远端门禁完成。
+本地与 GitHub 远端验收均通过，M02.1 完成。
+
+实施提交：`acc5fb31b3f74c0429a52802c32315645119e0b4`。
+[GitHub Actions 验收运行 34187050206](https://github.com/sy824869109/intelligent-commerce-support-v1/actions/runs/34187050206) 结果 SUCCESS：
+Windows/Linux 基础门禁与后端测试、后端源码与依赖审计、四项既有基础镜像门禁全部通过。
+前端与运行时事件合同仍按阶段跳过；Milvus 全量源码审计仍按既有手动策略执行，不计为本次新增验收。
 
 | 检查 | 本地结果 |
 |---|---|
