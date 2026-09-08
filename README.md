@@ -5,7 +5,7 @@
 ## 当前进度
 
 - 已完成：M00.1–M00.4 与 M01.1–M01.4
-- 当前任务：`M02.1 后端工程骨架与统一配置`（尚未开始）
+- 当前任务：`M02.1 后端工程骨架与统一配置`（本地验收通过，等待远端 CI）
 - 状态：新平台独立 MySQL、Redis、etcd、SeaweedFS、Milvus 全部健康；认证读写、S3/向量数据闭环、停止重启与强制重建持久化通过，本地 209 项工具单测通过。93 条业务用例仍未执行
 - V1 目标：前后端、业务服务、KF RAG 知识引擎、人工工单和数据闭环在局域网内完整运行
 
@@ -71,6 +71,10 @@ F:\heima\ai\python\day01\Anaconda\envs\intelligent-commerce-support-v1\python.ex
 详细规则见 [模块边界](docs/architecture/module-boundaries.md) 和 [项目目录](docs/architecture/project-layout.md)。
 
 ## 项目治理
+
+- [M02.1 网关运行与配置](apps/api-gateway/README.md)
+- [M02.1 行为记录与新依赖位置](docs/operations/m02-1-implementation-log.md)
+- [M02.1 验收记录](docs/testing/m02-1-gateway.md)
 
 - [当前全景技术流程图：逐步讲解](docs/architecture/v1-review-20260905/V1全景技术流程图_逐步讲解.html)
 - [全景图阅读说明](docs/architecture/v1-review-20260905/全景流程图_阅读说明.md)

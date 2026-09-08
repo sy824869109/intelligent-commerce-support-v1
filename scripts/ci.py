@@ -72,8 +72,9 @@ def main() -> int:
         print(f"Foundation CI FAILED: {type(exc).__name__}")
         return 1
     message = (
-        "Foundation checks PASS. Backend/frontend/runtime contracts/SAST/dependency "
-        "audit are NOT_IMPLEMENTED; push CI builds/scans four bounded images and validates "
+        "Foundation checks PASS. Backend tests and Python SAST/dependency audit run in "
+        "separate ACTIVE jobs; frontend and event runtime contracts remain NOT_IMPLEMENTED. "
+        "Push CI builds/scans four bounded images and validates "
         "the Milvus policy, while its full source audit is manual on the controlled builder. "
         "93 business cases remain NOT_RUN.\n"
     )

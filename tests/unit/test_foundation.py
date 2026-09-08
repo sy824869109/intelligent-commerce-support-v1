@@ -65,10 +65,12 @@ class WorkflowTests(unittest.TestCase):
         self.assertTrue(self.validate())
 
     def test_fake_enabled_placeholder_rejected(self):
-        del self.workflow["jobs"]["backend"]["if"]
+        self.workflow["jobs"]["backend"]["steps"][-1]["run"] = 'echo "passed"'
         self.assertTrue(self.validate())
 
     def test_new_runtime_source_requires_activation(self):
+        self.stages["stages"]["backend"]["state"] = "NOT_IMPLEMENTED"
+        self.stages["stages"]["security-audit"]["state"] = "NOT_IMPLEMENTED"
         with tempfile.TemporaryDirectory(prefix="commerce-ci-test-") as folder:
             root = Path(folder)
             target = root / "apps" / "api-gateway"

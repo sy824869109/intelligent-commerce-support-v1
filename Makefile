@@ -1,4 +1,4 @@
-.PHONY: help check ci env-check governance-check structure-check infra-images infra-config infra-up infra-health infra-stop infra-restart-test infra-upgrade
+.PHONY: help check ci env-check governance-check structure-check infra-images infra-config infra-up infra-health infra-stop infra-restart-test infra-upgrade gateway backend-test backend-security
 
 help:
 	@echo "Available targets: check, ci, infra-images, infra-config, infra-up, infra-health, infra-stop, infra-restart-test, infra-upgrade"
@@ -38,3 +38,12 @@ infra-restart-test:
 
 infra-upgrade:
 	@python scripts/local_infra.py upgrade
+
+gateway:
+	@python scripts/run_gateway.py
+
+backend-test:
+	@python scripts/check_backend.py tests
+
+backend-security:
+	@python scripts/check_backend.py security

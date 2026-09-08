@@ -301,6 +301,11 @@ def validate_workflow(workflow: dict, stages: dict, root: Path) -> list[str]:
         if name == "image-build":
             errors.extend(validate_image_job(jobs.get(name, {}), stage, root))
             continue
+        if name in {"backend", "security-audit"} and stage.get("state") == "ACTIVE":
+            errors.extend(validate_backend_job(name, jobs.get(name, {}), root))
+            if not stage.get("markers"):
+                errors.append(f"Active stage must retain runtime markers: {name}")
+            continue
         if stage.get("state") != "NOT_IMPLEMENTED" or not stage.get("markers"):
             errors.append(f"Stage activation requires replacing its skeleton contract: {name}")
         if jobs.get(name, {}).get("if") != "${{ false }}":
@@ -309,6 +314,81 @@ def validate_workflow(workflow: dict, stages: dict, root: Path) -> list[str]:
             if any(path.is_file() for path in root.glob(pattern)):
                 errors.append(f"Runtime input exists: activate real {name} checks before merging")
                 break
+    return errors
+
+
+def validate_backend_job(name: str, job: dict, root: Path) -> list[str]:
+    """M02.1 activation requires real locked installation and fail-closed test/audit commands."""
+    checkout = {
+        "name": "Checkout",
+        "uses": "actions/checkout@" + ACTION_REFS["actions/checkout"],
+        "with": {"persist-credentials": "false", "fetch-depth": "2"},
+    }
+    python = {
+        "name": "Python from project baseline",
+        "uses": "actions/setup-python@" + ACTION_REFS["actions/setup-python"],
+        "with": {"python-version-file": ".python-version"},
+    }
+    install = {
+        "name": "Install locked backend and gate tools",
+        "run": "python -m pip install --require-hashes --only-binary=:all: "
+        "-r apps/api-gateway/requirements.lock -r ci/backend-requirements.lock",
+    }
+    if name == "backend":
+        python["if"] = "runner.os != 'Windows'"
+        conda = {
+            "name": "Windows Conda from project baseline",
+            "if": "runner.os == 'Windows'",
+            "uses": "conda-incubator/setup-miniconda@"
+            + ACTION_REFS["conda-incubator/setup-miniconda"],
+            "with": {
+                "miniforge-version": "26.5.3-0",
+                "environment-file": "ci/windows-environment.yml",
+                "activate-environment": "commerce-ci",
+                "auto-update-conda": "false",
+            },
+        }
+        expected = {
+            "name": "Backend application tests (${{ matrix.os }})",
+            "needs": "foundation",
+            "runs-on": "${{ matrix.os }}",
+            "timeout-minutes": "15",
+            "strategy": {"fail-fast": "false", "matrix": {"os": ["ubuntu-24.04", "windows-2022"]}},
+            "env": {"PYTHONUTF8": "1", "PYTHONDONTWRITEBYTECODE": "1"},
+            "defaults": {"run": {"shell": "pwsh"}},
+            "steps": [
+                checkout,
+                python,
+                conda,
+                install,
+                {"name": "Run backend tests", "run": "python scripts/check_backend.py tests"},
+            ],
+        }
+    else:
+        expected = {
+            "name": "Backend SAST and dependency audit",
+            "needs": "foundation",
+            "runs-on": "ubuntu-24.04",
+            "timeout-minutes": "15",
+            "steps": [
+                checkout,
+                python,
+                install,
+                {
+                    "name": "Run backend security checks",
+                    "run": "python scripts/check_backend.py security",
+                },
+            ],
+        }
+    errors = [] if job == expected else [f"Active {name} requires exact real bounded commands"]
+    for relative in (
+        "apps/api-gateway/requirements.lock",
+        "ci/backend-requirements.lock",
+        "scripts/check_backend.py",
+        "tests/backend/test_gateway.py",
+    ):
+        if not (root / relative).is_file():
+            errors.append(f"Missing real {name} input: {relative}")
     return errors
 
 

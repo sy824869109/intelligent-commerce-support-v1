@@ -19,6 +19,11 @@
 | M01.2 初始化与持久化 | DONE | 两个固定 S3 桶、非 root 卷准备、五类哨兵 stop/start 持久化与精准清理通过 | M01 最终提交与 CI 见下方收口记录 |
 | M01.3 环境配置分层 | DONE | dev/test/prod 无密钥配置，开发仅 loopback，生产 TLS/外部密钥契约 | M01 最终提交与 CI 见下方收口记录 |
 | M01.4 生命周期与升级演练 | DONE | 统一启动/健康/停止/重启测试/强制重建入口，五类数据跨重建保留 | M01 最终提交与 CI 见下方收口记录 |
+| M02.1 后端应用骨架 | IN_PROGRESS | 应用工厂、健康/错误/关联日志、24 项后端测试、Bandit/pip-audit、本机 HTTP 通过 | 等待本阶段提交的双平台后端与安全门禁 |
+
+M02.1 新环境在项目 `_local_artifacts/dependencies/platform`，新缓存留在项目内；既有 Docker 数据不迁移。
+本阶段尚未实施 M02.2 数据库事务/迁移、M02.3 事件合同或 M02.4 完整观测库。
+详见 [M02.1 行为记录](../operations/m02-1-implementation-log.md) 和 [验收](../testing/m02-1-gateway.md)。
 
 ## M01 最终收口（2026-09-07）
 
