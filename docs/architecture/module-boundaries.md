@@ -35,6 +35,7 @@ flowchart LR
 8. Worker 通过版本化事件执行异步任务，不成为业务事实来源。
 9. `packages/domain` 不依赖框架和基础设施；`packages/*` 不反向依赖 `apps/*`。
 10. 跨服务写入使用服务接口或 Transactional Outbox 事件，不直接修改他人数据表。
+11. `packages/persistence` 是 SQL 基础设施，不属于纯领域包；不依赖 apps、不拥有业务规则。当前单库基础事件账本按 producer/consumer/tenant 显式限定，不能当作完整身份授权；物理拆库采用各所有者独立迁移，详见 ADR-0007。
 
 ## V1 部署原则
 

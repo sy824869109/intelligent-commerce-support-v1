@@ -174,6 +174,25 @@ def validate_image_job(job: dict, stage: dict, root: Path) -> list[str]:
             },
         ],
     }
+    expected_job["steps"][2:2] = [
+        {
+            "name": "Python for MySQL integration",
+            "if": "matrix.path == 'mysql'",
+            "uses": "actions/setup-python@" + ACTION_REFS["actions/setup-python"],
+            "with": {"python-version-file": ".python-version"},
+        },
+        {
+            "name": "Install locked MySQL integration tools",
+            "if": "matrix.path == 'mysql'",
+            "run": "python -m pip install --require-hashes --only-binary=:all: "
+            "-r apps/api-gateway/requirements.lock -r ci/backend-requirements.lock",
+        },
+        {
+            "name": "Real MySQL migrations and transactional event tests",
+            "if": "matrix.path == 'mysql'",
+            "run": "python scripts/check_mysql.py --ci",
+        },
+    ]
     normalized_job = dict(job)
     normalized_job["steps"] = [dict(step) for step in job.get("steps", [])]
     for step in normalized_job["steps"]:

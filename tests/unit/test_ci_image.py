@@ -80,7 +80,38 @@ class ImageWorkflowTests(unittest.TestCase):
         self.assert_rejected()
 
     def test_export_step_required(self):
-        del self.job["steps"][2]
+        self.job["steps"] = [
+            s
+            for s in self.job["steps"]
+            if s.get("name") != "Export only the built image for isolated scanning"
+        ]
+        self.assert_rejected()
+
+    def test_mysql_integration_cannot_be_fake(self):
+        step = next(
+            s
+            for s in self.job["steps"]
+            if s.get("name") == "Real MySQL migrations and transactional event tests"
+        )
+        step["run"] = 'echo "mysql passed"'
+        self.assert_rejected()
+
+    def test_mysql_integration_cannot_be_skipped(self):
+        step = next(
+            s
+            for s in self.job["steps"]
+            if s.get("name") == "Real MySQL migrations and transactional event tests"
+        )
+        step["if"] = "${{ false }}"
+        self.assert_rejected()
+
+    def test_mysql_integration_install_cannot_drop_hashes(self):
+        step = next(
+            s
+            for s in self.job["steps"]
+            if s.get("name") == "Install locked MySQL integration tools"
+        )
+        step["run"] = step["run"].replace("--require-hashes", "")
         self.assert_rejected()
 
     def test_scanner_digest_cannot_float(self):

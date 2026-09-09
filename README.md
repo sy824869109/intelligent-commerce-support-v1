@@ -5,7 +5,7 @@
 ## 当前进度
 
 - 已完成：M00.1–M00.4、M01.1–M01.4 与 M02.1
-- 下一任务：`M02.2 数据库会话、迁移与事务基础`（尚未开始）
+- 当前任务：`M02.2 数据库会话、迁移与事务基础`（本地测试通过，等待最终交付门禁）
 - M02.1 验收：24 项后端测试、本机 HTTP、源码/依赖审计及 GitHub Windows/Linux 门禁通过；当前健康检查仅覆盖应用自身
 - 状态：新平台独立 MySQL、Redis、etcd、SeaweedFS、Milvus 全部健康；认证读写、S3/向量数据闭环、停止重启与强制重建持久化通过，本地 209 项工具单测通过。93 条业务用例仍未执行
 - V1 目标：前后端、业务服务、KF RAG 知识引擎、人工工单和数据闭环在局域网内完整运行
@@ -76,6 +76,8 @@ F:\heima\ai\python\day01\Anaconda\envs\intelligent-commerce-support-v1\python.ex
 - [M02.1 网关运行与配置](apps/api-gateway/README.md)
 - [M02.1 行为记录与新依赖位置](docs/operations/m02-1-implementation-log.md)
 - [M02.1 验收记录](docs/testing/m02-1-gateway.md)
+- [M02.2 数据库运行与详细行为记录](docs/operations/m02-2-database.md)
+- [M02.2 验收记录](docs/testing/m02-2-database.md)
 
 - [当前全景技术流程图：逐步讲解](docs/architecture/v1-review-20260905/V1全景技术流程图_逐步讲解.html)
 - [全景图阅读说明](docs/architecture/v1-review-20260905/全景流程图_阅读说明.md)

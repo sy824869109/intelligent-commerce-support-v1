@@ -12,6 +12,7 @@ from starlette.exceptions import HTTPException
 from .middleware import RequestContext
 from .responses import ErrorDetail, Failure, Success, failure, success
 from .settings import Settings
+from ics_persistence.database import Database
 
 Check = Callable[[], Awaitable[bool]]
 
@@ -24,11 +25,22 @@ class Health(BaseModel):
 
 
 def create_app(
-    settings: Settings | None = None, *, checks: Mapping[str, Check] | None = None
+    settings: Settings | None = None,
+    *,
+    checks: Mapping[str, Check] | None = None,
+    database: Database | None = None,
 ) -> FastAPI:
-    """Each factory call owns its state. M02.2 will supply real dependency adapters."""
+    """Each instance owns its lifecycle; database is an explicit optional dependency."""
     settings = settings or Settings()
     readiness_checks = dict(checks or {})
+    if database is not None:
+        if "mysql" in readiness_checks:
+            raise ValueError("Reserved MySQL health check")
+
+        async def mysql_check():
+            return await asyncio.to_thread(database.ready)
+
+        readiness_checks["mysql"] = mysql_check
 
     @asynccontextmanager
     async def lifespan(app):
@@ -37,11 +49,13 @@ def create_app(
             yield
         finally:
             app.state.ready = False
+            if database is not None:
+                await asyncio.to_thread(database.close)
 
     app = FastAPI(
         title="智能电商客服 API Gateway",
         version="0.1.0",
-        description="M02.1 应用骨架。健康检查仅表示网关自身就绪；不表示数据库、RAG 或业务已经可用。",
+        description="应用骨架；显式启用数据库时检查连接和迁移版本。不表示 RAG 或业务已可用。",
         lifespan=lifespan,
         docs_url="/docs" if settings.docs_enabled else None,
         redoc_url=None,
@@ -110,7 +124,9 @@ def create_app(
         return success(
             request,
             Health(
-                status="ready", checks={"lifecycle": "ok", **{k: "ok" for k in readiness_checks}}
+                status="ready",
+                scope="application+database" if database is not None else "application",
+                checks={"lifecycle": "ok", **{k: "ok" for k in readiness_checks}},
             ),
         )
 

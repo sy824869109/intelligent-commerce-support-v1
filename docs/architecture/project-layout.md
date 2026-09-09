@@ -19,6 +19,7 @@
 │  ├─ contracts/
 │  ├─ domain/
 │  ├─ observability/
+│  ├─ persistence/
 │  └─ testing/
 ├─ deploy/
 │  ├─ compose/

@@ -28,7 +28,17 @@ def main() -> int:
     try:
         if args.gate == "tests":
             run("-m", "pip", "check")
-            run("-m", "ruff", "check", "--config", "ci/ruff.toml", "apps", "tests/backend")
+            run(
+                "-m",
+                "ruff",
+                "check",
+                "--config",
+                "ci/ruff.toml",
+                "apps",
+                "packages/persistence",
+                "tests/backend",
+                "tests/integration/test_m02_mysql.py",
+            )
             run(
                 "-m",
                 "ruff",
@@ -37,12 +47,24 @@ def main() -> int:
                 "--config",
                 "ci/ruff.toml",
                 "apps",
+                "packages/persistence",
                 "tests/backend",
+                "tests/integration/test_m02_mysql.py",
             )
             # pytest exits 5 when no tests are collected; subprocess preserves that failure.
             run("-m", "pytest", "-q", "-p", "no:cacheprovider", "tests/backend")
         else:
-            run("-m", "bandit", "-r", "apps", "scripts/run_gateway.py", "-q")
+            run(
+                "-m",
+                "bandit",
+                "-r",
+                "apps",
+                "packages/persistence",
+                "scripts/run_gateway.py",
+                "scripts/database_local.py",
+                "scripts/check_mysql.py",
+                "-q",
+            )
             # Both app and test/tool dependency sets are pinned; no ignore-vuln exemptions.
             for lock in ("apps/api-gateway/requirements.lock", "ci/backend-requirements.lock"):
                 run(

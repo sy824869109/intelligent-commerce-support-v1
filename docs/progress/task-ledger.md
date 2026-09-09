@@ -20,9 +20,10 @@
 | M01.3 环境配置分层 | DONE | dev/test/prod 无密钥配置，开发仅 loopback，生产 TLS/外部密钥契约 | M01 最终提交与 CI 见下方收口记录 |
 | M01.4 生命周期与升级演练 | DONE | 统一启动/健康/停止/重启测试/强制重建入口，五类数据跨重建保留 | M01 最终提交与 CI 见下方收口记录 |
 | M02.1 后端应用骨架 | DONE | 应用工厂、健康/错误/关联日志、24 项后端测试、Bandit/pip-audit、本机 HTTP 通过 | acc5fb3；GitHub Actions 34187050206 双平台后端与安全门禁 SUCCESS |
+| M02.2 数据库事务与事件基础 | IN_PROGRESS | SQLAlchemy、Alembic、Outbox/Inbox、46 项后端测试和 8 项真实 MySQL 集成通过 | 等待本阶段远端门禁 |
 
 M02.1 新环境在项目 `_local_artifacts/dependencies/platform`，后续缓存已固定到项目内；首次审计误生成的 C 盘缓存因迁移失败和清理被安全检查拦截而暂留，详见行为记录。既有 Docker 数据不迁移。
-本阶段尚未实施 M02.2 数据库事务/迁移、M02.3 事件合同或 M02.4 完整观测库。
+M02.2 正在实施；M02.3 事件合同与 M02.4 完整观测库尚未开始。详见 [M02.2 行为记录](../operations/m02-2-database.md)。
 详见 [M02.1 行为记录](../operations/m02-1-implementation-log.md) 和 [验收](../testing/m02-1-gateway.md)。
 
 ## M01 最终收口（2026-09-07）

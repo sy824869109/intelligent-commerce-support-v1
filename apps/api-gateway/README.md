@@ -19,15 +19,16 @@
 默认地址 `http://127.0.0.1:28000`；`/docs` 为 Swagger UI，`/openapi.json` 为本地模式定义。
 Swagger 的默认 JS/CSS 来自 CDN，离线时直接读取 `/openapi.json`；M02.3 再冻结完整机器合同。
 
-仅读取 `ICS_GATEWAY_*` 环境变量，不自动读取根目录历史 `.env` 或 M01 密钥。
+默认仅读取 `ICS_GATEWAY_*` 环境变量，不自动读取根目录历史 `.env` 或 M01 密钥。
+M02.2 增加 `--with-database`：校验新平台容器/镜像/端口后读取 M01 非 root MySQL 凭据，注册连接与迁移健康检查；不执行自动迁移。
 配置示例在本目录 `.env.example`。dev/test 被支持，prod 和非回环监听被拒绝。
 
 ## 健康语义
 
 - `GET /health/live`：进程能响应，不依赖数据库。
 - `GET /health/ready`：应用 lifespan 已启动且已注册检查通过；未启动、检查异常/超时返回 503。
-- 当前未注册数据库/RAG 检查，响应显式包含 `scope=application`，不宣称五存储或业务可用。
-- M02.2 再加入 SQLAlchemy 连接生命周期；网关不直接承载订单事务。
+- 默认无数据库模式返回 `scope=application`；显式带数据库模式返回 `scope=application+database`，失败为 503，不宣称五存储或业务可用。
+- M02.2 管理 SQLAlchemy 连接生命周期；网关不直接承载订单事务。迁移使用独立 `scripts/database_local.py upgrade`。
 
 响应和排障见 [M02.1 HTTP 说明](../../docs/api/m02-1-gateway.md)，操作及新增依赖位置见
 [M02.1 行为记录](../../docs/operations/m02-1-implementation-log.md)。

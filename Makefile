@@ -47,3 +47,15 @@ backend-test:
 
 backend-security:
 	@python scripts/check_backend.py security
+
+database-status:
+	@python scripts/database_local.py status
+
+database-upgrade:
+	@python scripts/database_local.py upgrade
+
+mysql-test:
+	@python scripts/check_mysql.py
+
+gateway-database:
+	@python scripts/run_gateway.py --with-database
