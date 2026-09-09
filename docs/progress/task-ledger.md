@@ -20,8 +20,8 @@
 | M01.3 环境配置分层 | DONE | dev/test/prod 无密钥配置，开发仅 loopback，生产 TLS/外部密钥契约 | M01 最终提交与 CI 见下方收口记录 |
 | M01.4 生命周期与升级演练 | DONE | 统一启动/健康/停止/重启测试/强制重建入口，五类数据跨重建保留 | M01 最终提交与 CI 见下方收口记录 |
 | M02.1 后端应用骨架 | DONE | 应用工厂、健康/错误/关联日志、24 项后端测试、Bandit/pip-audit、本机 HTTP 通过 | acc5fb3；GitHub Actions 34187050206 双平台后端与安全门禁 SUCCESS |
-| M02.2 数据库事务与事件基础 | BLOCKED | SQLAlchemy、Alembic、Outbox/Inbox、46 项后端测试和 8 项真实 MySQL 集成、开发库与 HTTP 通过 | 5f28bbc；运行 34323363851 双平台后端/真实 MySQL 通过，但 etcd/SeaweedFS 检出 CVE-2026-84445，整体 FAILURE；待确认 M01 安全维护 |
-| M01 安全维护 20260909 | IN_PROGRESS | 五镜像复扫 HIGH/CRITICAL 为 0；隔离同卷升级/重启通过；新平台修补镜像五服务健康；222 项基础、46 项后端、8 项 MySQL 回归通过 | 9785f6c；CI 34330902892 SUCCESS；最终配置提交待远端复核，见维护行为记录 |
+| M02.2 数据库事务与事件基础 | DONE | SQLAlchemy、Alembic、Outbox/Inbox；46 项后端和 8 项真实 MySQL 回归通过，开发库 READY；原镜像安全阻塞经 M01 维护解除 | 实现 5f28bbc；修补准入 80f436f；CI 34334369003 SUCCESS；API 网关当前未启动，M02.3 未开始 |
+| M01 安全维护 20260909 | DONE | 五镜像复扫 HIGH/CRITICAL 为 0；隔离同卷升级/重启通过；新平台修补镜像五服务健康；222 项基础检查（Windows 跳过 5 项）、46 项后端、8 项 MySQL 回归通过 | 9785f6c、80f436f 已推送；CI 34330902892、34334369003 SUCCESS；见维护行为记录 |
 
 M02.1 新环境在项目 `_local_artifacts/dependencies/platform`，后续缓存已固定到项目内；首次审计误生成的 C 盘缓存因迁移失败和清理被安全检查拦截而暂留，详见行为记录。既有 Docker 数据不迁移。
 M02.2 功能已实现但交付被既有基础镜像安全门禁阻断；M02.3 与 M02.4 尚未开始。详见 [M02.2 行为记录](../operations/m02-2-database.md) 和 [验收/阻断证据](../testing/m02-2-database.md)。
