@@ -21,6 +21,7 @@
 | M01.4 生命周期与升级演练 | DONE | 统一启动/健康/停止/重启测试/强制重建入口，五类数据跨重建保留 | M01 最终提交与 CI 见下方收口记录 |
 | M02.1 后端应用骨架 | DONE | 应用工厂、健康/错误/关联日志、24 项后端测试、Bandit/pip-audit、本机 HTTP 通过 | acc5fb3；GitHub Actions 34187050206 双平台后端与安全门禁 SUCCESS |
 | M02.2 数据库事务与事件基础 | BLOCKED | SQLAlchemy、Alembic、Outbox/Inbox、46 项后端测试和 8 项真实 MySQL 集成、开发库与 HTTP 通过 | 5f28bbc；运行 34323363851 双平台后端/真实 MySQL 通过，但 etcd/SeaweedFS 检出 CVE-2026-84445，整体 FAILURE；待确认 M01 安全维护 |
+| M01 安全维护 20260909 | IN_PROGRESS | 用户已授权；按 ADR-0008 构建独立候选并回归，现有运行镜像与数据卷暂不变 | 待构建、扫描及兼容证据 |
 
 M02.1 新环境在项目 `_local_artifacts/dependencies/platform`，后续缓存已固定到项目内；首次审计误生成的 C 盘缓存因迁移失败和清理被安全检查拦截而暂留，详见行为记录。既有 Docker 数据不迁移。
 M02.2 功能已实现但交付被既有基础镜像安全门禁阻断；M02.3 与 M02.4 尚未开始。详见 [M02.2 行为记录](../operations/m02-2-database.md) 和 [验收/阻断证据](../testing/m02-2-database.md)。
