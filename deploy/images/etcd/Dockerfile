@@ -10,7 +10,7 @@ ENV GOTOOLCHAIN=local CGO_ENABLED=0 GOFLAGS=-trimpath\ -buildvcs=false\ -p=2 GOM
 # All modules participating in the three release binaries receive the same fixed versions.
 RUN for module in api client/pkg client/v3 pkg server etcdctl etcdutl; do \
       cd "/src/${module}"; \
-      go get google.golang.org/grpc@v1.83.1 \
+      go get google.golang.org/grpc@v1.83.2 \
         golang.org/x/crypto@v0.55.0 golang.org/x/net@v0.58.0 golang.org/x/text@v0.41.0; \
       go mod tidy; \
     done \
@@ -20,7 +20,7 @@ RUN for module in api client/pkg client/v3 pkg server etcdctl etcdutl; do \
     && (cd /src/etcdutl && go build -o /out/etcdutl .) \
     && for binary in etcd etcdctl etcdutl; do \
       go version -m "/out/${binary}" > "/tmp/${binary}.buildinfo"; \
-      grep -F $'dep\tgoogle.golang.org/grpc\tv1.83.1' "/tmp/${binary}.buildinfo"; \
+      grep -F $'dep\tgoogle.golang.org/grpc\tv1.83.2' "/tmp/${binary}.buildinfo"; \
       grep -F $'dep\tgolang.org/x/crypto\tv0.55.0' "/tmp/${binary}.buildinfo"; \
     done
 
@@ -31,7 +31,7 @@ USER 1000:1000
 VOLUME ["/etcd"]
 EXPOSE 2379 2380
 ENTRYPOINT ["/usr/local/bin/etcd"]
-LABEL org.opencontainers.image.version="3.6.14-ics.1" \
+LABEL org.opencontainers.image.version="3.6.14-ics.2" \
       org.opencontainers.image.source="https://github.com/etcd-io/etcd" \
       org.ics.security.go="1.27.1" \
-      org.ics.security.grpc="1.83.1"
+      org.ics.security.grpc="1.83.2"

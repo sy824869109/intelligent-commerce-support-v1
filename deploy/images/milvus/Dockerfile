@@ -52,29 +52,29 @@ RUN --mount=type=cache,target=/go/pkg/mod,sharing=locked \
     --mount=type=cache,target=/ccache,sharing=locked \
     conan remove --locks \
     && make \
-      BUILD_TAGS=v2.6.23-ics.1 \
-      BUILD_TIME=2026-09-07T00:00:00Z \
+      BUILD_TAGS=v2.6.23-ics.2 \
+      BUILD_TIME=2026-09-09T00:00:00Z \
       GIT_COMMIT=bfa1bc34f93df2ccd20fa7c060463c6c6812d355 \
       GO_VERSION=go1.27.1 \
-      MILVUS_VERSION=2.6.23-ics.1 \
+      MILVUS_VERSION=2.6.23-ics.2 \
       build-cpp \
     && make \
-      BUILD_TAGS=v2.6.23-ics.1 \
-      BUILD_TIME=2026-09-07T00:00:00Z \
+      BUILD_TAGS=v2.6.23-ics.2 \
+      BUILD_TIME=2026-09-09T00:00:00Z \
       GIT_COMMIT=bfa1bc34f93df2ccd20fa7c060463c6c6812d355 \
       GO_VERSION=go1.27.1 \
-      MILVUS_VERSION=2.6.23-ics.1 \
+      MILVUS_VERSION=2.6.23-ics.2 \
       build-go
 
 RUN test -x /build/source/bin/milvus \
     && test -s /build/source/internal/core/output/lib/libmilvus-planparser.so \
     && go version -m /build/source/bin/milvus > /tmp/milvus.buildinfo \
     && go version -m /build/source/internal/core/output/lib/libmilvus-planparser.so > /tmp/planparser.buildinfo \
-    && grep -F $'dep\tgoogle.golang.org/grpc\tv1.83.1' /tmp/milvus.buildinfo \
+    && grep -F $'dep\tgoogle.golang.org/grpc\tv1.83.2' /tmp/milvus.buildinfo \
     && grep -F $'dep\tgithub.com/bytedance/sonic\tv1.15.2' /tmp/milvus.buildinfo \
     && grep -F $'dep\tgolang.org/x/crypto\tv0.55.0' /tmp/milvus.buildinfo \
     && grep -F $'=>\tgo.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc\tv0.60.0' /tmp/milvus.buildinfo \
-    && grep -F $'dep\tgoogle.golang.org/grpc\tv1.83.1' /tmp/planparser.buildinfo \
+    && grep -F $'dep\tgoogle.golang.org/grpc\tv1.83.2' /tmp/planparser.buildinfo \
     && grep -F $'dep\tgithub.com/bytedance/sonic\tv1.15.2' /tmp/planparser.buildinfo \
     && grep -F $'=>\tgo.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc\tv0.60.0' /tmp/planparser.buildinfo
 
@@ -84,10 +84,10 @@ COPY --from=build --chown=root:root --chmod=774 /build/source/bin/milvus /milvus
 COPY --from=build --chown=root:root --chmod=774 /build/source/internal/core/output/lib/libmilvus-planparser.so /milvus/lib/libmilvus-planparser.so
 
 LABEL org.opencontainers.image.source="https://github.com/sy824869109/intelligent-commerce-support-v1" \
-      org.opencontainers.image.version="2.6.23-ics.1" \
+      org.opencontainers.image.version="2.6.23-ics.2" \
       org.opencontainers.image.revision="bfa1bc34f93df2ccd20fa7c060463c6c6812d355" \
       org.opencontainers.image.licenses="Apache-2.0" \
       org.ics.security.go="1.27.1" \
-      org.ics.security.grpc="1.83.1" \
+      org.ics.security.grpc="1.83.2" \
       org.ics.compat.sonic="1.15.2" \
       org.ics.compat.otelgrpc="0.60.0"

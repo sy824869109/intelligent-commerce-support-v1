@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "artifact": "4.45-m01-security.1",
+  "artifact": "4.45-m01-security.2",
   "upstream": {
     "repository": "https://github.com/seaweedfs/seaweedfs",
     "tag": "4.45",
@@ -25,23 +25,56 @@
     "index_digest": "sha256:28bd5fe8b56d1bd048e5babf5b10710ebe0bae67db86916198a6eec434943f8b",
     "linux_amd64_manifest": "sha256:79ff19e9084a00eece421b2523fb93e22d730e2c0e525905de047e848e56d95f",
     "extra_apk_packages": [],
-    "removed_packages": ["apk-tools", "ssl_client", "libapk", "libssl3", "libcrypto3"],
+    "removed_packages": [
+      "apk-tools",
+      "ssl_client",
+      "libapk",
+      "libssl3",
+      "libcrypto3"
+    ],
     "ca_bundle": "copied from the pinned official Go builder after package removal",
     "user": "1000:1000"
   },
   "module_changes": [
-    {"module": "github.com/apache/thrift", "version": "v0.24.0", "remove_upstream_replace": true, "advisory": "CVE-2026-43871"},
-    {"module": "golang.org/x/image", "from": "v0.44.0", "version": "v0.45.0", "advisory": "CVE-2026-46603"},
-    {"module": "golang.org/x/crypto", "from": "v0.55.0", "version": "v0.56.0", "advisories": ["CVE-2026-56855", "CVE-2026-78662"]}
+    {
+      "module": "github.com/apache/thrift",
+      "version": "v0.24.0",
+      "remove_upstream_replace": true,
+      "advisory": "CVE-2026-43871"
+    },
+    {
+      "module": "golang.org/x/image",
+      "from": "v0.44.0",
+      "version": "v0.45.0",
+      "advisory": "CVE-2026-46603"
+    },
+    {
+      "module": "golang.org/x/crypto",
+      "from": "v0.55.0",
+      "version": "v0.56.0",
+      "advisories": [
+        "CVE-2026-56855",
+        "CVE-2026-78662"
+      ]
+    },
+    {
+      "module": "google.golang.org/grpc",
+      "from": "v1.85.0-dev",
+      "version": "v1.85.0-dev.0.20260825072537-93e31b48545e",
+      "commit": "93e31b48545e2a8aaeb6e06b47fb249f94e6297f",
+      "advisory": "CVE-2026-84445"
+    }
   ],
   "module_files": {
     "upstream_go_mod_sha256": "d324e3382f048f161f49604716bc54f4364b74db33a600da7210cb98efbaa68a",
     "upstream_go_sum_sha256": "39d6ee6c9696ce04c50faf7e23d6527b55324116e3d92369a91812bb2a13a0da",
-    "patched_go_mod_sha256": "f4a22ee7701aa3af011301546459c5e4146be2a184ad735331a7e01d93f9c5f1",
-    "patched_go_sum_sha256": "ffdcca484ee3457b20aabf5d5f53cb4128c23247e29ad7db575d1ca7a6931a28",
+    "patched_go_mod_sha256": "313c81e5fd6991e7073cb5f58488cc5d795c06d506b86eeed75c50c1c06159cb",
+    "patched_go_sum_sha256": "04943792a2f8687bd2ba992874a2ef2fb9ab26a1a033eed02a5c81cb8b60198f",
     "language_directive_normalization": "go 1.26 -> go 1.26.0, same language version"
   },
   "verified_at": "2026-09-06",
   "registry_verification": "docker buildx imagetools inspect against docker.io official library repositories",
-  "scope": "new-platform deployment artifact; original KF, old project and reference assets unchanged"
+  "scope": "new-platform deployment artifact; original KF, old project and reference assets unchanged",
+  "security_maintenance_date": "2026-09-09",
+  "candidate_status": "BUILD_AND_SCAN_PENDING"
 }

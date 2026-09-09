@@ -32,7 +32,7 @@ RUN --mount=type=cache,id=ics-m01-seaweed-gomod,target=/go/pkg/mod \
 RUN --mount=type=cache,id=ics-m01-seaweed-gomod,target=/go/pkg/mod \
     --mount=type=cache,id=ics-m01-seaweed-gocache,target=/root/.cache/go-build \
     go build -p 2 -mod=readonly -trimpath -buildvcs=false -tags="" \
-      -ldflags="-s -w -X github.com/seaweedfs/seaweedfs/weed/util/version.COMMIT=79b87202136cebdaaa7db4d94eaa5915ad381276-m01-security.1" \
+      -ldflags="-s -w -X github.com/seaweedfs/seaweedfs/weed/util/version.COMMIT=79b87202136cebdaaa7db4d94eaa5915ad381276-m01-security.2" \
       -o /out/weed ./weed \
     && go version -m /out/weed > /out/weed.buildinfo.txt \
     && /out/weed version \
@@ -40,7 +40,7 @@ RUN --mount=type=cache,id=ics-m01-seaweed-gomod,target=/go/pkg/mod \
 
 FROM docker.io/library/alpine:3.24.1@sha256:28bd5fe8b56d1bd048e5babf5b10710ebe0bae67db86916198a6eec434943f8b AS runtime
 LABEL org.opencontainers.image.title="SeaweedFS M01 security derivative" \
-      org.opencontainers.image.version="4.45-m01-security.1" \
+      org.opencontainers.image.version="4.45-m01-security.2" \
       org.opencontainers.image.revision="79b87202136cebdaaa7db4d94eaa5915ad381276" \
       org.opencontainers.image.source="https://github.com/seaweedfs/seaweedfs" \
       org.opencontainers.image.licenses="Apache-2.0" \

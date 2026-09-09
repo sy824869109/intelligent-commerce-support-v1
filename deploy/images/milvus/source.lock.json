@@ -20,5 +20,12 @@
     "archive": "go1.27.1.linux-amd64.tar.gz",
     "archive_sha256": "63d339f0da5ab53635a56f2490a7984dfe12dfcff22ad749f63edaf590168445"
   },
-  "patch_release": "2.6.23-ics.1"
+  "patch_release": "2.6.23-ics.2",
+  "grpc_security_patch": {
+    "version": "v1.83.2",
+    "commit": "030ee8becb20ce4315d6bf2dfa26bdd876169dc4",
+    "advisory": "CVE-2026-84445"
+  },
+  "security_maintenance_date": "2026-09-09",
+  "candidate_status": "BUILD_AND_SCAN_PENDING"
 }
