@@ -1,6 +1,6 @@
 # M01 基础镜像安全修补与兼容验证（2026-09-09）
 
-状态：IN_PROGRESS。本文是本次维护记录，不替代历史 M01 验收，不代表候选已准入运行。
+状态：本机安全扫描、隔离兼容和新平台切换复检已通过；最终配置提交待远端复核。本文是本次维护记录，不替代历史 M01 验收，不宣称企业生产安全认证。
 
 ## 范围与版本
 
@@ -38,11 +38,28 @@ SeaweedFS 精确依赖为 `v1.85.0-dev.0.20260825072537-93e31b48545e`，不是�
 
 ## 当前实测记录
 
-- etcd、Milvus 候选标签已存在；正在对最终镜像归档复扫。
+- etcd 候选复扫：HIGH 0、CRITICAL 0、MEDIUM 1、UNKNOWN 6；三个 Go 程序均确认修补版本。
+- Milvus 候选复扫：HIGH 0、CRITICAL 0、MEDIUM 60、LOW 29、UNKNOWN 6；主程序和 planparser 共享库均确认修补版本。中低危和未知项未隐藏，不等于全部风险已消除。
 - MySQL 复扫：HIGH 0、CRITICAL 0、MEDIUM 7、UNKNOWN 1；原始报告在本轮证据目录。
-- SeaweedFS 尚在模块下载/构建；Redis 复扫进行中。
-- 本地 Foundation：220 项测试，Windows 跳过 5 项符号链接测试，其余通过；Ruff、结构、治理与 Compose 静态校验通过。这些结果不是运行兼容性通过。
+- Redis 复扫：五个严重级别计数均为 0。
+- SeaweedFS 首次本地重试因两个锁定模块下载 `unexpected EOF` 失败；再次构建通过模块校验和静态编译，最终复扫 HIGH 0、CRITICAL 0、MEDIUM 0、LOW 0、UNKNOWN 1。未跳过 Go 校验，未更换源。
+- 本地 Foundation 最终 222 项测试，Windows 跳过 5 项符号链接测试，其余通过，包含维护工具 10 项专测。Ruff 和静态配置检查通过。
+- 实现提交 `9785f6c` 已推送；[GitHub CI 34330902892](https://github.com/sy824869109/intelligent-commerce-support-v1/actions/runs/34330902892) 为 SUCCESS，双平台基础/后端、Python 安全、四类镜像构建和漏洞门禁通过。Milvus 完整构建作业按既有策略 skipped，本轮用本机完整扫描补充，不把 skipped 写成远端通过。
 - 恢复本轮工作时，旧平台、KF 及其他项目容器曾同时显示停止状态；未查明原因，不将退出 137 直接认定为 OOM。本次未发出停止、重启 KF/其他项目或迁移 Docker 的命令。之后观察到部分无关服务自行恢复，不进行干预。
-- 正式 `deploy/compose/images.lock.json` 和 `infra.compose.yml` 尚未切换；真实兼容测试尚未执行。M02.2 仍保留阻塞标记。
+- 隔离演练 `compatibility-passed.json` 于 2026-09-09 17:12（本地时间）记录 PASS：旧镜像写入、同卷强制重建升级、五服务数据保留、再次 stop/start 保留均通过；三个阶段各执行 45 项 S3/Milvus 契约检查。测试结束正常停止，仅保留合成卷和日志。
+- 正式 `deploy/compose/images.lock.json`、`infra.compose.yml` 和卷权限初始化辅助镜像已切换为已验证 `.2` digest。SeaweedFS 构建工具 tag 同步为 `.2`，避免后续构建覆盖旧 `.1`。
+- 仅恢复新平台 `ics-v1-dev` 五服务，复用原卷与凭据；实际运行 etcd/Milvus/SeaweedFS 均为修补镜像，五服务 healthy，45 项存储契约再通过。原 KF 和其他项目未操作。
+- M02 回归：46 项后端测试、8 项真实 MySQL 集成测试通过；原开发数据库 `database_local.py status` 返回 READY。后端有 2 项既有测试依赖弃用警告，本轮不扩展升级依赖。临时 MySQL 集成容器及其合成 tmpfs 数据按工具归属校验后删除，不能恢复；真实平台卷未删除。
+- 最终配置和补充防护仍需远端 CI 复核后收口；本轮不启动 M02.3。
+
+## 当前固定镜像与回退边界
+
+| 服务 | `.2` 镜像 digest |
+|---|---|
+| etcd | `sha256:de0b5e07f492b6ceb15b51ef14593142ce43ac66b0ad5c7973a3d7660f32ca3d` |
+| SeaweedFS | `sha256:2ef7d372b429429c99116975d6ecfe789736d95ba43c00b7775b9510202273ba` |
+| Milvus | `sha256:433dae6cd83235e5e412dc7f7c62090f72e132e429bd2e5983dff704ff5e7e47` |
+
+原 `.1` 镜像、Git 历史及平台数据卷保留。未演练反向降级，不把“旧镜像还在”当作安全无损回退保证；需回退时先停写并评估数据格式兼容性，旧镜像亦有已知安全风险。本次只验证合成数据的正向升级和当前平台读写，不代表灾难恢复或全部业务验收完成。
 
 源码锁中的 `BUILD_AND_SCAN_PENDING` 表示制作候选时的状态；最终验收以独立扫描、兼容报告和任务台账为准，不能仅凭该字段或镜像存在判断安全。

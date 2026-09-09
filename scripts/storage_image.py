@@ -18,7 +18,7 @@ import uuid
 from datetime import UTC, datetime, timedelta
 from pathlib import Path, PurePosixPath
 
-TAG = "ics-seaweedfs:4.45-m01-security.1"
+TAG = "ics-seaweedfs:4.45-m01-security.2"
 SCANNER = (
     "aquasec/trivy:0.74.0@sha256:62b1e65e8869bc4b4c6aa4fa2b21595256c7c2f6018a9d9ad61caf87187c1969"
 )

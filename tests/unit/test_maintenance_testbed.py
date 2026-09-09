@@ -27,6 +27,7 @@ class MaintenanceGuards(unittest.TestCase):
         report = self.evidence / "report.json"
         report.write_text("{}", encoding="utf-8")
         self.record = {
+            "name": "mysql",
             "scanned_at": datetime.now(timezone.utc).isoformat(),
             "findings": {"HIGH": 0, "CRITICAL": 0},
             "archive": str(self.evidence / "image.tar"),
@@ -35,7 +36,7 @@ class MaintenanceGuards(unittest.TestCase):
             "archive_sha256": "fixture",
             "report_sha256": hashlib.sha256(report.read_bytes()).hexdigest(),
             "recipe_hashes": {
-                "deploy/images/mysql/Dockerfile": hashlib.sha256(recipe.read_bytes()).hexdigest()
+                str(recipe.relative_to(self.root)): hashlib.sha256(recipe.read_bytes()).hexdigest()
             },
             "reference": "fixture@sha256:fixture",
         }
@@ -83,12 +84,23 @@ class MaintenanceGuards(unittest.TestCase):
             self.evaluate()
 
     def test_changed_recipe_rejected(self):
-        self.record["recipe_hashes"]["deploy/images/mysql/Dockerfile"] = "changed"
+        for name in self.record["recipe_hashes"]:
+            self.record["recipe_hashes"][name] = "changed"
         with self.assertRaises(ValueError):
             self.evaluate()
 
     def test_recipe_escape_rejected(self):
         self.record["recipe_hashes"] = {"../outside": "changed"}
+        with self.assertRaises(ValueError):
+            self.evaluate()
+
+    def test_missing_recipe_list_rejected(self):
+        self.record["recipe_hashes"] = {}
+        with self.assertRaises(ValueError):
+            self.evaluate()
+
+    def test_wrong_service_record_rejected(self):
+        self.record["name"] = "redis"
         with self.assertRaises(ValueError):
             self.evaluate()
 

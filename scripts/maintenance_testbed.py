@@ -29,6 +29,10 @@ def passed_images():
     result = {}
     for name in sorted(verify_infra.SERVICES):
         record = json.loads((EVIDENCE / (name + "-passed.json")).read_text(encoding="utf-8"))
+        recipe_root = ROOT / "deploy/images" / name
+        expected_files = {str(p.relative_to(ROOT)) for p in recipe_root.iterdir() if p.is_file()}
+        if record.get("name") != name or set(record.get("recipe_hashes", {})) != expected_files:
+            raise ValueError("Incomplete or mismatched recipe evidence")
         when = datetime.fromisoformat(record["scanned_at"])
         age = datetime.now(timezone.utc) - when
         if (

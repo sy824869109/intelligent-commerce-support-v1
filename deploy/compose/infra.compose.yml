@@ -55,7 +55,7 @@ services:
 
   etcd:
     <<: *runtime
-    image: ics-etcd:3.6.14-ics.1@sha256:0ffa356147517f233a637a66505730876595746db5d1850401ee5611e7fbd6b2
+    image: ics-etcd:3.6.14-ics.2@sha256:de0b5e07f492b6ceb15b51ef14593142ce43ac66b0ad5c7973a3d7660f32ca3d
     pull_policy: never
     environment:
       ETCD_AUTO_COMPACTION_MODE: revision
@@ -74,7 +74,7 @@ services:
 
   seaweedfs:
     <<: *runtime
-    image: ics-seaweedfs:4.45-m01-security.1@sha256:dfac2e817ad5b9b2c6ee725127905f3893787089690318772c942f4239989c00
+    image: ics-seaweedfs:4.45-m01-security.2@sha256:2ef7d372b429429c99116975d6ecfe789736d95ba43c00b7775b9510202273ba
     pull_policy: never
     networks: [infra, local]
     command: [server, -dir=/data, -master.dir=/data/master, -ip=seaweedfs, -ip.bind=0.0.0.0, -master.port=9333, -volume.port=8080, -volume.max=32, -filer.port=8888, -filer.disableDirListing=true, -filer.exposeDirectoryData=false, -master.telemetry=false, -s3, -s3.port=8333, -s3.ip.bind=0.0.0.0, -s3.config=/run/secrets/seaweed_s3_config, -s3.iam=false, -s3.autoCreateBucket=false, -webdav=false]
@@ -95,7 +95,7 @@ services:
 
   milvus:
     <<: *runtime
-    image: ics-milvus:2.6.23-ics.1@sha256:2438dbd963d8373bdd1a1cc75bb054db219b4c279b5bba2dd92cac443e8a37c2
+    image: ics-milvus:2.6.23-ics.2@sha256:433dae6cd83235e5e412dc7f7c62090f72e132e429bd2e5983dff704ff5e7e47
     pull_policy: never
     networks: [infra, local]
     command: [milvus, run, standalone]

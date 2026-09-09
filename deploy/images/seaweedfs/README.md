@@ -1,6 +1,6 @@
-# SeaweedFS 4.45-m01-security.1
+# SeaweedFS 4.45-m01-security.2
 
-新平台独立安全派生构建，不是官方原版镜像，不修改原 KF、旧项目或参考压缩包。上游业务源码不变，仅修改三项 Go 依赖与对应校验和；保留 Apache-2.0 LICENSE 和构建信息。
+新平台独立安全派生构建，不是官方原版镜像，不修改原 KF、旧项目或参考压缩包。上游业务源码不变；在上一版三项修补基础上增加 gRPC-Go 安全修补及其必要传递依赖，保留 Apache-2.0 LICENSE 和构建信息。`.2` 为待准入候选，历史 `.1` 验收不能代替本轮验证。
 
 ## 固定输入
 
@@ -8,6 +8,7 @@
 - 工具链：官方 Go `1.27.1-alpine3.24`，禁止工具链自动下载；最终基础镜像官方 Alpine `3.24.1`，均固定 manifest index digest。
 - 构建类型遵循上游 `normal`：空 build tags、`CGO_ENABLED=0`。不构建 Rust Volume/Worker、Enterprise、插件或 full/rclone 变体。
 - Apache Thrift：去掉旧伪版本 replace，使用已声明的 `v0.24.0`；`x/image v0.45.0`；`x/crypto v0.56.0`。
+- gRPC-Go：`v1.85.0-dev.0.20260825072537-93e31b48545e`，同线固定修补提交，仍属开发版本；连带 13 项传递升级，详见 ADR-0008 和本轮维护记录。
 - `dependencies.patch` 为相对上游的最小差异；`go.mod.lock` / `go.sum.lock` 是应用该差异后的完整模块文件，构建时直接复制，避免给最小构建器额外安装 patch 工具。`modules.sha256` 锁住两个文件，构建前后验证哈希、`go mod verify`、`-mod=readonly`。
 - Go 工具链将模块语言指令 `go 1.26` 规范化为 `go 1.26.0`，不改变语言版本。`go.sum` 保留上游历史校验项，不代表旧版本被链接；实际版本以镜像内 `weed.buildinfo.txt` 为准。
 - 最终镜像不执行 APK 安装/升级，不含 curl/libcurl 或编译器。首次复扫发现 Alpine 基线 OpenSSL 3.5.7 仍有告警；静态 Go 服务不使用这些库，因此离线移除包管理器、ssl_client 及 libssl3/libcrypto3 后重新扫描。保留 musl/BusyBox 和 CA bundle；Go TLS 使用自身实现，健康检查仅调用 HTTP loopback。
@@ -17,13 +18,13 @@
 在项目根目录、独立 Conda 环境中执行（构建并扫描，不启动服务）：
 
 ```powershell
-python scripts/storage_image.py build
-python scripts/storage_image.py verify
+docker build --provenance=false --sbom=false --platform=linux/amd64 --tag ics-seaweedfs:4.45-m01-security.2 --file deploy/images/seaweedfs/Dockerfile deploy/images/seaweedfs
+python scripts/maintenance_evidence.py seaweedfs
 ```
 
 首次模块下载与静态编译耗时较长。无 `latest`、不执行 `go get -u` 或 `go mod tidy`，不拉取浮动分支；修改锁定输入必须重新评审与扫描。重现范围为固定源码、工具链、依赖和配置输入，不承诺 Docker 构建时间元数据导致的镜像 ID 字节一致。
 
-本地固定 tag 为 `ics-seaweedfs:4.45-m01-security.1`。入口验证归档、镜像 ID、配方与报告绑定，扫描记录 7 天到期；证据仅保存在本机忽略目录。它尚未接入三服务 Compose，不是完整 M01 启停入口。
+本轮固定 tag 为 `ics-seaweedfs:4.45-m01-security.2`。维护入口验证归档、镜像 ID、配方与报告绑定，隔离测试要求扫描记录不超过 24 小时；证据仅保存在项目忽略目录。既有五服务 Compose 保留上一版镜像锁，待本轮全套验证通过才可切换。
 
 ## 运行边界
 

@@ -432,7 +432,7 @@ def prepare_nonroot_volumes(
     invoke(prefix + ["create", "etcd", "seaweedfs"], environment, timeout=180)
     check_resources(docker, environment, instance)
     invoke(prefix + ["stop", "etcd", "seaweedfs"], environment, timeout=120)
-    helper = "ics-seaweedfs:4.45-m01-security.1@sha256:dfac2e817ad5b9b2c6ee725127905f3893787089690318772c942f4239989c00"
+    helper = "ics-seaweedfs:4.45-m01-security.2@sha256:2ef7d372b429429c99116975d6ecfe789736d95ba43c00b7775b9510202273ba"
     for volume, initialize_dirs in (
         (f"{PROJECT}_etcd_data", False),
         (f"{PROJECT}_seaweedfs_data", True),
