@@ -1,4 +1,4 @@
-"""Real M02.1 gates, separate from the dependency-free foundation checks."""
+"""M02 backend/persistence gates, separate from foundation and real MySQL integration."""
 
 from pathlib import Path
 import argparse

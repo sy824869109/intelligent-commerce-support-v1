@@ -1,6 +1,6 @@
 # M02.2 验收记录
 
-日期：2026-09-09。当前：本地测试、数据库迁移和真实 HTTP 通过，远端 CI 待最终复核。
+日期：2026-09-09。当前：M02.2 功能与数据库测试通过，但远端既有 etcd/SeaweedFS 安全门禁失败，整体 CI FAILURE，阶段交付阻塞，不能标为 DONE。
 
 | 门禁 | 结果及边界 |
 |---|---|
@@ -14,8 +14,19 @@
 | 真实开发 MySQL | 已在新平台 ics_dev 升级至 m02_2_0001，重复状态核验 READY；未修改其他表 |
 | 真实 HTTP | 127.0.0.1:28000：ready 为 200 / application+database / mysql=ok，live 为 200 / application；进程 PID 35480 |
 | 基础门禁 | 212 项工具测试（Windows 跳过 5 项符号链接，Linux 覆盖）；结构、治理、标准、镜像锁通过 |
-| GitHub | 待本阶段提交后验证 Windows/Linux 后端及真实 MySQL 作业 |
+| GitHub | 实施提交 5f28bbc；运行 34323363851 的双平台基础/后端、Python 安全、真实 MySQL 集成及 MySQL/Redis 镜像扫描通过；etcd 和 SeaweedFS 镜像扫描失败 |
 
 集成测试临时容器已按唯一标签清理；没有删除既有卷或数据库。源码中示例都是合成数据。
 当前不包含真实 Redis 发布器、业务消费者、领域审计实现、租户认证、严格聚合顺序、93 条业务验收或 RAG。
 Outbox 的 PUBLISHED 只代表调用方已确认传输持久受理，不代表消费者执行完成；本轮使用接口原语测试，不冒充真实队列已接入。
+
+## 远端新增阻断与边界
+
+[运行 34323363851](https://github.com/sy824869109/intelligent-commerce-support-v1/actions/runs/34323363851) 的 etcd 作业在 etcd/etcdctl/etcdutl 三个二进制中分别检出相同 CVE-2026-84445：google.golang.org/grpc v1.83.1，HIGH。不是三个不同漏洞。
+这是本轮扫描新检出，不等于漏洞刚公开；不将此前扫描通过当作持续无漏洞保证。
+[官方公告 GHSA-2v4p-qf9q-27wj](https://github.com/grpc/grpc-go/security/advisories/GHSA-2v4p-qf9q-27wj) 描述 xDS server 在特定缺失 Header 请求下的崩溃，修补版本含 1.83.2/1.82.2。
+当前已证明存在受影响依赖版本，但未证明本平台启用了公告描述的可利用 xDS 路径；不能把依赖命中直接写成已遭攻击，也不能据未验证的不可达假设跳过门禁。
+本地 Milvus 的 go.mod.lock 同样固定 grpc 1.83.1，需要一并复核；其手动审计本轮未运行，不能写成新的通过。
+SeaweedFS 的独立扫描最终也失败：usr/bin/weed 中的 grpc v1.85.0-dev 检出同一 HIGH。扫描列出的已修补开发快照为 v1.85.0-dev.0.20260825072537-93e31b48545e；不能仅根据开发版数字大就推断已修补。需要按兼容性选择正式稳定修补版或可核验补丁制品，不在本步直接改锁。
+
+保持既有镜像、数据卷和安全扫描规则不变。下一步需要确认插入 M01 安全维护：复核受影响制品 → 构建补丁候选 → 扫描/兼容验证 → 经确认更新新平台锁及运行镜像；不改旧 KF，不直接替换现有数据。

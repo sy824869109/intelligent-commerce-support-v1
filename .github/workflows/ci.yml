@@ -56,8 +56,8 @@ jobs:
       - name: Format, static checks, contracts baseline, asset safety and unit tests
         run: python scripts/ci.py
 
-  # These jobs are intentionally SKIPPED, never fake successful business tests.
-  # ci-stages.json and verify_ci.py require activation when runtime inputs arrive.
+  # Backend/security are ACTIVE. Only unimplemented frontend/event-contract jobs are skipped.
+  # ci-stages.json and verify_ci.py enforce real commands when runtime inputs arrive.
   backend:
     name: Backend application tests (${{ matrix.os }})
     needs: foundation

@@ -97,3 +97,9 @@ python scripts/run_gateway.py --with-database
 
 本轮核对上一阶段网关 PID 27980 的解释器与启动命令后，仅替换这个本机网关；新实例 PID 35480，参数 `--with-database`。
 日志：`_local_artifacts/m02-2/gateway.stdout.log`、`gateway.stderr.log`。既有 Docker 服务没有重启。
+
+## GitHub 交付与未越界处理
+
+实施提交 `5f28bbc` 已推送 `origin/codex/v1-greenfield`。运行 34323363851 的双平台后端、Python 安全和新增 MySQL 集成通过，但既有 etcd（grpc 1.83.1）与 SeaweedFS（grpc 1.85.0-dev）镜像检出 HIGH：CVE-2026-84445，整体 FAILURE，阶段不能标完成。
+随后仅只读查看 etcd/Milvus/SeaweedFS 的依赖锁与官方公告，未改任何基础镜像配方、依赖锁、容器或数据；后续安全维护需单独确认。详见验收记录。
+最后同步运行文档、Worker 状态、HTTP 数据库健康语义与代码注释，不提前增加下一阶段功能。

@@ -39,3 +39,16 @@ JSON 请求日志仅记录方法、路由模板、状态、耗时和两个 ID；
 
 参考：[FastAPI 应用生命周期](https://fastapi.tiangolo.com/advanced/events/)。
 框架自动生成的基础健康 OpenAPI 不等于已经冻结 packages/contracts 的业务与事件合同。
+
+## M02.2 增量：显式数据库模式
+
+`scripts/run_gateway.py --with-database` 增加新平台 MySQL 连接和迁移版本检查，不新增业务写接口。
+成功时 `/health/ready` 的 data 为：
+
+```json
+{"status":"ready","service":"api-gateway","scope":"application+database","checks":{"lifecycle":"ok","mysql":"ok"}}
+```
+
+未迁移、版本不符、连接失败、已有探针仍在运行或超时均返回同一脱敏 503。
+`/health/live` 仍不依赖数据库，默认不带参数的启动方式仍使用原 application 范围。
+数据库只在显式迁移命令中建表，应用启动不自动变更表结构。详见 [M02.2 行为与运行记录](../operations/m02-2-database.md)。
