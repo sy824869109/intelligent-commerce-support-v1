@@ -50,3 +50,7 @@ check_binding：身份、hash、时效、状态与稳定命令引用
 - 校验入口仍为 `scripts/check_contracts.py`；缓存与临时文件在 F 盘项目 `_local_artifacts`，无新增依赖/服务操作，无 KF 或旧项目改动。
 - JSON Schema 描述结构；跨字段 hash/状态一致性通过 Python 校验器执行，单独通过 JSON Schema 不等于全部业务规则通过。
 - 仍待：其他业务完整 DTO、对外预检展示投影、完整 HTTP 错误/成功信封、正式设计路径、分页授权/签名/过期策略、跨版本 fixtures。当前 M02.3 仍 IN_PROGRESS，93 条业务验收仍 NOT_RUN。
+
+## 验收
+
+实现 `8ddd156` 已推送；[GitHub CI 34432601691](https://github.com/sy824869109/intelligent-commerce-support-v1/actions/runs/34432601691) SUCCESS。双平台契约/后端/基础、Python 安全和四类镜像门禁通过；前端与手动 Milvus 作业仍按策略 skipped，不计为运行通过。本地 83 项契约、46 项后端测试通过，224 项基础检查通过（Windows 跳过 5 项符号链接测试）。两项既有测试依赖弃用警告保留，未扩展升级依赖。
