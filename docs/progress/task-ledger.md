@@ -9,6 +9,8 @@
 
 ## 当前任务
 
+**M02.1–M02.4 全部 DONE（2026-09-10）。** 最终实现 `c98ae47`、修正 `aaa8058` 已推送，CI `34454383386` SUCCESS。63 项后端、169 项契约、9 项真实 MySQL 与基础检查通过，开发库审计迁移 READY，实际网关联测通过且临时进程已停止。完整行为、失败修正和边界见 [M02 最终验收](../operations/m02-final-acceptance.md)。下一阶段 M03 尚未开始。下方待验收/IN_PROGRESS 为历史过程记录。
+
 M02 最终批本地完成，远端待验证：63 项后端、169 项契约、9 项真实 MySQL、224 项基础测试运行成功（Windows 跳过 5 项）；开发库审计迁移 READY，真实 HTTP/数据库/trace/日志联测通过。M02.4 在 CI 签收前保持 IN_PROGRESS，见 [总验收与行为记录](../operations/m02-final-acceptance.md)。上一批 `6b44191` 的 CI `34448572288` SUCCESS。
 
 M02.4 第一批 IN_PROGRESS：观测共享函数（上下文隔离、白名单 JSON、固定指标桶、审计记录校验），本地 56 项后端与 169 项契约通过，远端待验证。尚未接入网关或持久化审计，见 [实施记录](../operations/m02-4-observability-foundation.md)。
@@ -38,7 +40,9 @@ M02.3：IN_PROGRESS。第一批已验收：现有 OpenAPI、八类事件机器�
 | M01.3 环境配置分层 | DONE | dev/test/prod 无密钥配置，开发仅 loopback，生产 TLS/外部密钥契约 | M01 最终提交与 CI 见下方收口记录 |
 | M01.4 生命周期与升级演练 | DONE | 统一启动/健康/停止/重启测试/强制重建入口，五类数据跨重建保留 | M01 最终提交与 CI 见下方收口记录 |
 | M02.1 后端应用骨架 | DONE | 应用工厂、健康/错误/关联日志、24 项后端测试、Bandit/pip-audit、本机 HTTP 通过 | acc5fb3；GitHub Actions 34187050206 双平台后端与安全门禁 SUCCESS |
-| M02.2 数据库事务与事件基础 | DONE | SQLAlchemy、Alembic、Outbox/Inbox；46 项后端和 8 项真实 MySQL 回归通过，开发库 READY；原镜像安全阻塞经 M01 维护解除 | 实现 5f28bbc；修补准入 80f436f；CI 34334369003 SUCCESS；API 网关当前未启动，M02.3 未开始 |
+| M02.2 数据库事务与事件基础 | DONE | SQLAlchemy、Alembic、Outbox/Inbox；最终回归含审计扩展，9 项真实 MySQL 通过，开发库 READY | 原实现 5f28bbc；最终 CI 34454383386 SUCCESS；测试网关已停止 |
+| M02.3 共享接口与流式合同 | DONE | 169 项契约、8 类平台事件、18 项业务设计与6项媒体扩展、独立兼容基线 | 694b5f4；最终回归 CI 34454383386 SUCCESS |
+| M02.4 观测与审计基础库 | DONE | 网关 trace/日志/有界指标、事务审计、迁移及失败回滚、真实 HTTP 联测 | c98ae47、aaa8058；CI 34454383386 SUCCESS |
 | M01 安全维护 20260909 | DONE | 五镜像复扫 HIGH/CRITICAL 为 0；隔离同卷升级/重启通过；新平台修补镜像五服务健康；222 项基础检查（Windows 跳过 5 项）、46 项后端、8 项 MySQL 回归通过 | 9785f6c、80f436f 已推送；CI 34330902892、34334369003 SUCCESS；见维护行为记录 |
 
 M02.1 新环境在项目 `_local_artifacts/dependencies/platform`，后续缓存已固定到项目内；首次审计误生成的 C 盘缓存因迁移失败和清理被安全检查拦截而暂留，详见行为记录。既有 Docker 数据不迁移。
