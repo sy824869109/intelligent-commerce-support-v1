@@ -73,7 +73,7 @@ def main() -> int:
         return 1
     message = (
         "Foundation checks PASS. Backend tests and Python SAST/dependency audit run in "
-        "separate ACTIVE jobs; frontend and event runtime contracts remain NOT_IMPLEMENTED. "
+        "separate ACTIVE jobs; platform contracts are ACTIVE, frontend remains NOT_IMPLEMENTED. "
         "Push CI builds/scans four bounded images and validates "
         "the Milvus policy, while its full source audit is manual on the controlled builder. "
         "93 business cases remain NOT_RUN.\n"

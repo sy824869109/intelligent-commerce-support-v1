@@ -32,6 +32,9 @@ class ImageWorkflowTests(unittest.TestCase):
             "ci/backend-requirements.lock",
             "scripts/check_backend.py",
             "tests/backend/test_gateway.py",
+            "scripts/check_contracts.py",
+            "tests/contracts/test_contracts.py",
+            "packages/contracts/ics_contracts/events.py",
         ):
             marker = self.root / relative
             marker.parent.mkdir(parents=True, exist_ok=True)
@@ -239,13 +242,21 @@ class ImageWorkflowTests(unittest.TestCase):
                 self.assert_rejected()
 
     def test_unimplemented_application_stage_stays_skipped(self):
-        for name in ci.STAGES - {"image-build", "backend", "security-audit"}:
+        for name in ci.STAGES - {"image-build", "backend", "contracts", "security-audit"}:
             self.assertEqual("NOT_IMPLEMENTED", self.stages["stages"][name]["state"])
             self.assertEqual("${{ false }}", self.workflow["jobs"][name]["if"])
 
     def test_application_cannot_be_falsely_marked_active(self):
         self.stages["stages"]["backend"]["state"] = "ACTIVE"
         self.workflow["jobs"]["backend"]["steps"][-1]["run"] = 'echo "fake pass"'
+        self.assert_rejected()
+
+    def test_contract_job_cannot_fake_or_skip_tests(self):
+        self.workflow["jobs"]["contracts"]["steps"][-1]["run"] = 'echo "fake pass"'
+        self.assert_rejected()
+
+    def test_contract_job_cannot_be_skipped(self):
+        self.workflow["jobs"]["contracts"]["if"] = "${{ false }}"
         self.assert_rejected()
 
     def test_path_filter_cannot_skip_image_changes(self):

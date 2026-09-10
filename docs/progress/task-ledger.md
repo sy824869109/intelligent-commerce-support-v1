@@ -9,6 +9,8 @@
 
 ## 当前任务
 
+M02.3：IN_PROGRESS。第一批（现有 OpenAPI、八类事件机器合同、SSE 编码与真实契约 CI）本地 31 项契约测试、224 项基础检查通过（Windows 跳过 5 项）；远端待验。后续业务/领域合同未完成，见 [合同说明](../api/m02-3-contract-foundation.md)。
+
 | 任务 | 状态 | 本地交付 | GitHub |
 |---|---|---|---|
 | M00.1 开发基线初始化 | DONE | 启动包校验、标准文档、资产台账、独立 Conda 环境、Git 仓库与本地原子提交 | 已推送 `origin/codex/v1-greenfield`；基线提交 `591d1a4` |
@@ -24,7 +26,7 @@
 | M01 安全维护 20260909 | DONE | 五镜像复扫 HIGH/CRITICAL 为 0；隔离同卷升级/重启通过；新平台修补镜像五服务健康；222 项基础检查（Windows 跳过 5 项）、46 项后端、8 项 MySQL 回归通过 | 9785f6c、80f436f 已推送；CI 34330902892、34334369003 SUCCESS；见维护行为记录 |
 
 M02.1 新环境在项目 `_local_artifacts/dependencies/platform`，后续缓存已固定到项目内；首次审计误生成的 C 盘缓存因迁移失败和清理被安全检查拦截而暂留，详见行为记录。既有 Docker 数据不迁移。
-M02.2 功能已实现但交付被既有基础镜像安全门禁阻断；M02.3 与 M02.4 尚未开始。详见 [M02.2 行为记录](../operations/m02-2-database.md) 和 [验收/阻断证据](../testing/m02-2-database.md)。
+M02.2 原安全阻塞已于 M01 维护解除。M02.3 第一批合同开始实施，M02.4 尚未开始；历史阻断证据保留，不代表当前仍阻塞。
 详见 [M02.1 行为记录](../operations/m02-1-implementation-log.md) 和 [验收](../testing/m02-1-gateway.md)。
 
 ## M01 最终收口（2026-09-07）

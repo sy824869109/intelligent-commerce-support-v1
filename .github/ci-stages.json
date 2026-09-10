@@ -3,7 +3,7 @@
   "stages": {
     "backend": {"state": "ACTIVE", "enable_by": "M02.1 application factory and HTTP health", "markers": ["apps/**/*.py", "packages/domain/**/*.py", "pyproject.toml"]},
     "frontend": {"state": "NOT_IMPLEMENTED", "enable_by": "M14 first frontend source", "markers": ["package.json", "pnpm-workspace.yaml", "apps/web-*/**/*.vue", "apps/web-*/**/*.ts", "apps/web-*/**/*.js", "apps/web-*/package.json"]},
-    "contracts": {"state": "NOT_IMPLEMENTED", "enable_by": "M02.3 first machine contract", "markers": ["packages/contracts/**/*.json", "packages/contracts/**/*.yaml", "packages/contracts/**/*.yml", "packages/contracts/**/*.py"]},
+    "contracts": {"state": "ACTIVE", "enable_by": "M02.3 first machine contract", "markers": ["packages/contracts/**/*.json", "packages/contracts/**/*.yaml", "packages/contracts/**/*.yml", "packages/contracts/**/*.py"]},
     "security-audit": {"state": "ACTIVE", "enable_by": "M02.1 Bandit and locked Python dependency audit", "markers": ["pyproject.toml", "package.json", "apps/**/*.py", "apps/**/*.toml", "apps/**/requirements*.txt", "apps/**/package.json", "apps/**/*.vue", "apps/**/*.ts", "apps/**/*.js"]},
     "image-build": {"state": "ACTIVE", "enable_by": "M01 reviewed five-service dependency recipes", "markers": ["Dockerfile*", "apps/**/Dockerfile*", "deploy/**/Dockerfile*"], "reviewed_inputs": ["deploy/images/etcd/Dockerfile", "deploy/images/milvus/Dockerfile", "deploy/images/mysql/Dockerfile", "deploy/images/redis/Dockerfile", "deploy/images/seaweedfs/Dockerfile"]}
   }

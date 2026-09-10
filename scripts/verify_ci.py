@@ -320,7 +320,7 @@ def validate_workflow(workflow: dict, stages: dict, root: Path) -> list[str]:
         if name == "image-build":
             errors.extend(validate_image_job(jobs.get(name, {}), stage, root))
             continue
-        if name in {"backend", "security-audit"} and stage.get("state") == "ACTIVE":
+        if name in {"backend", "contracts", "security-audit"} and stage.get("state") == "ACTIVE":
             errors.extend(validate_backend_job(name, jobs.get(name, {}), root))
             if not stage.get("markers"):
                 errors.append(f"Active stage must retain runtime markers: {name}")
@@ -353,7 +353,7 @@ def validate_backend_job(name: str, job: dict, root: Path) -> list[str]:
         "run": "python -m pip install --require-hashes --only-binary=:all: "
         "-r apps/api-gateway/requirements.lock -r ci/backend-requirements.lock",
     }
-    if name == "backend":
+    if name in {"backend", "contracts"}:
         python["if"] = "runner.os != 'Windows'"
         conda = {
             "name": "Windows Conda from project baseline",
@@ -368,7 +368,11 @@ def validate_backend_job(name: str, job: dict, root: Path) -> list[str]:
             },
         }
         expected = {
-            "name": "Backend application tests (${{ matrix.os }})",
+            "name": (
+                "Platform contract tests (${{ matrix.os }})"
+                if name == "contracts"
+                else "Backend application tests (${{ matrix.os }})"
+            ),
             "needs": "foundation",
             "runs-on": "${{ matrix.os }}",
             "timeout-minutes": "15",
@@ -380,7 +384,14 @@ def validate_backend_job(name: str, job: dict, root: Path) -> list[str]:
                 python,
                 conda,
                 install,
-                {"name": "Run backend tests", "run": "python scripts/check_backend.py tests"},
+                (
+                    {"name": "Run contract tests", "run": "python scripts/check_contracts.py"}
+                    if name == "contracts"
+                    else {
+                        "name": "Run backend tests",
+                        "run": "python scripts/check_backend.py tests",
+                    }
+                ),
             ],
         }
     else:
@@ -400,6 +411,14 @@ def validate_backend_job(name: str, job: dict, root: Path) -> list[str]:
             ],
         }
     errors = [] if job == expected else [f"Active {name} requires exact real bounded commands"]
+    if name == "contracts":
+        for relative in (
+            "scripts/check_contracts.py",
+            "tests/contracts/test_contracts.py",
+            "packages/contracts/ics_contracts/events.py",
+        ):
+            if not (root / relative).is_file():
+                errors.append(f"Missing real contract input: {relative}")
     for relative in (
         "apps/api-gateway/requirements.lock",
         "ci/backend-requirements.lock",

@@ -1,0 +1,569 @@
+{
+  "$defs": {
+    "Committed": {
+      "additionalProperties": false,
+      "properties": {
+        "control_epoch": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "title": "Control Epoch",
+          "type": "integer"
+        },
+        "conversation_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Conversation Id",
+          "type": "string"
+        },
+        "cursor": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Cursor",
+          "type": "string"
+        },
+        "event_type": {
+          "const": "message.committed",
+          "title": "Event Type",
+          "type": "string"
+        },
+        "message_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Message Id",
+          "type": "string"
+        },
+        "message_seq": {
+          "maximum": 9007199254740991,
+          "minimum": 1,
+          "title": "Message Seq",
+          "type": "integer"
+        },
+        "run_id": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9_-]+$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Run Id"
+        },
+        "schema_version": {
+          "const": 1,
+          "title": "Schema Version",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "schema_version",
+        "conversation_id",
+        "control_epoch",
+        "event_type",
+        "cursor",
+        "run_id",
+        "message_id",
+        "message_seq"
+      ],
+      "title": "Committed",
+      "type": "object"
+    },
+    "Completed": {
+      "additionalProperties": false,
+      "properties": {
+        "control_epoch": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "title": "Control Epoch",
+          "type": "integer"
+        },
+        "conversation_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Conversation Id",
+          "type": "string"
+        },
+        "cursor": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Cursor",
+          "type": "string"
+        },
+        "event_type": {
+          "const": "run.completed",
+          "title": "Event Type",
+          "type": "string"
+        },
+        "final_message_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Final Message Id",
+          "type": "string"
+        },
+        "run_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Run Id",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": 1,
+          "title": "Schema Version",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "schema_version",
+        "conversation_id",
+        "control_epoch",
+        "run_id",
+        "event_type",
+        "cursor",
+        "final_message_id"
+      ],
+      "title": "Completed",
+      "type": "object"
+    },
+    "Control": {
+      "additionalProperties": false,
+      "properties": {
+        "active_run_id": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9_-]+$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Active Run Id"
+        },
+        "assignment_id": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9_-]+$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Assignment Id"
+        },
+        "control_epoch": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "title": "Control Epoch",
+          "type": "integer"
+        },
+        "conversation_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Conversation Id",
+          "type": "string"
+        },
+        "cursor": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Cursor",
+          "type": "string"
+        },
+        "event_type": {
+          "const": "control.changed",
+          "title": "Event Type",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": 1,
+          "title": "Schema Version",
+          "type": "integer"
+        },
+        "service_mode": {
+          "enum": [
+            "AI",
+            "HANDOFF_PENDING",
+            "HUMAN",
+            "CLOSED"
+          ],
+          "title": "Service Mode",
+          "type": "string"
+        }
+      },
+      "required": [
+        "schema_version",
+        "conversation_id",
+        "control_epoch",
+        "event_type",
+        "cursor",
+        "service_mode",
+        "active_run_id",
+        "assignment_id"
+      ],
+      "title": "Control",
+      "type": "object"
+    },
+    "Delta": {
+      "additionalProperties": false,
+      "properties": {
+        "control_epoch": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "title": "Control Epoch",
+          "type": "integer"
+        },
+        "conversation_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Conversation Id",
+          "type": "string"
+        },
+        "event_type": {
+          "const": "answer.delta",
+          "title": "Event Type",
+          "type": "string"
+        },
+        "run_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Run Id",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": 1,
+          "title": "Schema Version",
+          "type": "integer"
+        },
+        "text": {
+          "maxLength": 8192,
+          "minLength": 1,
+          "title": "Text",
+          "type": "string"
+        },
+        "token_seq": {
+          "maximum": 9007199254740991,
+          "minimum": 1,
+          "title": "Token Seq",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "schema_version",
+        "conversation_id",
+        "control_epoch",
+        "run_id",
+        "event_type",
+        "token_seq",
+        "text"
+      ],
+      "title": "Delta",
+      "type": "object"
+    },
+    "Failed": {
+      "additionalProperties": false,
+      "properties": {
+        "command_id": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9_-]+$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Command Id"
+        },
+        "control_epoch": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "title": "Control Epoch",
+          "type": "integer"
+        },
+        "conversation_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Conversation Id",
+          "type": "string"
+        },
+        "cursor": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Cursor",
+          "type": "string"
+        },
+        "event_type": {
+          "const": "run.failed",
+          "title": "Event Type",
+          "type": "string"
+        },
+        "next_action": {
+          "enum": [
+            "READ_SNAPSHOT",
+            "QUERY_COMMAND",
+            "CONTACT_SUPPORT"
+          ],
+          "title": "Next Action",
+          "type": "string"
+        },
+        "reason_code": {
+          "enum": [
+            "DEADLINE_EXCEEDED",
+            "UPSTREAM_UNAVAILABLE",
+            "PUBLICATION_FAILED",
+            "RUN_SUPERSEDED"
+          ],
+          "title": "Reason Code",
+          "type": "string"
+        },
+        "run_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Run Id",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": 1,
+          "title": "Schema Version",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "schema_version",
+        "conversation_id",
+        "control_epoch",
+        "run_id",
+        "event_type",
+        "cursor",
+        "reason_code",
+        "next_action",
+        "command_id"
+      ],
+      "title": "Failed",
+      "type": "object"
+    },
+    "Progress": {
+      "additionalProperties": false,
+      "properties": {
+        "control_epoch": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "title": "Control Epoch",
+          "type": "integer"
+        },
+        "conversation_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Conversation Id",
+          "type": "string"
+        },
+        "event_type": {
+          "const": "run.progress",
+          "title": "Event Type",
+          "type": "string"
+        },
+        "run_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Run Id",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": 1,
+          "title": "Schema Version",
+          "type": "integer"
+        },
+        "stage": {
+          "enum": [
+            "QUEUED",
+            "RETRIEVING",
+            "GENERATING",
+            "PUBLISHING"
+          ],
+          "title": "Stage",
+          "type": "string"
+        }
+      },
+      "required": [
+        "schema_version",
+        "conversation_id",
+        "control_epoch",
+        "run_id",
+        "event_type",
+        "stage"
+      ],
+      "title": "Progress",
+      "type": "object"
+    },
+    "Resync": {
+      "additionalProperties": false,
+      "properties": {
+        "control_epoch": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "title": "Control Epoch",
+          "type": "integer"
+        },
+        "conversation_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Conversation Id",
+          "type": "string"
+        },
+        "event_type": {
+          "const": "resync_required",
+          "title": "Event Type",
+          "type": "string"
+        },
+        "next_action": {
+          "const": "READ_SNAPSHOT",
+          "title": "Next Action",
+          "type": "string"
+        },
+        "reason": {
+          "enum": [
+            "CURSOR_EXPIRED",
+            "DELTA_MISSING",
+            "BUFFER_EXCEEDED"
+          ],
+          "title": "Reason",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": 1,
+          "title": "Schema Version",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "schema_version",
+        "conversation_id",
+        "control_epoch",
+        "event_type",
+        "reason",
+        "next_action"
+      ],
+      "title": "Resync",
+      "type": "object"
+    },
+    "Started": {
+      "additionalProperties": false,
+      "properties": {
+        "control_epoch": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "title": "Control Epoch",
+          "type": "integer"
+        },
+        "conversation_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Conversation Id",
+          "type": "string"
+        },
+        "cursor": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Cursor",
+          "type": "string"
+        },
+        "event_type": {
+          "const": "run.started",
+          "title": "Event Type",
+          "type": "string"
+        },
+        "run_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Run Id",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": 1,
+          "title": "Schema Version",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "schema_version",
+        "conversation_id",
+        "control_epoch",
+        "run_id",
+        "event_type",
+        "cursor"
+      ],
+      "title": "Started",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "discriminator": {
+    "mapping": {
+      "answer.delta": "#/$defs/Delta",
+      "control.changed": "#/$defs/Control",
+      "message.committed": "#/$defs/Committed",
+      "resync_required": "#/$defs/Resync",
+      "run.completed": "#/$defs/Completed",
+      "run.failed": "#/$defs/Failed",
+      "run.progress": "#/$defs/Progress",
+      "run.started": "#/$defs/Started"
+    },
+    "propertyName": "event_type"
+  },
+  "oneOf": [
+    {
+      "$ref": "#/$defs/Started"
+    },
+    {
+      "$ref": "#/$defs/Progress"
+    },
+    {
+      "$ref": "#/$defs/Delta"
+    },
+    {
+      "$ref": "#/$defs/Committed"
+    },
+    {
+      "$ref": "#/$defs/Completed"
+    },
+    {
+      "$ref": "#/$defs/Failed"
+    },
+    {
+      "$ref": "#/$defs/Control"
+    },
+    {
+      "$ref": "#/$defs/Resync"
+    }
+  ],
+  "title": "Platform browser event v1 (SSE id is envelope cursor)"
+}
