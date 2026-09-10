@@ -11,6 +11,7 @@ sys.dont_write_bytecode = True
 sys.path.insert(0, str(ROOT / "apps/api-gateway"))
 sys.path.insert(0, str(ROOT / "packages/persistence"))
 sys.path.insert(0, str(ROOT / "packages/observability"))
+sys.path.insert(0, str(ROOT / "packages/identity"))
 
 
 def main() -> int:
@@ -33,16 +34,20 @@ def main() -> int:
     os.environ["PYTHONDONTWRITEBYTECODE"] = "1"
     logging.basicConfig(level=logging.INFO, format="%(message)s")
     database = None
+    identity = None
     if args.with_database:
         from database_local import load_database
 
         try:
             database = load_database()
+            from ics_identity.service import Identity
+
+            identity = Identity(database)
         except Exception:
             print("Local database configuration/ownership invalid; values withheld.")
             return 1
     uvicorn.run(
-        create_app(settings, database=database),
+        create_app(settings, database=database, identity=identity),
         host=settings.host,
         port=settings.port,
         access_log=False,

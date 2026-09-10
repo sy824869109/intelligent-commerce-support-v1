@@ -7,13 +7,13 @@ from sqlalchemy import (
     Index,
     Integer,
     JSON,
-    MetaData,
     String,
     Table,
     Text,
 )
 
-metadata = MetaData()
+from .identity_schema import metadata
+
 audit = Table(
     "platform_audit",
     metadata,

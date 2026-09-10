@@ -28,6 +28,7 @@ def main() -> int:
     try:
         if args.gate == "tests":
             run("-m", "pip", "check")
+            run("scripts/export_identity_openapi.py")
             run(
                 "-m",
                 "ruff",
@@ -37,6 +38,7 @@ def main() -> int:
                 "apps",
                 "packages/persistence",
                 "packages/observability",
+                "packages/identity",
                 "tests/backend",
                 "tests/integration/test_m02_mysql.py",
             )
@@ -50,6 +52,7 @@ def main() -> int:
                 "apps",
                 "packages/persistence",
                 "packages/observability",
+                "packages/identity",
                 "tests/backend",
                 "tests/integration/test_m02_mysql.py",
             )
@@ -63,10 +66,12 @@ def main() -> int:
                 "apps",
                 "packages/persistence",
                 "packages/observability",
+                "packages/identity",
                 "scripts/run_gateway.py",
                 "scripts/database_local.py",
                 "scripts/check_mysql.py",
                 "scripts/check_gateway_local.py",
+                "scripts/bootstrap_identity.py",
                 "-q",
             )
             # Both app and test/tool dependency sets are pinned; no ignore-vuln exemptions.

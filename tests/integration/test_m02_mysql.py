@@ -13,6 +13,7 @@ from alembic.migration import MigrationContext
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "packages/persistence"))
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "packages/observability"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "packages/identity"))
 from ics_persistence.database import Database, DatabaseConfig
 from ics_persistence.events import Event
 from ics_persistence.migration import migrate
@@ -268,3 +269,99 @@ def test_09_real_audit_atomic_retry_conflict_and_reconnect(db):
     with pytest.raises(RuntimeError, match="non-empty"):
         migrate(db.engine, "base", downgrade=True)
     assert db.ready()
+
+
+def test_10_m03_real_session_rotation_concurrency_and_revocation(db):
+    from ics_identity.passwords import hash_password
+    from ics_identity.service import Identity, IdentityError, provision_tenant
+    from ics_persistence.identity_schema import sessions, tokens
+
+    password = "Synthetic-M03-Password-98!"
+    with db.transaction() as session:
+        provision_tenant(
+            session,
+            organization_id="ORG_M03",
+            tenant_id="TENANT_M03",
+            user_id="ADMIN_M03",
+            login="admin_m03",
+            password_hash=hash_password(password),
+        )
+    identity = Identity(db)
+    pair = identity.login("TENANT_M03", "admin_m03", password, "loopback-test")
+    assert identity.authenticate(pair["access_token"]).tenant_id == "TENANT_M03"
+    db.close()
+
+    def rotate(_):
+        try:
+            return identity.refresh(pair["refresh_token"])
+        except IdentityError:
+            return None
+
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        results = list(pool.map(rotate, range(2)))
+    assert sum(result is not None for result in results) == 1
+    winner = next(result for result in results if result is not None)
+    # Replayed refresh revokes even the winning successor; no double-use window persists.
+    with pytest.raises(IdentityError):
+        identity.authenticate(winner["access_token"])
+    with db.transaction() as session:
+        assert session.scalar(select(sessions.c.revoked).where(sessions.c.user_id == "ADMIN_M03"))
+        assert pair["refresh_token"] not in str(session.execute(select(tokens)).all())
+
+
+def test_11_m03_real_group_scope_and_role_revocation(db):
+    from ics_identity.service import Identity, IdentityError, Resource
+
+    identity = Identity(db)
+    password = "Synthetic-M03-Password-98!"
+    admin_pair = identity.login("TENANT_M03", "admin_m03", password, "admin-peer")
+    admin = identity.authenticate(admin_pair["access_token"])
+    user_id = identity.create_member(admin, "agent_m03", password, "AGENT")
+    group_id = identity.create_group(admin, "synthetic-group")
+    identity.group_member(admin, group_id, user_id, True)
+    pair = identity.login("TENANT_M03", "agent_m03", password, "agent-peer")
+    agent = identity.authenticate(pair["access_token"])
+    for kind in ("order", "ticket", "knowledge"):
+        with db.transaction() as session:
+            identity.authorize(
+                session,
+                agent,
+                kind + ".read",
+                Resource(kind, "TENANT_M03", group_id=group_id, published=True),
+            )
+            with pytest.raises(IdentityError):
+                identity.authorize(
+                    session,
+                    agent,
+                    kind + ".read",
+                    Resource(kind, "OTHER_TENANT", group_id=group_id, published=True),
+                )
+    identity.group_member(admin, group_id, user_id, False)
+    with db.transaction() as session:
+        with pytest.raises(IdentityError):
+            identity.authorize(
+                session, agent, "ticket.reply", Resource("ticket", "TENANT_M03", group_id=group_id)
+            )
+    identity.update_member(admin, user_id, "AGENT", False)
+    with pytest.raises(IdentityError):
+        identity.authenticate(pair["access_token"])
+
+
+def test_12_m03_database_constraints_and_downgrade_preservation(db):
+    from sqlalchemy.exc import IntegrityError
+    from ics_persistence.identity_schema import group_members, tenants
+
+    with pytest.raises(IntegrityError):
+        with db.transaction() as session:
+            session.execute(
+                insert(group_members).values(
+                    tenant_id="TENANT_M03", group_id="UNKNOWN", user_id="ADMIN_M03"
+                )
+            )
+    with pytest.raises(RuntimeError, match="non-empty"):
+        migrate(db.engine, "base", downgrade=True)
+    assert db.ready()
+    with db.transaction() as session:
+        assert (
+            session.scalar(select(tenants.c.id).where(tenants.c.id == "TENANT_M03")) == "TENANT_M03"
+        )

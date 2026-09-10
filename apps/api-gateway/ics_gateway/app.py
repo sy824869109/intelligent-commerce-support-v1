@@ -30,6 +30,7 @@ def create_app(
     *,
     checks: Mapping[str, Check] | None = None,
     database: Database | None = None,
+    identity=None,
 ) -> FastAPI:
     """Each instance owns its lifecycle; database is an explicit optional dependency."""
     settings = settings or Settings()
@@ -67,6 +68,30 @@ def create_app(
     app.state.ready = False
     app.state.settings = settings
     app.state.metrics = Metrics(["http"])
+    if identity is not None:
+        from .identity import IdentityBoundary, router
+        from ics_identity.service import IdentityError
+
+        app.state.identity = identity
+        app.add_middleware(IdentityBoundary, origins=settings.allowed_origins)
+        app.include_router(router())
+
+        @app.exception_handler(IdentityError)
+        async def identity_error(request: Request, exc: IdentityError):
+            action = {401: "REAUTHENTICATE", 404: "STOP", 429: "HONOR_RETRY_AFTER"}.get(
+                exc.status, "FIX_REQUEST"
+            )
+            return failure(
+                request,
+                exc.status,
+                ErrorDetail(code=exc.code, message="身份验证或授权未通过。", client_action=action),
+                {"Retry-After": "300"}
+                if exc.status == 429
+                else {"WWW-Authenticate": "Bearer"}
+                if exc.status == 401
+                else None,
+            )
+
     app.add_middleware(RequestContext, metrics=app.state.metrics)
 
     @app.exception_handler(RequestValidationError)

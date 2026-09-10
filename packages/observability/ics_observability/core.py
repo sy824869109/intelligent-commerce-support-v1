@@ -149,6 +149,11 @@ class AuditRecord:
             "COMMAND_SUBMIT",
             "KNOWLEDGE_PUBLISH",
             "TICKET_ASSIGN",
+            "IDENTITY_LOGIN",
+            "IDENTITY_REVOKE",
+            "IDENTITY_PASSWORD",
+            "IDENTITY_MEMBER",
+            "IDENTITY_REFRESH",
         }:
             raise ValueError("Unregistered audit action")
         if self.outcome not in {"ALLOWED", "DENIED", "SUCCEEDED", "FAILED"}:

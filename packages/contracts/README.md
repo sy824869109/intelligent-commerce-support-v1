@@ -1,5 +1,7 @@
 # contracts
 
+M03 已新增独立的 `docs/api/m03-identity.openapi.json` 及 ADR-0009 来定义运行身份接口与 Bearer 边界。旧 M02 设计制品中的 M03_UNFROZEN 是冻结时的历史标注，不代表 M03 仍未决定认证方式；不改写旧快照，后续业务接入以 M03 决策和当前运行 OpenAPI 为准。
+
 保存 OpenAPI、事件合同、错误码、分页模型和跨服务 DTO。合同需要版本化，并由契约测试验证向后兼容性。
 
 M02.3 第一批已将 E-03 的八类事件落为 `ics_contracts/events.py`，生成 `generated/browser-events-v1.schema.json`；`generated/gateway.openapi.json` 从实际网关工厂导出，仅含两条已实现健康接口。生成器检查源码与制品差异，禁止手改生成文件。
