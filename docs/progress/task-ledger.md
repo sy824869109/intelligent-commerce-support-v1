@@ -9,7 +9,7 @@
 
 ## 当前任务
 
-M02.3：IN_PROGRESS。第一批（现有 OpenAPI、八类事件机器合同、SSE 编码与真实契约 CI）本地 31 项契约测试、224 项基础检查通过（Windows 跳过 5 项）；远端待验。后续业务/领域合同未完成，见 [合同说明](../api/m02-3-contract-foundation.md)。
+M02.3：IN_PROGRESS。第一批已验收：现有 OpenAPI、八类事件机器合同、SSE 编码与真实契约 CI；本地 31 项契约、46 项后端测试与 224 项基础检查通过（Windows 跳过 5 项）。实现 `eafd033` 已推送，GitHub CI `34429732803` SUCCESS（含双平台契约）。后续业务/领域合同未完成，见 [合同说明](../api/m02-3-contract-foundation.md)。
 
 | 任务 | 状态 | 本地交付 | GitHub |
 |---|---|---|---|
