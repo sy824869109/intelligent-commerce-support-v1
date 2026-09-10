@@ -1,0 +1,39 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "assignment_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,63}$",
+      "title": "Assignment Id",
+      "type": "string"
+    },
+    "content_ref": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,63}$",
+      "title": "Content Ref",
+      "type": "string"
+    },
+    "conversation_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,63}$",
+      "title": "Conversation Id",
+      "type": "string"
+    },
+    "reply_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,63}$",
+      "title": "Reply Id",
+      "type": "string"
+    },
+    "visibility": {
+      "const": "PUBLIC",
+      "title": "Visibility",
+      "type": "string"
+    }
+  },
+  "required": [
+    "reply_id",
+    "conversation_id",
+    "assignment_id",
+    "visibility",
+    "content_ref"
+  ],
+  "title": "PublicReply",
+  "type": "object"
+}

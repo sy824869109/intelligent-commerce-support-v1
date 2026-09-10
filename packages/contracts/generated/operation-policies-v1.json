@@ -1,0 +1,267 @@
+{
+  "errors": {
+    "ACCESS_DENIED": {
+      "client_action": "STOP",
+      "envelope": "error",
+      "http_statuses": [
+        403,
+        404
+      ],
+      "retry_policy": "NEVER"
+    },
+    "AUTH_REQUIRED": {
+      "client_action": "REAUTHENTICATE",
+      "envelope": "error",
+      "http_statuses": [
+        401
+      ],
+      "retry_policy": "NEVER"
+    },
+    "COMMAND_RESULT_UNKNOWN": {
+      "client_action": "QUERY_COMMAND",
+      "envelope": "data",
+      "http_statuses": [
+        202,
+        200
+      ],
+      "retry_policy": "QUERY_OR_RECONCILE"
+    },
+    "CONFIRMATION_EXPIRED": {
+      "client_action": "REFRESH_AND_RECONFIRM",
+      "envelope": "error",
+      "http_statuses": [
+        409
+      ],
+      "retry_policy": "NEVER"
+    },
+    "DEADLINE_EXCEEDED": {
+      "client_action": "QUERY_COMMAND",
+      "envelope": "error",
+      "http_statuses": [
+        504
+      ],
+      "retry_policy": "QUERY_OR_RECONCILE"
+    },
+    "IDEMPOTENCY_CONFLICT": {
+      "client_action": "QUERY_ORIGINAL_REQUEST",
+      "envelope": "error",
+      "http_statuses": [
+        409
+      ],
+      "retry_policy": "NEVER"
+    },
+    "INPUT_INVALID": {
+      "client_action": "FIX_REQUEST",
+      "envelope": "error",
+      "http_statuses": [
+        422
+      ],
+      "retry_policy": "NEVER"
+    },
+    "PUBLICATION_FAILED": {
+      "client_action": "READ_SNAPSHOT",
+      "envelope": "error",
+      "http_statuses": [
+        503
+      ],
+      "retry_policy": "REPUBLISH_SAME_RESULT"
+    },
+    "RATE_LIMITED": {
+      "client_action": "HONOR_RETRY_AFTER",
+      "envelope": "error",
+      "http_statuses": [
+        429
+      ],
+      "retry_policy": "BOUNDED_BACKOFF"
+    },
+    "RUN_SUPERSEDED": {
+      "client_action": "READ_SNAPSHOT",
+      "envelope": "error",
+      "http_statuses": [
+        409
+      ],
+      "retry_policy": "NEVER"
+    },
+    "SCHEMA_UNSUPPORTED": {
+      "client_action": "QUARANTINE_AND_ALERT",
+      "envelope": "error",
+      "http_statuses": [
+        422
+      ],
+      "retry_policy": "QUARANTINE"
+    },
+    "UPSTREAM_UNAVAILABLE": {
+      "client_action": "CHECK_OPERATION_SAFETY",
+      "envelope": "error",
+      "http_statuses": [
+        503
+      ],
+      "retry_policy": "SAFE_READ_OR_SAME_COMMAND"
+    },
+    "VERSION_CONFLICT": {
+      "client_action": "REFRESH_AND_RECONFIRM",
+      "envelope": "error",
+      "http_statuses": [
+        409
+      ],
+      "retry_policy": "NEVER"
+    }
+  },
+  "idempotency_scope": [
+    "tenant_id",
+    "initiating_actor_id",
+    "operation",
+    "target_scope",
+    "idempotency_key"
+  ],
+  "numeric_deadlines": "UNFROZEN_M17",
+  "operations": {
+    "command.get": {
+      "authorization": "initiator_or_domain_command_access",
+      "effect": "READ",
+      "idempotency": "NONE",
+      "implementation": "NOT_IMPLEMENTED",
+      "owner": "N5",
+      "timeout_policy": "PROPAGATE_DEADLINE"
+    },
+    "commerce.preflight": {
+      "authorization": "domain_operation_and_target_access",
+      "effect": "PRECHECK",
+      "idempotency": "NO_BUSINESS_EFFECT",
+      "implementation": "NOT_IMPLEMENTED",
+      "owner": "N5",
+      "timeout_policy": "PROPAGATE_DEADLINE"
+    },
+    "commerce.submit": {
+      "authorization": "domain_access_and_confirmation_or_delegation",
+      "effect": "WRITE",
+      "idempotency": "SCOPED_KEY",
+      "implementation": "NOT_IMPLEMENTED",
+      "owner": "N5",
+      "timeout_policy": "PROPAGATE_DEADLINE"
+    },
+    "conversation.create": {
+      "authorization": "authenticated_actor_in_tenant",
+      "effect": "WRITE",
+      "idempotency": "SCOPED_KEY",
+      "implementation": "NOT_IMPLEMENTED",
+      "owner": "N3",
+      "timeout_policy": "PROPAGATE_DEADLINE"
+    },
+    "conversation.events": {
+      "authorization": "current_conversation_access_each_connection",
+      "effect": "STREAM",
+      "idempotency": "NONE",
+      "implementation": "NOT_IMPLEMENTED",
+      "owner": "N3",
+      "timeout_policy": "REAUTHORIZE_AND_RESUME"
+    },
+    "conversation.snapshot": {
+      "authorization": "current_conversation_access",
+      "effect": "READ",
+      "idempotency": "NONE",
+      "implementation": "NOT_IMPLEMENTED",
+      "owner": "N3",
+      "timeout_policy": "PROPAGATE_DEADLINE"
+    },
+    "feedback.create": {
+      "authorization": "conversation_and_formal_message_access",
+      "effect": "WRITE",
+      "idempotency": "SCOPED_KEY",
+      "implementation": "NOT_IMPLEMENTED",
+      "owner": "N3",
+      "timeout_policy": "PROPAGATE_DEADLINE"
+    },
+    "handoff.request": {
+      "authorization": "conversation_access",
+      "effect": "WRITE",
+      "idempotency": "SCOPED_KEY",
+      "implementation": "NOT_IMPLEMENTED",
+      "owner": "N3_N7",
+      "timeout_policy": "PROPAGATE_DEADLINE"
+    },
+    "knowledge.publish": {
+      "authorization": "approval_permission_and_expected_active_version",
+      "effect": "WRITE",
+      "idempotency": "SCOPED_KEY",
+      "implementation": "NOT_IMPLEMENTED",
+      "owner": "N6",
+      "timeout_policy": "PROPAGATE_DEADLINE"
+    },
+    "knowledge.revoke": {
+      "authorization": "revocation_permission_and_expected_active_version",
+      "effect": "WRITE",
+      "idempotency": "SCOPED_KEY",
+      "implementation": "NOT_IMPLEMENTED",
+      "owner": "N6",
+      "timeout_policy": "PROPAGATE_DEADLINE"
+    },
+    "knowledge.upload": {
+      "authorization": "knowledge_space_upload_permission",
+      "effect": "WRITE",
+      "idempotency": "SCOPED_KEY",
+      "implementation": "NOT_IMPLEMENTED",
+      "owner": "N6",
+      "timeout_policy": "PROPAGATE_DEADLINE"
+    },
+    "message.send": {
+      "authorization": "conversation_and_attachment_access",
+      "effect": "WRITE",
+      "idempotency": "SCOPED_KEY",
+      "implementation": "NOT_IMPLEMENTED",
+      "owner": "N3",
+      "timeout_policy": "PROPAGATE_DEADLINE"
+    },
+    "run.cancel": {
+      "authorization": "run_owner_and_control_epoch",
+      "effect": "WRITE",
+      "idempotency": "SCOPED_KEY",
+      "implementation": "NOT_IMPLEMENTED",
+      "owner": "N3_N4",
+      "timeout_policy": "PROPAGATE_DEADLINE"
+    },
+    "ticket.claim": {
+      "authorization": "agent_assignment_permission_and_version",
+      "effect": "WRITE",
+      "idempotency": "SCOPED_KEY",
+      "implementation": "NOT_IMPLEMENTED",
+      "owner": "N7",
+      "timeout_policy": "PROPAGATE_DEADLINE"
+    },
+    "ticket.reply": {
+      "authorization": "active_assignment_and_publication_permission",
+      "effect": "WRITE",
+      "idempotency": "SCOPED_KEY",
+      "implementation": "NOT_IMPLEMENTED",
+      "owner": "N7",
+      "timeout_policy": "PROPAGATE_DEADLINE"
+    },
+    "ticket.transfer": {
+      "authorization": "agent_transfer_permission_and_version",
+      "effect": "WRITE",
+      "idempotency": "SCOPED_KEY",
+      "implementation": "NOT_IMPLEMENTED",
+      "owner": "N7",
+      "timeout_policy": "PROPAGATE_DEADLINE"
+    },
+    "workflow.confirm": {
+      "authorization": "domain_access_and_current_confirmation",
+      "effect": "WRITE",
+      "idempotency": "SCOPED_KEY",
+      "implementation": "NOT_IMPLEMENTED",
+      "owner": "N4_N5",
+      "timeout_policy": "PROPAGATE_DEADLINE"
+    },
+    "workflow.preflight": {
+      "authorization": "delegated_domain_target_access",
+      "effect": "PRECHECK",
+      "idempotency": "NO_BUSINESS_EFFECT",
+      "implementation": "NOT_IMPLEMENTED",
+      "owner": "N4_N5",
+      "timeout_policy": "PROPAGATE_DEADLINE"
+    }
+  },
+  "retry_rule": "Never change command identity to recover an unknown write result",
+  "schema_version": 1,
+  "status": "DESIGN_CONTRACT_NOT_ROUTES"
+}

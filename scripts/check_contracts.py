@@ -14,6 +14,9 @@ for relative in ("packages/contracts", "packages/persistence", "apps/api-gateway
 
 def generated():
     from ics_contracts.events import EVENT_ADAPTER
+    from ics_contracts.domain import PublicReply
+    from ics_contracts.policies import registry
+    from ics_persistence.events import Event
     from ics_gateway.app import create_app
     from ics_gateway.settings import Settings
 
@@ -22,6 +25,9 @@ def generated():
     schema["title"] = "Platform browser event v1 (SSE id is envelope cursor)"
     return {
         "packages/contracts/generated/browser-events-v1.schema.json": schema,
+        "packages/contracts/generated/domain-envelope.schema.json": Event.model_json_schema(),
+        "packages/contracts/generated/public-reply-v1.schema.json": PublicReply.model_json_schema(),
+        "packages/contracts/generated/operation-policies-v1.json": registry(),
         "packages/contracts/generated/gateway.openapi.json": create_app(
             Settings(_env_file=None)
         ).openapi(),
