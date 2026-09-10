@@ -6,6 +6,7 @@ from typing import Annotated, Literal
 
 from fastapi import APIRouter, Depends, Request
 from fastapi.security import HTTPBearer
+from starlette.concurrency import run_in_threadpool
 from pydantic import BaseModel, ConfigDict, Field, SecretStr
 
 from ics_identity.service import IdentityError
@@ -76,6 +77,9 @@ class GroupMember(Model):
 
 
 def current_principal(request: Request, credentials=Depends(HTTPBearer(auto_error=False))):
+    cached = getattr(request.state, "principal", None)
+    if cached is not None:
+        return cached
     values = request.headers.getlist("authorization")
     if len(values) != 1 or not values[0].lower().startswith("bearer "):
         raise IdentityError()
@@ -123,6 +127,31 @@ class IdentityBoundary:
             return await failure(
                 request, status, ErrorDetail(code=code, message="请求不符合安全边界。")
             )(scope, receive, send)
+        # Default-deny API authentication, even if a future route omits its dependency.
+        # Resource authorization still requires the domain loader before returning facts.
+        public = scope["method"] == "POST" and scope["path"] in {
+            "/api/v1/auth/login",
+            "/api/v1/auth/refresh",
+        }
+        if not public:
+            authorization = request.headers.getlist("authorization")
+            try:
+                if len(authorization) != 1 or not authorization[0].lower().startswith("bearer "):
+                    raise IdentityError()
+                request.state.principal = await run_in_threadpool(
+                    request.app.state.identity.authenticate, authorization[0][7:]
+                )
+            except IdentityError:
+                return await failure(
+                    request,
+                    401,
+                    ErrorDetail(
+                        code="AUTH_REQUIRED",
+                        message="需要有效身份。",
+                        client_action="REAUTHENTICATE",
+                    ),
+                    {"WWW-Authenticate": "Bearer"},
+                )(scope, receive, send)
         if scope["path"].startswith("/api/v1/auth") and scope["method"] in {"POST", "PUT", "PATCH"}:
             if (
                 request.headers.get("content-type", "").split(";")[0].strip().lower()

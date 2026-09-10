@@ -52,6 +52,8 @@ OpenAPI：`docs/api/m03-identity.openapi.json`，包含 Bearer 安全方案和�
 
 错误：认证失败/过期/吊销为 401；资源无权/不存在为 404；来源拒绝 403；格式与密码策略 422；账号冲突/最后管理员保护 409；超大请求 413、不支持媒体 415、接收超时 408；限流 429 附 Retry-After。数据库/内部异常使用现有脱敏 500，绝不回退到 Header 身份。
 
+默认认证中间件对身份模式的所有 `/api/` 路径生效，仅 POST 登录/刷新豁免；后续路由即使漏写认证依赖，也不能被匿名调用。它不替代资源权限检查，领域读写仍必须使用下面的授权依赖。
+
 ## 领域接入规则
 
 `require_resource(action, loader)` 在同一事务调用可信 loader 与当前权限校验，然后才允许处理器返回数据。loader 应按数据库中的实际资源创建 Resource，不能直接使用 JSON 提供的 tenant_id/owner_id/group_id。写业务必须在其所属事务内再次授权，再执行状态/确认等业务守卫。
@@ -97,3 +99,5 @@ python scripts/run_gateway.py --with-database
 - `Bearer` 协议名称曾触发密码常量误报，已抽出具名公共协议常量；没有留下新的 nosec 例外或关闭安全规则。
 
 开发库迁移、真实启动探针及远端 CI 最终结果待补记；未全部通过之前 M03 保持 IN_PROGRESS。两项既有 Starlette/anyio 弃用警告保留。
+
+本地安全重试结果：原 PyPI 查询恢复后，完整 check_backend.py security 已通过，两份锁均未发现已知漏洞；没有改扫描源、关闭规则或忽略漏洞。前述网络失败作为过程证据保留。

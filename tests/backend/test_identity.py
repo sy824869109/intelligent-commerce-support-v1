@@ -495,3 +495,31 @@ def test_http_group_refresh_and_password_lifecycle(identity):
         )
         assert changed.status_code == 200
         assert client.get("/api/v1/auth/me", headers=bearer(new_pair)).status_code == 401
+
+
+def test_default_api_authentication_and_database_failure(identity, monkeypatch):
+    app = create_app(identity=identity)
+    executed = []
+
+    @app.get("/api/testing/unclassified")
+    def route():
+        executed.append(True)
+        return {"ok": True}
+
+    with TestClient(app) as client:
+        assert client.get("/api/testing/unclassified").status_code == 401
+        assert (
+            client.get("/api/testing/unclassified", headers={"X-Role": "ADMIN"}).status_code == 401
+        )
+        assert not executed
+        pair = login(identity)
+        assert client.get("/api/testing/unclassified", headers=bearer(pair)).status_code == 200
+        executed.clear()
+
+        def unavailable(*args):
+            raise RuntimeError("database unavailable")
+
+        monkeypatch.setattr(identity, "authenticate", unavailable)
+        result = client.get("/api/testing/unclassified", headers=bearer(pair))
+        assert result.status_code == 500 and "database unavailable" not in result.text
+        assert not executed
