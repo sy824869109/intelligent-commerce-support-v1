@@ -10,7 +10,12 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 BASELINE = ROOT / "packages/contracts/compatibility/v1-artifacts.sha256.json"
-for relative in ("packages/contracts", "packages/persistence", "apps/api-gateway"):
+for relative in (
+    "packages/contracts",
+    "packages/persistence",
+    "packages/observability",
+    "apps/api-gateway",
+):
     sys.path.insert(0, str(ROOT / relative))
 
 

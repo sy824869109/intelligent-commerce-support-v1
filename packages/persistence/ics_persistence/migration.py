@@ -27,6 +27,7 @@ def migrate(engine, target="head", *, downgrade=False):
             if "platform_alembic_version" not in tables and tables & {
                 "platform_outbox",
                 "platform_inbox",
+                "platform_audit",
             }:
                 raise RuntimeError("Unversioned infrastructure tables require manual review")
             connection.commit()

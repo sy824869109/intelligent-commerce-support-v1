@@ -66,6 +66,7 @@ def main() -> int:
                 "scripts/run_gateway.py",
                 "scripts/database_local.py",
                 "scripts/check_mysql.py",
+                "scripts/check_gateway_local.py",
                 "-q",
             )
             # Both app and test/tool dependency sets are pinned; no ignore-vuln exemptions.

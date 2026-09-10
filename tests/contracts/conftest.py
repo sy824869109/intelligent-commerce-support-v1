@@ -4,5 +4,11 @@ from pathlib import Path
 import sys
 
 ROOT = Path(__file__).resolve().parents[2]
-for relative in ("packages/contracts", "packages/persistence", "apps/api-gateway", "scripts"):
+for relative in (
+    "packages/contracts",
+    "packages/persistence",
+    "packages/observability",
+    "apps/api-gateway",
+    "scripts",
+):
     sys.path.insert(0, str(ROOT / relative))

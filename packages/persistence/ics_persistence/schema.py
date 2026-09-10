@@ -10,9 +10,21 @@ from sqlalchemy import (
     MetaData,
     String,
     Table,
+    Text,
 )
 
 metadata = MetaData()
+audit = Table(
+    "platform_audit",
+    metadata,
+    Column("tenant_ref", String(64), primary_key=True),
+    Column("event_id", String(64), primary_key=True),
+    Column("record_json", Text, nullable=False),
+    Column("record_hash", String(64), nullable=False),
+    mysql_engine="InnoDB",
+    mysql_charset="utf8mb4",
+    mysql_collate="utf8mb4_bin",
+)
 outbox = Table(
     "platform_outbox",
     metadata,

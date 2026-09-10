@@ -107,6 +107,21 @@ class Metrics:
         with self._lock:
             return {key: tuple(value) for key, value in self._values.items()}
 
+    def to_json(self):
+        """Bounded pull export for an in-process collector; no public HTTP endpoint."""
+        return json.dumps(
+            {
+                "unit": "milliseconds",
+                "cumulative": False,
+                "upper_bounds": [*self.BOUNDS, None],
+                "series": [
+                    {"operation": key[0], "outcome": key[1], "counts": counts}
+                    for key, counts in self.snapshot().items()
+                ],
+            },
+            sort_keys=True,
+        )
+
 
 @dataclass(frozen=True)
 class AuditRecord:

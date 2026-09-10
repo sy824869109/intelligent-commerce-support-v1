@@ -13,6 +13,7 @@ from .middleware import RequestContext
 from .responses import ErrorDetail, Failure, Success, failure, success
 from .settings import Settings
 from ics_persistence.database import Database
+from ics_observability.core import Metrics
 
 Check = Callable[[], Awaitable[bool]]
 
@@ -65,7 +66,8 @@ def create_app(
     )
     app.state.ready = False
     app.state.settings = settings
-    app.add_middleware(RequestContext)
+    app.state.metrics = Metrics(["http"])
+    app.add_middleware(RequestContext, metrics=app.state.metrics)
 
     @app.exception_handler(RequestValidationError)
     async def validation_error(request: Request, exc: RequestValidationError):

@@ -12,6 +12,7 @@ from alembic.autogenerate import compare_metadata
 from alembic.migration import MigrationContext
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "packages/persistence"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "packages/observability"))
 from ics_persistence.database import Database, DatabaseConfig
 from ics_persistence.events import Event
 from ics_persistence.migration import migrate
@@ -220,3 +221,50 @@ def test_08_nonempty_downgrade_fails_preserving_history(db):
     assert db.ready()
     with db.transaction() as session:
         assert session.execute(select(outbox)).first() is not None
+
+
+def test_09_real_audit_atomic_retry_conflict_and_reconnect(db):
+    from dataclasses import replace
+    from ics_observability.core import AuditRecord
+    from ics_observability.audit import append_audit, AuditConflict
+    from ics_persistence.schema import audit
+
+    item = AuditRecord(
+        "AUD1",
+        "A1",
+        "TENANT_A",
+        "O1",
+        "R1",
+        "TRACE1",
+        "COMMAND_SUBMIT",
+        "SUCCEEDED",
+        datetime(2026, 9, 10, tzinfo=timezone.utc),
+    )
+    with pytest.raises(RuntimeError):
+        with db.transaction() as session:
+            put(session, event(91))
+            append_audit(session, item, tenant_ref="TENANT_A")
+            raise RuntimeError("Rollback business event and audit")
+    with db.transaction() as session:
+        assert session.execute(select(audit)).first() is None
+        assert session.execute(select(outbox).where(outbox.c.event_id == "EV91")).first() is None
+        put(session, event(92))
+        assert append_audit(session, item, tenant_ref="TENANT_A")
+    db.close()
+
+    def retry_audit(_):
+        with db.transaction() as session:
+            return append_audit(session, item, tenant_ref="TENANT_A")
+
+    with ThreadPoolExecutor(max_workers=4) as pool:
+        assert list(pool.map(retry_audit, range(8))) == [False] * 8
+    with pytest.raises(AuditConflict):
+        with db.transaction() as session:
+            put(session, event(93))
+            append_audit(session, replace(item, outcome="FAILED"), tenant_ref="TENANT_A")
+    with db.transaction() as session:
+        assert len(session.execute(select(audit)).all()) == 1
+        assert session.execute(select(outbox).where(outbox.c.event_id == "EV93")).first() is None
+    with pytest.raises(RuntimeError, match="non-empty"):
+        migrate(db.engine, "base", downgrade=True)
+    assert db.ready()
