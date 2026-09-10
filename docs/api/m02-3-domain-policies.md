@@ -51,3 +51,7 @@ N7 保存原稿 + 本地 Outbox（未来领域实现）
 ## 仍待完成
 
 每个业务操作的完整请求/响应 DTO、正式 URL、分页/游标、确认载荷、金额类型、权限矩阵细化及新旧版本 fixtures 尚待后续批次。当前机器目录不是 18 个可调用 API，类型检查不是授权实现；93 条业务验收仍 NOT_RUN。
+
+## 验收证据
+
+实现 `642acf1` 已推送；[GitHub CI 34430866686](https://github.com/sy824869109/intelligent-commerce-support-v1/actions/runs/34430866686) SUCCESS。双平台契约/后端/基础、Python 安全和四类镜像作业通过；前端与手动 Milvus 作业按既有策略 skipped，不算本次运行通过。本地 49 项契约、46 项后端测试通过，224 项基础检查通过（Windows 跳过 5 项），两项既有测试依赖弃用警告保留。
