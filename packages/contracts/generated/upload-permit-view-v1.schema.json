@@ -1,0 +1,30 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "expires_at": {
+      "format": "date-time",
+      "title": "Expires At",
+      "type": "string"
+    },
+    "max_bytes": {
+      "maximum": 33554432,
+      "minimum": 1,
+      "title": "Max Bytes",
+      "type": "integer"
+    },
+    "upload_ref": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9_-]+$",
+      "title": "Upload Ref",
+      "type": "string"
+    }
+  },
+  "required": [
+    "expires_at",
+    "upload_ref",
+    "max_bytes"
+  ],
+  "title": "UploadPermitView",
+  "type": "object"
+}

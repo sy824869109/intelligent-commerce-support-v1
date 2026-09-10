@@ -15,4 +15,6 @@ python scripts/check_contracts.py
 
 第四批增加 `api.py` / `routes.py`：公开投影、信封与 18 项业务路径设计，生成独立 `business-routes-v1.design.json`，不混入真实网关 OpenAPI。详见 [公开 API 设计](../../docs/api/m02-3-public-api-design.md)。字节上传、富媒体及运行鉴权仍未接入。
 
-详见 [第一批接口与事件说明](../../docs/api/m02-3-contract-foundation.md) 和 [第二批领域事件及策略](../../docs/api/m02-3-domain-policies.md)。第二批复用持久层事件信封，增加一种已登记的公开回复载荷，以及 18 项操作/13 类错误目录。M02.3 整体仍在实施：完整业务 DTO、路径、分页及跨版本 fixtures 尚待补齐；尚未接入聊天、授权、发布、重放和 KF 适配器。
+第五批增加 `handoff.py`、六份衔接 schema、固定响应 fixtures 与独立兼容基线，详见 [衔接与兼容说明](../../docs/api/m02-3-handoff-compatibility.md)。普通 `--generate` 不更新已审阅基线；`--init-baseline` 只允许首次创建。新增合同也须评审，不自动放行。
+
+详见 [第一批接口与事件说明](../../docs/api/m02-3-contract-foundation.md) 和 [第二批领域事件及策略](../../docs/api/m02-3-domain-policies.md)。M02.3 整体仍在实施：上传与来源/附件读取路径、MessageContent 正式消费方式仍待冻结；尚未接入聊天、授权、发布、重放和 KF 适配器。

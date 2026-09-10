@@ -1,0 +1,22 @@
+{
+  "packages/contracts/generated/application-v1.schema.json": "c8b01b3bcaf044c334c0dfeda462839bf889a44fa459a098afd49d26f49037e1",
+  "packages/contracts/generated/asset-validation-v1.schema.json": "4a004ba43ac1bbe8e1a2019b8c3fad56260b68ee1339122698ad988da71beb2f",
+  "packages/contracts/generated/browser-events-v1.schema.json": "90ce0612a5fd24145028340fa127a268a73c33eb0bd551e8f7e0bc6ef5a108f8",
+  "packages/contracts/generated/business-routes-v1.design.json": "01f04888223903dcaa4e3f237b0d7ca7c99c8fae1a2ffc514c8cf76531a6e538",
+  "packages/contracts/generated/chat-submit-v1.schema.json": "25d37c8faac960a704fdd8def29c3bf5c924cf5f61cdc5236909848ef4e21674",
+  "packages/contracts/generated/command-result-v1.schema.json": "44e86cfa71453046bc7a7d2f3ddc36942854243679f0648c44ab081f113062cf",
+  "packages/contracts/generated/cursor-binding-v1.schema.json": "58469035ca0b250e13bccfcbaf5decd3cab5381a3049c60cd4c62aaf00e2e19f",
+  "packages/contracts/generated/domain-envelope.schema.json": "8858d1a656502cb401aa4da9386101f4818ed42c40662113103346c3369ddcb0",
+  "packages/contracts/generated/gateway.openapi.json": "bc7179b805d074c9c5f7e52fce3f0316acc0418298d0e04e85e90e5f06df9f95",
+  "packages/contracts/generated/message-content-v1.schema.json": "d5bc3148d667812ff81bcd5eb9e6a4a76c64b5fe1ee4300c2ed401b86d46c6ba",
+  "packages/contracts/generated/money-v1.schema.json": "3698055098fe05d3d1120bc504e8bceb295bb29c661f1d34ac848fe05f5474e1",
+  "packages/contracts/generated/operation-policies-v1.json": "5baf006fb22df2663fd7318d3c559066a33574b04c52826ec9b15b52c02478c2",
+  "packages/contracts/generated/page-references-v1.schema.json": "af0d8ad48026c04ac4cc8de71c7d17b110d0c49bdf5d24424393d806a7cd084a",
+  "packages/contracts/generated/page-request-v1.schema.json": "c6ac06e4ca57142201246449d71d34fdbbc8ba8e8e35d2177b3f0ef6e62e2551",
+  "packages/contracts/generated/page-submit-v1.schema.json": "41d1f4c6cc79ff6574f825e8d4511c12fc3d30223f5cfb5c12fc27598249f980",
+  "packages/contracts/generated/preflight-record-v1.schema.json": "2f92f8f33cadd2eaaccdff324f423bf91fe7636c2c30fa8c319847b93287eab0",
+  "packages/contracts/generated/public-reply-v1.schema.json": "437d17924a6ff718e2bde9453d0211d7cc6af098b7697298e3d084fd4db3ad8e",
+  "packages/contracts/generated/upload-permit-v1.schema.json": "3feb0d8329450ef6a359b69f82a90a985cfe6312531b43da41412e86b3464fdb",
+  "packages/contracts/generated/upload-permit-view-v1.schema.json": "e87e7d6856e7d08fd5c6ec12d8ce61a62862440c9f56265911da3cf0ad4cdb13",
+  "packages/contracts/generated/upload-request-v1.schema.json": "d3b5ba9d58569d3b4692be1f5778c1e04441b64f26064661a4d292ef1ed87bc7"
+}

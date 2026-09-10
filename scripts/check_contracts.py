@@ -1,6 +1,7 @@
 """Generate/check deterministic machine contracts and run real offline contract tests."""
 
 import argparse
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -8,6 +9,7 @@ import subprocess
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
+BASELINE = ROOT / "packages/contracts/compatibility/v1-artifacts.sha256.json"
 for relative in ("packages/contracts", "packages/persistence", "apps/api-gateway"):
     sys.path.insert(0, str(ROOT / relative))
 
@@ -17,6 +19,14 @@ def generated():
     from ics_contracts.domain import PublicReply
     from ics_contracts.policies import registry
     from ics_contracts.routes import manifest
+    from ics_contracts.handoff import (
+        AssetValidation,
+        CursorBinding,
+        MessageContent,
+        UploadPermit,
+        UploadPermitView,
+        UploadRequest,
+    )
     from ics_contracts.commerce import (
         Application,
         ChatSubmit,
@@ -47,6 +57,12 @@ def generated():
                 "page-request": PageRequest,
                 "page-references": PageReferences,
                 "preflight-record": PreflightRecord,
+                "message-content": MessageContent,
+                "cursor-binding": CursorBinding,
+                "upload-request": UploadRequest,
+                "upload-permit": UploadPermit,
+                "upload-permit-view": UploadPermitView,
+                "asset-validation": AssetValidation,
             }.items()
         },
         "packages/contracts/generated/browser-events-v1.schema.json": schema,
@@ -70,9 +86,30 @@ def artifacts(write=False):
             raise ValueError("Generated contract drift: " + relative)
 
 
+def compatibility(init=False):
+    """An immutable first-release snapshot, independent of ordinary schema regeneration.
+
+    Exact matching is intentionally conservative. A deliberate evolution needs an
+    explicit version/migration review; --generate cannot bless a breaking change.
+    """
+    actual = {
+        name: hashlib.sha256((ROOT / name).read_bytes()).hexdigest() for name in sorted(generated())
+    }
+    if init:
+        BASELINE.parent.mkdir(parents=True, exist_ok=True)
+        # Exclusive creation; never overwrite a reviewed baseline on a repeat run.
+        with BASELINE.open("x", encoding="utf-8", newline="\n") as stream:
+            stream.write(json.dumps(actual, indent=2, sort_keys=True) + "\n")
+    elif json.loads(BASELINE.read_text(encoding="utf-8")) != actual:
+        raise ValueError(
+            "Frozen v1 contract changed; explicit compatibility/version review required"
+        )
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--generate", action="store_true")
+    parser.add_argument("--init-baseline", action="store_true")
     args = parser.parse_args()
     temp = ROOT / "_local_artifacts/m02-3/tmp"
     temp.mkdir(parents=True, exist_ok=True)
@@ -83,8 +120,12 @@ def main():
         RUFF_CACHE_DIR=str(ROOT / "_local_artifacts/caches/ruff"),
     )
     artifacts(write=args.generate)
+    if args.init_baseline:
+        compatibility(init=True)
+        return 0
     if args.generate:
         return 0
+    compatibility()
     for command in (
         [
             "-m",

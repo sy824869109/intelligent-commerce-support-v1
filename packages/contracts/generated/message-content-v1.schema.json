@@ -1,0 +1,138 @@
+{
+  "$defs": {
+    "AttachmentPart": {
+      "additionalProperties": false,
+      "properties": {
+        "attachment_ref": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Attachment Ref",
+          "type": "string"
+        },
+        "kind": {
+          "const": "ATTACHMENT",
+          "title": "Kind",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "attachment_ref"
+      ],
+      "title": "AttachmentPart",
+      "type": "object"
+    },
+    "SourcePart": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "SOURCE",
+          "title": "Kind",
+          "type": "string"
+        },
+        "locator_ref": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Locator Ref",
+          "type": "string"
+        },
+        "source_ref": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Source Ref",
+          "type": "string"
+        },
+        "version_ref": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Version Ref",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "source_ref",
+        "version_ref",
+        "locator_ref"
+      ],
+      "title": "SourcePart",
+      "type": "object"
+    },
+    "TextPart": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "TEXT",
+          "title": "Kind",
+          "type": "string"
+        },
+        "text": {
+          "maxLength": 8192,
+          "minLength": 1,
+          "title": "Text",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "text"
+      ],
+      "title": "TextPart",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "message_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9_-]+$",
+      "title": "Message Id",
+      "type": "string"
+    },
+    "message_seq": {
+      "maximum": 9007199254740991,
+      "minimum": 1,
+      "title": "Message Seq",
+      "type": "integer"
+    },
+    "parts": {
+      "items": {
+        "discriminator": {
+          "mapping": {
+            "ATTACHMENT": "#/$defs/AttachmentPart",
+            "SOURCE": "#/$defs/SourcePart",
+            "TEXT": "#/$defs/TextPart"
+          },
+          "propertyName": "kind"
+        },
+        "oneOf": [
+          {
+            "$ref": "#/$defs/TextPart"
+          },
+          {
+            "$ref": "#/$defs/SourcePart"
+          },
+          {
+            "$ref": "#/$defs/AttachmentPart"
+          }
+        ]
+      },
+      "maxItems": 50,
+      "minItems": 1,
+      "title": "Parts",
+      "type": "array"
+    }
+  },
+  "required": [
+    "message_id",
+    "message_seq",
+    "parts"
+  ],
+  "title": "MessageContent",
+  "type": "object"
+}

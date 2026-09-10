@@ -1,0 +1,64 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "format_check": {
+      "enum": [
+        "NOT_RUN",
+        "PASSED",
+        "FAILED"
+      ],
+      "title": "Format Check",
+      "type": "string"
+    },
+    "malware_check": {
+      "enum": [
+        "NOT_RUN",
+        "PASSED",
+        "FAILED"
+      ],
+      "title": "Malware Check",
+      "type": "string"
+    },
+    "state": {
+      "enum": [
+        "PENDING_UPLOAD",
+        "VALIDATING",
+        "READY",
+        "REJECTED",
+        "REVOKED",
+        "DELETING",
+        "DELETED"
+      ],
+      "title": "State",
+      "type": "string"
+    },
+    "upload_ref": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9_-]+$",
+      "title": "Upload Ref",
+      "type": "string"
+    },
+    "verified_sha256": {
+      "anyOf": [
+        {
+          "pattern": "^[a-f0-9]{64}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Verified Sha256"
+    }
+  },
+  "required": [
+    "upload_ref",
+    "state",
+    "malware_check",
+    "format_check",
+    "verified_sha256"
+  ],
+  "title": "AssetValidation",
+  "type": "object"
+}

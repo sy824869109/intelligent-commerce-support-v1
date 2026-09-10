@@ -1,0 +1,42 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "byte_size": {
+      "maximum": 33554432,
+      "minimum": 1,
+      "title": "Byte Size",
+      "type": "integer"
+    },
+    "content_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Content Sha256",
+      "type": "string"
+    },
+    "media_type": {
+      "enum": [
+        "text/plain",
+        "application/pdf",
+        "image/png",
+        "image/jpeg"
+      ],
+      "title": "Media Type",
+      "type": "string"
+    },
+    "purpose": {
+      "enum": [
+        "CHAT_ATTACHMENT",
+        "KNOWLEDGE_SOURCE"
+      ],
+      "title": "Purpose",
+      "type": "string"
+    }
+  },
+  "required": [
+    "purpose",
+    "byte_size",
+    "content_sha256",
+    "media_type"
+  ],
+  "title": "UploadRequest",
+  "type": "object"
+}

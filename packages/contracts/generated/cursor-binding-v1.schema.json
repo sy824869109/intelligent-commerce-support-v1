@@ -1,0 +1,62 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "actor_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9_-]+$",
+      "title": "Actor Id",
+      "type": "string"
+    },
+    "cursor": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9_-]+$",
+      "title": "Cursor",
+      "type": "string"
+    },
+    "expires_at": {
+      "format": "date-time",
+      "title": "Expires At",
+      "type": "string"
+    },
+    "purpose": {
+      "enum": [
+        "HISTORY_PAGE",
+        "EVENT_RESUME"
+      ],
+      "title": "Purpose",
+      "type": "string"
+    },
+    "query_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Query Hash",
+      "type": "string"
+    },
+    "resource_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9_-]+$",
+      "title": "Resource Id",
+      "type": "string"
+    },
+    "tenant_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9_-]+$",
+      "title": "Tenant Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "expires_at",
+    "cursor",
+    "tenant_id",
+    "actor_id",
+    "resource_id",
+    "purpose",
+    "query_hash"
+  ],
+  "title": "CursorBinding",
+  "type": "object"
+}
