@@ -16,6 +16,7 @@ def generated():
     from ics_contracts.events import EVENT_ADAPTER
     from ics_contracts.domain import PublicReply
     from ics_contracts.policies import registry
+    from ics_contracts.routes import manifest
     from ics_contracts.commerce import (
         Application,
         ChatSubmit,
@@ -34,6 +35,7 @@ def generated():
     schema["$schema"] = "https://json-schema.org/draft/2020-12/schema"
     schema["title"] = "Platform browser event v1 (SSE id is envelope cursor)"
     return {
+        "packages/contracts/generated/business-routes-v1.design.json": manifest(),
         **{
             "packages/contracts/generated/" + name + "-v1.schema.json": model.model_json_schema()
             for name, model in {

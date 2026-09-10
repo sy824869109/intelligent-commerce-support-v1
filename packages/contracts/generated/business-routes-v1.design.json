@@ -1,0 +1,2980 @@
+{
+  "authentication": "M03_UNFROZEN_NO_TOKEN_IN_URL",
+  "operations": {
+    "command.get": {
+      "audience": "N2_PUBLIC",
+      "authorization_rule": "initiator_or_domain_command_access",
+      "deadline_policy": "PROPAGATE_DEADLINE",
+      "error_schema": "Failure",
+      "implementation": "NOT_IMPLEMENTED",
+      "method": "GET",
+      "path": "/api/v1/commerce/commands/{command_id}",
+      "path_parameters": {
+        "command_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "type": "string"
+        }
+      },
+      "request_location": "query",
+      "request_schema": "Empty",
+      "required_headers": [],
+      "response_media_type": "application/json",
+      "response_schema": "Success_CommandResult",
+      "stream_errors": null,
+      "success_http_statuses": [
+        200
+      ]
+    },
+    "commerce.preflight": {
+      "audience": "N2_PUBLIC",
+      "authorization_rule": "domain_operation_and_target_access",
+      "deadline_policy": "PROPAGATE_DEADLINE",
+      "error_schema": "Failure",
+      "implementation": "NOT_IMPLEMENTED",
+      "method": "POST",
+      "path": "/api/v1/commerce/preflights",
+      "path_parameters": {},
+      "request_location": "body",
+      "request_schema": "Application",
+      "required_headers": [],
+      "response_media_type": "application/json",
+      "response_schema": "Success_PreflightView",
+      "stream_errors": null,
+      "success_http_statuses": [
+        200,
+        201
+      ]
+    },
+    "commerce.submit": {
+      "audience": "N2_PUBLIC",
+      "authorization_rule": "domain_access_and_confirmation_or_delegation",
+      "deadline_policy": "PROPAGATE_DEADLINE",
+      "error_schema": "Failure",
+      "implementation": "NOT_IMPLEMENTED",
+      "method": "POST",
+      "path": "/api/v1/commerce/commands",
+      "path_parameters": {},
+      "request_location": "body",
+      "request_schema": "SubmitReferences",
+      "required_headers": [
+        "Idempotency-Key"
+      ],
+      "response_media_type": "application/json",
+      "response_schema": "Success_CommandResult",
+      "stream_errors": null,
+      "success_http_statuses": [
+        200,
+        202
+      ]
+    },
+    "conversation.create": {
+      "audience": "N2_PUBLIC",
+      "authorization_rule": "authenticated_actor_in_tenant",
+      "deadline_policy": "PROPAGATE_DEADLINE",
+      "error_schema": "Failure",
+      "implementation": "NOT_IMPLEMENTED",
+      "method": "POST",
+      "path": "/api/v1/conversations",
+      "path_parameters": {},
+      "request_location": "body",
+      "request_schema": "ConversationCreate",
+      "required_headers": [
+        "Idempotency-Key"
+      ],
+      "response_media_type": "application/json",
+      "response_schema": "Success_ConversationView",
+      "stream_errors": null,
+      "success_http_statuses": [
+        200,
+        201
+      ]
+    },
+    "conversation.events": {
+      "audience": "N2_PUBLIC",
+      "authorization_rule": "current_conversation_access_each_connection",
+      "deadline_policy": "REAUTHORIZE_AND_RESUME",
+      "error_schema": "Failure",
+      "implementation": "NOT_IMPLEMENTED",
+      "method": "GET",
+      "path": "/api/v1/conversations/{conversation_id}/events",
+      "path_parameters": {
+        "conversation_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "type": "string"
+        }
+      },
+      "request_location": "query",
+      "request_schema": "EventsQuery",
+      "required_headers": [],
+      "response_media_type": "text/event-stream",
+      "response_schema": "BrowserEvent",
+      "stream_errors": "run.failed or resync_required after stream starts",
+      "success_http_statuses": [
+        200
+      ]
+    },
+    "conversation.snapshot": {
+      "audience": "N2_PUBLIC",
+      "authorization_rule": "current_conversation_access",
+      "deadline_policy": "PROPAGATE_DEADLINE",
+      "error_schema": "Failure",
+      "implementation": "NOT_IMPLEMENTED",
+      "method": "GET",
+      "path": "/api/v1/conversations/{conversation_id}/snapshot",
+      "path_parameters": {
+        "conversation_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "type": "string"
+        }
+      },
+      "request_location": "query",
+      "request_schema": "PageRequest",
+      "required_headers": [],
+      "response_media_type": "application/json",
+      "response_schema": "Success_ConversationSnapshot",
+      "stream_errors": null,
+      "success_http_statuses": [
+        200
+      ]
+    },
+    "feedback.create": {
+      "audience": "N2_PUBLIC",
+      "authorization_rule": "conversation_and_formal_message_access",
+      "deadline_policy": "PROPAGATE_DEADLINE",
+      "error_schema": "Failure",
+      "implementation": "NOT_IMPLEMENTED",
+      "method": "POST",
+      "path": "/api/v1/conversations/{conversation_id}/feedback",
+      "path_parameters": {
+        "conversation_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "type": "string"
+        }
+      },
+      "request_location": "body",
+      "request_schema": "FeedbackCreate",
+      "required_headers": [
+        "Idempotency-Key"
+      ],
+      "response_media_type": "application/json",
+      "response_schema": "Success_FeedbackResult",
+      "stream_errors": null,
+      "success_http_statuses": [
+        200,
+        201
+      ]
+    },
+    "handoff.request": {
+      "audience": "N2_PUBLIC",
+      "authorization_rule": "conversation_access",
+      "deadline_policy": "PROPAGATE_DEADLINE",
+      "error_schema": "Failure",
+      "implementation": "NOT_IMPLEMENTED",
+      "method": "POST",
+      "path": "/api/v1/conversations/{conversation_id}/handoffs",
+      "path_parameters": {
+        "conversation_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "type": "string"
+        }
+      },
+      "request_location": "body",
+      "request_schema": "HandoffRequest",
+      "required_headers": [
+        "Idempotency-Key"
+      ],
+      "response_media_type": "application/json",
+      "response_schema": "Success_HandoffResult",
+      "stream_errors": null,
+      "success_http_statuses": [
+        200,
+        201
+      ]
+    },
+    "knowledge.publish": {
+      "audience": "N2_PUBLIC",
+      "authorization_rule": "approval_permission_and_expected_active_version",
+      "deadline_policy": "PROPAGATE_DEADLINE",
+      "error_schema": "Failure",
+      "implementation": "NOT_IMPLEMENTED",
+      "method": "POST",
+      "path": "/api/v1/knowledge/spaces/{space_id}/publications",
+      "path_parameters": {
+        "space_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "type": "string"
+        }
+      },
+      "request_location": "body",
+      "request_schema": "KnowledgePublish",
+      "required_headers": [
+        "Idempotency-Key"
+      ],
+      "response_media_type": "application/json",
+      "response_schema": "Success_KnowledgeVersionResult",
+      "stream_errors": null,
+      "success_http_statuses": [
+        200
+      ]
+    },
+    "knowledge.revoke": {
+      "audience": "N2_PUBLIC",
+      "authorization_rule": "revocation_permission_and_expected_active_version",
+      "deadline_policy": "PROPAGATE_DEADLINE",
+      "error_schema": "Failure",
+      "implementation": "NOT_IMPLEMENTED",
+      "method": "POST",
+      "path": "/api/v1/knowledge/spaces/{space_id}/revocations",
+      "path_parameters": {
+        "space_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "type": "string"
+        }
+      },
+      "request_location": "body",
+      "request_schema": "KnowledgeRevoke",
+      "required_headers": [
+        "Idempotency-Key"
+      ],
+      "response_media_type": "application/json",
+      "response_schema": "Success_KnowledgeVersionResult",
+      "stream_errors": null,
+      "success_http_statuses": [
+        200
+      ]
+    },
+    "knowledge.upload": {
+      "audience": "N2_PUBLIC",
+      "authorization_rule": "knowledge_space_upload_permission",
+      "deadline_policy": "PROPAGATE_DEADLINE",
+      "error_schema": "Failure",
+      "implementation": "NOT_IMPLEMENTED",
+      "method": "POST",
+      "path": "/api/v1/knowledge/spaces/{space_id}/sources",
+      "path_parameters": {
+        "space_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "type": "string"
+        }
+      },
+      "request_location": "body",
+      "request_schema": "KnowledgeUpload",
+      "required_headers": [
+        "Idempotency-Key"
+      ],
+      "response_media_type": "application/json",
+      "response_schema": "Success_KnowledgeTask",
+      "stream_errors": null,
+      "success_http_statuses": [
+        200,
+        201,
+        202
+      ]
+    },
+    "message.send": {
+      "audience": "N2_PUBLIC",
+      "authorization_rule": "conversation_and_attachment_access",
+      "deadline_policy": "PROPAGATE_DEADLINE",
+      "error_schema": "Failure",
+      "implementation": "NOT_IMPLEMENTED",
+      "method": "POST",
+      "path": "/api/v1/conversations/{conversation_id}/messages",
+      "path_parameters": {
+        "conversation_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "type": "string"
+        }
+      },
+      "request_location": "body",
+      "request_schema": "MessageSend",
+      "required_headers": [
+        "Idempotency-Key"
+      ],
+      "response_media_type": "application/json",
+      "response_schema": "Success_MessageAccepted",
+      "stream_errors": null,
+      "success_http_statuses": [
+        200,
+        201,
+        202
+      ]
+    },
+    "run.cancel": {
+      "audience": "N2_PUBLIC",
+      "authorization_rule": "run_owner_and_control_epoch",
+      "deadline_policy": "PROPAGATE_DEADLINE",
+      "error_schema": "Failure",
+      "implementation": "NOT_IMPLEMENTED",
+      "method": "POST",
+      "path": "/api/v1/conversations/{conversation_id}/runs/{run_id}/cancel",
+      "path_parameters": {
+        "conversation_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "type": "string"
+        },
+        "run_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "type": "string"
+        }
+      },
+      "request_location": "body",
+      "request_schema": "RunCancel",
+      "required_headers": [
+        "Idempotency-Key"
+      ],
+      "response_media_type": "application/json",
+      "response_schema": "Success_RunCancelResult",
+      "stream_errors": null,
+      "success_http_statuses": [
+        200,
+        202
+      ]
+    },
+    "ticket.claim": {
+      "audience": "N2_PUBLIC",
+      "authorization_rule": "agent_assignment_permission_and_version",
+      "deadline_policy": "PROPAGATE_DEADLINE",
+      "error_schema": "Failure",
+      "implementation": "NOT_IMPLEMENTED",
+      "method": "POST",
+      "path": "/api/v1/tickets/{ticket_id}/claim",
+      "path_parameters": {
+        "ticket_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "type": "string"
+        }
+      },
+      "request_location": "body",
+      "request_schema": "TicketClaim",
+      "required_headers": [
+        "Idempotency-Key"
+      ],
+      "response_media_type": "application/json",
+      "response_schema": "Success_AssignmentResult",
+      "stream_errors": null,
+      "success_http_statuses": [
+        200,
+        202
+      ]
+    },
+    "ticket.reply": {
+      "audience": "N2_PUBLIC",
+      "authorization_rule": "active_assignment_and_publication_permission",
+      "deadline_policy": "PROPAGATE_DEADLINE",
+      "error_schema": "Failure",
+      "implementation": "NOT_IMPLEMENTED",
+      "method": "POST",
+      "path": "/api/v1/tickets/{ticket_id}/replies",
+      "path_parameters": {
+        "ticket_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "type": "string"
+        }
+      },
+      "request_location": "body",
+      "request_schema": "TicketReply",
+      "required_headers": [
+        "Idempotency-Key"
+      ],
+      "response_media_type": "application/json",
+      "response_schema": "Success_ReplyResult",
+      "stream_errors": null,
+      "success_http_statuses": [
+        200,
+        201,
+        202
+      ]
+    },
+    "ticket.transfer": {
+      "audience": "N2_PUBLIC",
+      "authorization_rule": "agent_transfer_permission_and_version",
+      "deadline_policy": "PROPAGATE_DEADLINE",
+      "error_schema": "Failure",
+      "implementation": "NOT_IMPLEMENTED",
+      "method": "POST",
+      "path": "/api/v1/tickets/{ticket_id}/transfer",
+      "path_parameters": {
+        "ticket_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "type": "string"
+        }
+      },
+      "request_location": "body",
+      "request_schema": "TicketTransfer",
+      "required_headers": [
+        "Idempotency-Key"
+      ],
+      "response_media_type": "application/json",
+      "response_schema": "Success_AssignmentResult",
+      "stream_errors": null,
+      "success_http_statuses": [
+        200,
+        202
+      ]
+    },
+    "workflow.confirm": {
+      "audience": "N2_PUBLIC",
+      "authorization_rule": "domain_access_and_current_confirmation",
+      "deadline_policy": "PROPAGATE_DEADLINE",
+      "error_schema": "Failure",
+      "implementation": "NOT_IMPLEMENTED",
+      "method": "POST",
+      "path": "/api/v1/workflows/{workflow_id}/confirmations/{confirmation_id}/submit",
+      "path_parameters": {
+        "confirmation_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "type": "string"
+        },
+        "workflow_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "type": "string"
+        }
+      },
+      "request_location": "body",
+      "request_schema": "WorkflowConfirm",
+      "required_headers": [
+        "Idempotency-Key"
+      ],
+      "response_media_type": "application/json",
+      "response_schema": "Success_CommandResult",
+      "stream_errors": null,
+      "success_http_statuses": [
+        200,
+        202
+      ]
+    },
+    "workflow.preflight": {
+      "audience": "VERIFIED_SERVICE",
+      "authorization_rule": "delegated_domain_target_access",
+      "deadline_policy": "PROPAGATE_DEADLINE",
+      "error_schema": "Failure",
+      "implementation": "NOT_IMPLEMENTED",
+      "method": "POST",
+      "path": "/internal/v1/workflows/{workflow_id}/preflight",
+      "path_parameters": {
+        "workflow_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "type": "string"
+        }
+      },
+      "request_location": "body",
+      "request_schema": "WorkflowPreflight",
+      "required_headers": [],
+      "response_media_type": "application/json",
+      "response_schema": "Success_PreflightView",
+      "stream_errors": null,
+      "success_http_statuses": [
+        200,
+        201
+      ]
+    }
+  },
+  "schema_version": 1,
+  "schemas": {
+    "Application": {
+      "$defs": {
+        "ApplicationLine": {
+          "additionalProperties": false,
+          "properties": {
+            "order_line_id": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9_-]+$",
+              "title": "Order Line Id",
+              "type": "string"
+            },
+            "quantity": {
+              "maximum": 10000,
+              "minimum": 1,
+              "title": "Quantity",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "order_line_id",
+            "quantity"
+          ],
+          "title": "ApplicationLine",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "application_type": {
+          "enum": [
+            "RETURN_REFUND",
+            "REFUND_ONLY",
+            "EXCHANGE",
+            "REPAIR",
+            "RESEND"
+          ],
+          "title": "Application Type",
+          "type": "string"
+        },
+        "attachment_refs": {
+          "items": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_-]+$",
+            "type": "string"
+          },
+          "maxItems": 20,
+          "title": "Attachment Refs",
+          "type": "array"
+        },
+        "lines": {
+          "items": {
+            "$ref": "#/$defs/ApplicationLine"
+          },
+          "maxItems": 50,
+          "minItems": 1,
+          "title": "Lines",
+          "type": "array"
+        },
+        "operation": {
+          "const": "after_sales.apply",
+          "title": "Operation",
+          "type": "string"
+        },
+        "order_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Order Id",
+          "type": "string"
+        },
+        "reason": {
+          "maxLength": 1000,
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "operation",
+        "application_type",
+        "order_id",
+        "lines",
+        "reason",
+        "attachment_refs"
+      ],
+      "title": "Application",
+      "type": "object"
+    },
+    "BrowserEvent": {
+      "$defs": {
+        "Committed": {
+          "additionalProperties": false,
+          "properties": {
+            "control_epoch": {
+              "maximum": 9007199254740991,
+              "minimum": 0,
+              "title": "Control Epoch",
+              "type": "integer"
+            },
+            "conversation_id": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9_-]+$",
+              "title": "Conversation Id",
+              "type": "string"
+            },
+            "cursor": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9_-]+$",
+              "title": "Cursor",
+              "type": "string"
+            },
+            "event_type": {
+              "const": "message.committed",
+              "title": "Event Type",
+              "type": "string"
+            },
+            "message_id": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9_-]+$",
+              "title": "Message Id",
+              "type": "string"
+            },
+            "message_seq": {
+              "maximum": 9007199254740991,
+              "minimum": 1,
+              "title": "Message Seq",
+              "type": "integer"
+            },
+            "run_id": {
+              "anyOf": [
+                {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "pattern": "^[A-Za-z0-9_-]+$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Run Id"
+            },
+            "schema_version": {
+              "const": 1,
+              "title": "Schema Version",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "schema_version",
+            "conversation_id",
+            "control_epoch",
+            "event_type",
+            "cursor",
+            "run_id",
+            "message_id",
+            "message_seq"
+          ],
+          "title": "Committed",
+          "type": "object"
+        },
+        "Completed": {
+          "additionalProperties": false,
+          "properties": {
+            "control_epoch": {
+              "maximum": 9007199254740991,
+              "minimum": 0,
+              "title": "Control Epoch",
+              "type": "integer"
+            },
+            "conversation_id": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9_-]+$",
+              "title": "Conversation Id",
+              "type": "string"
+            },
+            "cursor": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9_-]+$",
+              "title": "Cursor",
+              "type": "string"
+            },
+            "event_type": {
+              "const": "run.completed",
+              "title": "Event Type",
+              "type": "string"
+            },
+            "final_message_id": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9_-]+$",
+              "title": "Final Message Id",
+              "type": "string"
+            },
+            "run_id": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9_-]+$",
+              "title": "Run Id",
+              "type": "string"
+            },
+            "schema_version": {
+              "const": 1,
+              "title": "Schema Version",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "schema_version",
+            "conversation_id",
+            "control_epoch",
+            "run_id",
+            "event_type",
+            "cursor",
+            "final_message_id"
+          ],
+          "title": "Completed",
+          "type": "object"
+        },
+        "Control": {
+          "additionalProperties": false,
+          "properties": {
+            "active_run_id": {
+              "anyOf": [
+                {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "pattern": "^[A-Za-z0-9_-]+$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Active Run Id"
+            },
+            "assignment_id": {
+              "anyOf": [
+                {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "pattern": "^[A-Za-z0-9_-]+$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Assignment Id"
+            },
+            "control_epoch": {
+              "maximum": 9007199254740991,
+              "minimum": 0,
+              "title": "Control Epoch",
+              "type": "integer"
+            },
+            "conversation_id": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9_-]+$",
+              "title": "Conversation Id",
+              "type": "string"
+            },
+            "cursor": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9_-]+$",
+              "title": "Cursor",
+              "type": "string"
+            },
+            "event_type": {
+              "const": "control.changed",
+              "title": "Event Type",
+              "type": "string"
+            },
+            "schema_version": {
+              "const": 1,
+              "title": "Schema Version",
+              "type": "integer"
+            },
+            "service_mode": {
+              "enum": [
+                "AI",
+                "HANDOFF_PENDING",
+                "HUMAN",
+                "CLOSED"
+              ],
+              "title": "Service Mode",
+              "type": "string"
+            }
+          },
+          "required": [
+            "schema_version",
+            "conversation_id",
+            "control_epoch",
+            "event_type",
+            "cursor",
+            "service_mode",
+            "active_run_id",
+            "assignment_id"
+          ],
+          "title": "Control",
+          "type": "object"
+        },
+        "Delta": {
+          "additionalProperties": false,
+          "properties": {
+            "control_epoch": {
+              "maximum": 9007199254740991,
+              "minimum": 0,
+              "title": "Control Epoch",
+              "type": "integer"
+            },
+            "conversation_id": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9_-]+$",
+              "title": "Conversation Id",
+              "type": "string"
+            },
+            "event_type": {
+              "const": "answer.delta",
+              "title": "Event Type",
+              "type": "string"
+            },
+            "run_id": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9_-]+$",
+              "title": "Run Id",
+              "type": "string"
+            },
+            "schema_version": {
+              "const": 1,
+              "title": "Schema Version",
+              "type": "integer"
+            },
+            "text": {
+              "maxLength": 8192,
+              "minLength": 1,
+              "title": "Text",
+              "type": "string"
+            },
+            "token_seq": {
+              "maximum": 9007199254740991,
+              "minimum": 1,
+              "title": "Token Seq",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "schema_version",
+            "conversation_id",
+            "control_epoch",
+            "run_id",
+            "event_type",
+            "token_seq",
+            "text"
+          ],
+          "title": "Delta",
+          "type": "object"
+        },
+        "Failed": {
+          "additionalProperties": false,
+          "properties": {
+            "command_id": {
+              "anyOf": [
+                {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "pattern": "^[A-Za-z0-9_-]+$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Command Id"
+            },
+            "control_epoch": {
+              "maximum": 9007199254740991,
+              "minimum": 0,
+              "title": "Control Epoch",
+              "type": "integer"
+            },
+            "conversation_id": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9_-]+$",
+              "title": "Conversation Id",
+              "type": "string"
+            },
+            "cursor": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9_-]+$",
+              "title": "Cursor",
+              "type": "string"
+            },
+            "event_type": {
+              "const": "run.failed",
+              "title": "Event Type",
+              "type": "string"
+            },
+            "next_action": {
+              "enum": [
+                "READ_SNAPSHOT",
+                "QUERY_COMMAND",
+                "CONTACT_SUPPORT"
+              ],
+              "title": "Next Action",
+              "type": "string"
+            },
+            "reason_code": {
+              "enum": [
+                "DEADLINE_EXCEEDED",
+                "UPSTREAM_UNAVAILABLE",
+                "PUBLICATION_FAILED",
+                "RUN_SUPERSEDED"
+              ],
+              "title": "Reason Code",
+              "type": "string"
+            },
+            "run_id": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9_-]+$",
+              "title": "Run Id",
+              "type": "string"
+            },
+            "schema_version": {
+              "const": 1,
+              "title": "Schema Version",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "schema_version",
+            "conversation_id",
+            "control_epoch",
+            "run_id",
+            "event_type",
+            "cursor",
+            "reason_code",
+            "next_action",
+            "command_id"
+          ],
+          "title": "Failed",
+          "type": "object"
+        },
+        "Progress": {
+          "additionalProperties": false,
+          "properties": {
+            "control_epoch": {
+              "maximum": 9007199254740991,
+              "minimum": 0,
+              "title": "Control Epoch",
+              "type": "integer"
+            },
+            "conversation_id": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9_-]+$",
+              "title": "Conversation Id",
+              "type": "string"
+            },
+            "event_type": {
+              "const": "run.progress",
+              "title": "Event Type",
+              "type": "string"
+            },
+            "run_id": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9_-]+$",
+              "title": "Run Id",
+              "type": "string"
+            },
+            "schema_version": {
+              "const": 1,
+              "title": "Schema Version",
+              "type": "integer"
+            },
+            "stage": {
+              "enum": [
+                "QUEUED",
+                "RETRIEVING",
+                "GENERATING",
+                "PUBLISHING"
+              ],
+              "title": "Stage",
+              "type": "string"
+            }
+          },
+          "required": [
+            "schema_version",
+            "conversation_id",
+            "control_epoch",
+            "run_id",
+            "event_type",
+            "stage"
+          ],
+          "title": "Progress",
+          "type": "object"
+        },
+        "Resync": {
+          "additionalProperties": false,
+          "properties": {
+            "control_epoch": {
+              "maximum": 9007199254740991,
+              "minimum": 0,
+              "title": "Control Epoch",
+              "type": "integer"
+            },
+            "conversation_id": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9_-]+$",
+              "title": "Conversation Id",
+              "type": "string"
+            },
+            "event_type": {
+              "const": "resync_required",
+              "title": "Event Type",
+              "type": "string"
+            },
+            "next_action": {
+              "const": "READ_SNAPSHOT",
+              "title": "Next Action",
+              "type": "string"
+            },
+            "reason": {
+              "enum": [
+                "CURSOR_EXPIRED",
+                "DELTA_MISSING",
+                "BUFFER_EXCEEDED"
+              ],
+              "title": "Reason",
+              "type": "string"
+            },
+            "schema_version": {
+              "const": 1,
+              "title": "Schema Version",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "schema_version",
+            "conversation_id",
+            "control_epoch",
+            "event_type",
+            "reason",
+            "next_action"
+          ],
+          "title": "Resync",
+          "type": "object"
+        },
+        "Started": {
+          "additionalProperties": false,
+          "properties": {
+            "control_epoch": {
+              "maximum": 9007199254740991,
+              "minimum": 0,
+              "title": "Control Epoch",
+              "type": "integer"
+            },
+            "conversation_id": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9_-]+$",
+              "title": "Conversation Id",
+              "type": "string"
+            },
+            "cursor": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9_-]+$",
+              "title": "Cursor",
+              "type": "string"
+            },
+            "event_type": {
+              "const": "run.started",
+              "title": "Event Type",
+              "type": "string"
+            },
+            "run_id": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9_-]+$",
+              "title": "Run Id",
+              "type": "string"
+            },
+            "schema_version": {
+              "const": 1,
+              "title": "Schema Version",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "schema_version",
+            "conversation_id",
+            "control_epoch",
+            "run_id",
+            "event_type",
+            "cursor"
+          ],
+          "title": "Started",
+          "type": "object"
+        }
+      },
+      "discriminator": {
+        "mapping": {
+          "answer.delta": "#/$defs/Delta",
+          "control.changed": "#/$defs/Control",
+          "message.committed": "#/$defs/Committed",
+          "resync_required": "#/$defs/Resync",
+          "run.completed": "#/$defs/Completed",
+          "run.failed": "#/$defs/Failed",
+          "run.progress": "#/$defs/Progress",
+          "run.started": "#/$defs/Started"
+        },
+        "propertyName": "event_type"
+      },
+      "oneOf": [
+        {
+          "$ref": "#/$defs/Started"
+        },
+        {
+          "$ref": "#/$defs/Progress"
+        },
+        {
+          "$ref": "#/$defs/Delta"
+        },
+        {
+          "$ref": "#/$defs/Committed"
+        },
+        {
+          "$ref": "#/$defs/Completed"
+        },
+        {
+          "$ref": "#/$defs/Failed"
+        },
+        {
+          "$ref": "#/$defs/Control"
+        },
+        {
+          "$ref": "#/$defs/Resync"
+        }
+      ]
+    },
+    "ConversationCreate": {
+      "additionalProperties": false,
+      "properties": {
+        "business_ref": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9_-]+$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Business Ref"
+        }
+      },
+      "title": "ConversationCreate",
+      "type": "object"
+    },
+    "Empty": {
+      "additionalProperties": false,
+      "description": "No request body/query fields; path identifiers are described separately.",
+      "properties": {},
+      "title": "Empty",
+      "type": "object"
+    },
+    "EventsQuery": {
+      "additionalProperties": false,
+      "properties": {
+        "resume_cursor": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9_-]+$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Resume Cursor"
+        }
+      },
+      "title": "EventsQuery",
+      "type": "object"
+    },
+    "Failure": {
+      "$defs": {
+        "ErrorDetail": {
+          "additionalProperties": false,
+          "properties": {
+            "client_action": {
+              "title": "Client Action",
+              "type": "string"
+            },
+            "code": {
+              "enum": [
+                "AUTH_REQUIRED",
+                "ACCESS_DENIED",
+                "INPUT_INVALID",
+                "RATE_LIMITED",
+                "IDEMPOTENCY_CONFLICT",
+                "VERSION_CONFLICT",
+                "CONFIRMATION_EXPIRED",
+                "RUN_SUPERSEDED",
+                "UPSTREAM_UNAVAILABLE",
+                "DEADLINE_EXCEEDED",
+                "PUBLICATION_FAILED",
+                "SCHEMA_UNSUPPORTED"
+              ],
+              "title": "Code",
+              "type": "string"
+            },
+            "command_id": {
+              "anyOf": [
+                {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "pattern": "^[A-Za-z0-9_-]+$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Command Id"
+            },
+            "message": {
+              "maxLength": 500,
+              "minLength": 1,
+              "title": "Message",
+              "type": "string"
+            },
+            "retryable": {
+              "title": "Retryable",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "code",
+            "message",
+            "retryable",
+            "client_action",
+            "command_id"
+          ],
+          "title": "ErrorDetail",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "error": {
+          "$ref": "#/$defs/ErrorDetail"
+        },
+        "request_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Request Id",
+          "type": "string"
+        },
+        "trace_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Trace Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "request_id",
+        "trace_id",
+        "error"
+      ],
+      "title": "Failure",
+      "type": "object"
+    },
+    "FeedbackCreate": {
+      "additionalProperties": false,
+      "properties": {
+        "message_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Message Id",
+          "type": "string"
+        },
+        "rating": {
+          "enum": [
+            "UP",
+            "DOWN"
+          ],
+          "title": "Rating",
+          "type": "string"
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reason"
+        }
+      },
+      "required": [
+        "message_id",
+        "rating"
+      ],
+      "title": "FeedbackCreate",
+      "type": "object"
+    },
+    "HandoffRequest": {
+      "additionalProperties": false,
+      "properties": {
+        "handoff_request_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Handoff Request Id",
+          "type": "string"
+        },
+        "reason_code": {
+          "enum": [
+            "USER_REQUEST",
+            "COMPLAINT",
+            "SAFETY_ESCALATION",
+            "DEPENDENCY_FAILURE"
+          ],
+          "title": "Reason Code",
+          "type": "string"
+        }
+      },
+      "required": [
+        "handoff_request_id",
+        "reason_code"
+      ],
+      "title": "HandoffRequest",
+      "type": "object"
+    },
+    "KnowledgePublish": {
+      "additionalProperties": false,
+      "properties": {
+        "approval_ref": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Approval Ref",
+          "type": "string"
+        },
+        "expected_active_version": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9_-]+$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Expected Active Version"
+        },
+        "target_version": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Target Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "target_version",
+        "expected_active_version",
+        "approval_ref"
+      ],
+      "title": "KnowledgePublish",
+      "type": "object"
+    },
+    "KnowledgeRevoke": {
+      "additionalProperties": false,
+      "properties": {
+        "expected_active_version": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Expected Active Version",
+          "type": "string"
+        },
+        "reason_code": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Reason Code",
+          "type": "string"
+        },
+        "target_version": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Target Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "target_version",
+        "expected_active_version",
+        "reason_code"
+      ],
+      "title": "KnowledgeRevoke",
+      "type": "object"
+    },
+    "KnowledgeUpload": {
+      "additionalProperties": false,
+      "properties": {
+        "content_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Content Sha256",
+          "type": "string"
+        },
+        "upload_ref": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Upload Ref",
+          "type": "string"
+        }
+      },
+      "required": [
+        "upload_ref",
+        "content_sha256"
+      ],
+      "title": "KnowledgeUpload",
+      "type": "object"
+    },
+    "MessageSend": {
+      "additionalProperties": false,
+      "properties": {
+        "attachment_refs": {
+          "items": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_-]+$",
+            "type": "string"
+          },
+          "maxItems": 20,
+          "title": "Attachment Refs",
+          "type": "array"
+        },
+        "text": {
+          "maxLength": 8192,
+          "minLength": 1,
+          "title": "Text",
+          "type": "string"
+        }
+      },
+      "required": [
+        "text",
+        "attachment_refs"
+      ],
+      "title": "MessageSend",
+      "type": "object"
+    },
+    "PageRequest": {
+      "additionalProperties": false,
+      "properties": {
+        "cursor": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9_-]+$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cursor"
+        },
+        "limit": {
+          "default": 20,
+          "maximum": 100,
+          "minimum": 1,
+          "title": "Limit",
+          "type": "integer"
+        }
+      },
+      "title": "PageRequest",
+      "type": "object"
+    },
+    "RunCancel": {
+      "additionalProperties": false,
+      "properties": {
+        "control_epoch": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "title": "Control Epoch",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "control_epoch"
+      ],
+      "title": "RunCancel",
+      "type": "object"
+    },
+    "SubmitReferences": {
+      "additionalProperties": false,
+      "properties": {
+        "payload_hash": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Payload Hash",
+          "type": "string"
+        },
+        "preflight_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Preflight Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "preflight_id",
+        "payload_hash"
+      ],
+      "title": "SubmitReferences",
+      "type": "object"
+    },
+    "Success_AssignmentResult": {
+      "$defs": {
+        "AssignmentResult": {
+          "additionalProperties": false,
+          "properties": {
+            "activation_status": {
+              "enum": [
+                "PENDING",
+                "ACTIVE"
+              ],
+              "title": "Activation Status",
+              "type": "string"
+            },
+            "assignment_id": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9_-]+$",
+              "title": "Assignment Id",
+              "type": "string"
+            },
+            "assignment_version": {
+              "maximum": 9007199254740991,
+              "minimum": 1,
+              "title": "Assignment Version",
+              "type": "integer"
+            },
+            "ticket_id": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9_-]+$",
+              "title": "Ticket Id",
+              "type": "string"
+            }
+          },
+          "required": [
+            "ticket_id",
+            "assignment_id",
+            "assignment_version",
+            "activation_status"
+          ],
+          "title": "AssignmentResult",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "$ref": "#/$defs/AssignmentResult"
+        },
+        "request_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Request Id",
+          "type": "string"
+        },
+        "trace_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Trace Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "request_id",
+        "trace_id",
+        "data"
+      ],
+      "title": "Success[AssignmentResult]",
+      "type": "object"
+    },
+    "Success_CommandResult": {
+      "$defs": {
+        "CommandResult": {
+          "additionalProperties": false,
+          "properties": {
+            "business_id": {
+              "anyOf": [
+                {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "pattern": "^[A-Za-z0-9_-]+$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Business Id"
+            },
+            "command_id": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9_-]+$",
+              "title": "Command Id",
+              "type": "string"
+            },
+            "command_status": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "ACCEPTED",
+                    "EXECUTING",
+                    "SUCCEEDED",
+                    "REJECTED",
+                    "FAILED",
+                    "RECONCILING"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Command Status"
+            },
+            "next_action": {
+              "enum": [
+                "QUERY_COMMAND",
+                "REVIEW_RESULT",
+                "REFRESH_AND_RECONFIRM",
+                "CONTACT_SUPPORT"
+              ],
+              "title": "Next Action",
+              "type": "string"
+            },
+            "observation": {
+              "enum": [
+                "KNOWN",
+                "RESULT_UNKNOWN"
+              ],
+              "title": "Observation",
+              "type": "string"
+            },
+            "reason_code": {
+              "anyOf": [
+                {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "pattern": "^[A-Za-z0-9_-]+$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Reason Code"
+            }
+          },
+          "required": [
+            "command_id",
+            "command_status",
+            "observation",
+            "reason_code",
+            "business_id",
+            "next_action"
+          ],
+          "title": "CommandResult",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "$ref": "#/$defs/CommandResult"
+        },
+        "request_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Request Id",
+          "type": "string"
+        },
+        "trace_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Trace Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "request_id",
+        "trace_id",
+        "data"
+      ],
+      "title": "Success[CommandResult]",
+      "type": "object"
+    },
+    "Success_ConversationSnapshot": {
+      "$defs": {
+        "ConversationSnapshot": {
+          "additionalProperties": false,
+          "properties": {
+            "conversation": {
+              "$ref": "#/$defs/ConversationView"
+            },
+            "has_more": {
+              "title": "Has More",
+              "type": "boolean"
+            },
+            "messages": {
+              "items": {
+                "$ref": "#/$defs/MessageView"
+              },
+              "maxItems": 100,
+              "title": "Messages",
+              "type": "array"
+            },
+            "next_cursor": {
+              "anyOf": [
+                {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "pattern": "^[A-Za-z0-9_-]+$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Next Cursor"
+            },
+            "resume_cursor": {
+              "anyOf": [
+                {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "pattern": "^[A-Za-z0-9_-]+$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Resume Cursor"
+            }
+          },
+          "required": [
+            "conversation",
+            "messages",
+            "next_cursor",
+            "has_more",
+            "resume_cursor"
+          ],
+          "title": "ConversationSnapshot",
+          "type": "object"
+        },
+        "ConversationView": {
+          "additionalProperties": false,
+          "properties": {
+            "active_run_id": {
+              "anyOf": [
+                {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "pattern": "^[A-Za-z0-9_-]+$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Active Run Id"
+            },
+            "active_ticket_id": {
+              "anyOf": [
+                {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "pattern": "^[A-Za-z0-9_-]+$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Active Ticket Id"
+            },
+            "assignment_id": {
+              "anyOf": [
+                {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "pattern": "^[A-Za-z0-9_-]+$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Assignment Id"
+            },
+            "control_epoch": {
+              "maximum": 9007199254740991,
+              "minimum": 0,
+              "title": "Control Epoch",
+              "type": "integer"
+            },
+            "conversation_id": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9_-]+$",
+              "title": "Conversation Id",
+              "type": "string"
+            },
+            "service_mode": {
+              "enum": [
+                "AI",
+                "HANDOFF_PENDING",
+                "HUMAN",
+                "CLOSED"
+              ],
+              "title": "Service Mode",
+              "type": "string"
+            },
+            "version": {
+              "maximum": 9007199254740991,
+              "minimum": 1,
+              "title": "Version",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "conversation_id",
+            "service_mode",
+            "version",
+            "control_epoch",
+            "active_run_id",
+            "active_ticket_id",
+            "assignment_id"
+          ],
+          "title": "ConversationView",
+          "type": "object"
+        },
+        "MessageView": {
+          "additionalProperties": false,
+          "properties": {
+            "message_id": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9_-]+$",
+              "title": "Message Id",
+              "type": "string"
+            },
+            "message_seq": {
+              "maximum": 9007199254740991,
+              "minimum": 1,
+              "title": "Message Seq",
+              "type": "integer"
+            },
+            "role": {
+              "enum": [
+                "USER",
+                "ASSISTANT",
+                "AGENT"
+              ],
+              "title": "Role",
+              "type": "string"
+            },
+            "source_refs": {
+              "items": {
+                "maxLength": 128,
+                "minLength": 1,
+                "pattern": "^[A-Za-z0-9_-]+$",
+                "type": "string"
+              },
+              "maxItems": 50,
+              "title": "Source Refs",
+              "type": "array"
+            },
+            "text": {
+              "maxLength": 8192,
+              "minLength": 1,
+              "title": "Text",
+              "type": "string"
+            }
+          },
+          "required": [
+            "message_id",
+            "message_seq",
+            "role",
+            "text",
+            "source_refs"
+          ],
+          "title": "MessageView",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "$ref": "#/$defs/ConversationSnapshot"
+        },
+        "request_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Request Id",
+          "type": "string"
+        },
+        "trace_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Trace Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "request_id",
+        "trace_id",
+        "data"
+      ],
+      "title": "Success[ConversationSnapshot]",
+      "type": "object"
+    },
+    "Success_ConversationView": {
+      "$defs": {
+        "ConversationView": {
+          "additionalProperties": false,
+          "properties": {
+            "active_run_id": {
+              "anyOf": [
+                {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "pattern": "^[A-Za-z0-9_-]+$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Active Run Id"
+            },
+            "active_ticket_id": {
+              "anyOf": [
+                {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "pattern": "^[A-Za-z0-9_-]+$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Active Ticket Id"
+            },
+            "assignment_id": {
+              "anyOf": [
+                {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "pattern": "^[A-Za-z0-9_-]+$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Assignment Id"
+            },
+            "control_epoch": {
+              "maximum": 9007199254740991,
+              "minimum": 0,
+              "title": "Control Epoch",
+              "type": "integer"
+            },
+            "conversation_id": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9_-]+$",
+              "title": "Conversation Id",
+              "type": "string"
+            },
+            "service_mode": {
+              "enum": [
+                "AI",
+                "HANDOFF_PENDING",
+                "HUMAN",
+                "CLOSED"
+              ],
+              "title": "Service Mode",
+              "type": "string"
+            },
+            "version": {
+              "maximum": 9007199254740991,
+              "minimum": 1,
+              "title": "Version",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "conversation_id",
+            "service_mode",
+            "version",
+            "control_epoch",
+            "active_run_id",
+            "active_ticket_id",
+            "assignment_id"
+          ],
+          "title": "ConversationView",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "$ref": "#/$defs/ConversationView"
+        },
+        "request_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Request Id",
+          "type": "string"
+        },
+        "trace_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Trace Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "request_id",
+        "trace_id",
+        "data"
+      ],
+      "title": "Success[ConversationView]",
+      "type": "object"
+    },
+    "Success_FeedbackResult": {
+      "$defs": {
+        "FeedbackResult": {
+          "additionalProperties": false,
+          "properties": {
+            "feedback_id": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9_-]+$",
+              "title": "Feedback Id",
+              "type": "string"
+            }
+          },
+          "required": [
+            "feedback_id"
+          ],
+          "title": "FeedbackResult",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "$ref": "#/$defs/FeedbackResult"
+        },
+        "request_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Request Id",
+          "type": "string"
+        },
+        "trace_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Trace Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "request_id",
+        "trace_id",
+        "data"
+      ],
+      "title": "Success[FeedbackResult]",
+      "type": "object"
+    },
+    "Success_HandoffResult": {
+      "$defs": {
+        "HandoffResult": {
+          "additionalProperties": false,
+          "properties": {
+            "disposition": {
+              "enum": [
+                "TICKET_CREATED",
+                "EXISTING_TICKET"
+              ],
+              "title": "Disposition",
+              "type": "string"
+            },
+            "handoff_request_id": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9_-]+$",
+              "title": "Handoff Request Id",
+              "type": "string"
+            },
+            "ticket_id": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9_-]+$",
+              "title": "Ticket Id",
+              "type": "string"
+            }
+          },
+          "required": [
+            "handoff_request_id",
+            "ticket_id",
+            "disposition"
+          ],
+          "title": "HandoffResult",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "$ref": "#/$defs/HandoffResult"
+        },
+        "request_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Request Id",
+          "type": "string"
+        },
+        "trace_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Trace Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "request_id",
+        "trace_id",
+        "data"
+      ],
+      "title": "Success[HandoffResult]",
+      "type": "object"
+    },
+    "Success_KnowledgeTask": {
+      "$defs": {
+        "KnowledgeTask": {
+          "additionalProperties": false,
+          "properties": {
+            "source_id": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9_-]+$",
+              "title": "Source Id",
+              "type": "string"
+            },
+            "status": {
+              "enum": [
+                "ACCEPTED",
+                "VALIDATING",
+                "REJECTED"
+              ],
+              "title": "Status",
+              "type": "string"
+            },
+            "task_id": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9_-]+$",
+              "title": "Task Id",
+              "type": "string"
+            }
+          },
+          "required": [
+            "source_id",
+            "task_id",
+            "status"
+          ],
+          "title": "KnowledgeTask",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "$ref": "#/$defs/KnowledgeTask"
+        },
+        "request_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Request Id",
+          "type": "string"
+        },
+        "trace_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Trace Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "request_id",
+        "trace_id",
+        "data"
+      ],
+      "title": "Success[KnowledgeTask]",
+      "type": "object"
+    },
+    "Success_KnowledgeVersionResult": {
+      "$defs": {
+        "KnowledgeVersionResult": {
+          "additionalProperties": false,
+          "properties": {
+            "audit_id": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9_-]+$",
+              "title": "Audit Id",
+              "type": "string"
+            },
+            "state": {
+              "enum": [
+                "ACTIVE",
+                "REVOKED"
+              ],
+              "title": "State",
+              "type": "string"
+            },
+            "version": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9_-]+$",
+              "title": "Version",
+              "type": "string"
+            }
+          },
+          "required": [
+            "version",
+            "state",
+            "audit_id"
+          ],
+          "title": "KnowledgeVersionResult",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "$ref": "#/$defs/KnowledgeVersionResult"
+        },
+        "request_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Request Id",
+          "type": "string"
+        },
+        "trace_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Trace Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "request_id",
+        "trace_id",
+        "data"
+      ],
+      "title": "Success[KnowledgeVersionResult]",
+      "type": "object"
+    },
+    "Success_MessageAccepted": {
+      "$defs": {
+        "MessageAccepted": {
+          "additionalProperties": false,
+          "properties": {
+            "disposition": {
+              "enum": [
+                "ACCEPTED",
+                "QUEUED",
+                "HUMAN_DELIVERY"
+              ],
+              "title": "Disposition",
+              "type": "string"
+            },
+            "message_id": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9_-]+$",
+              "title": "Message Id",
+              "type": "string"
+            },
+            "run_id": {
+              "anyOf": [
+                {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "pattern": "^[A-Za-z0-9_-]+$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Run Id"
+            }
+          },
+          "required": [
+            "message_id",
+            "run_id",
+            "disposition"
+          ],
+          "title": "MessageAccepted",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "$ref": "#/$defs/MessageAccepted"
+        },
+        "request_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Request Id",
+          "type": "string"
+        },
+        "trace_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Trace Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "request_id",
+        "trace_id",
+        "data"
+      ],
+      "title": "Success[MessageAccepted]",
+      "type": "object"
+    },
+    "Success_PreflightView": {
+      "$defs": {
+        "Application": {
+          "additionalProperties": false,
+          "properties": {
+            "application_type": {
+              "enum": [
+                "RETURN_REFUND",
+                "REFUND_ONLY",
+                "EXCHANGE",
+                "REPAIR",
+                "RESEND"
+              ],
+              "title": "Application Type",
+              "type": "string"
+            },
+            "attachment_refs": {
+              "items": {
+                "maxLength": 128,
+                "minLength": 1,
+                "pattern": "^[A-Za-z0-9_-]+$",
+                "type": "string"
+              },
+              "maxItems": 20,
+              "title": "Attachment Refs",
+              "type": "array"
+            },
+            "lines": {
+              "items": {
+                "$ref": "#/$defs/ApplicationLine"
+              },
+              "maxItems": 50,
+              "minItems": 1,
+              "title": "Lines",
+              "type": "array"
+            },
+            "operation": {
+              "const": "after_sales.apply",
+              "title": "Operation",
+              "type": "string"
+            },
+            "order_id": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9_-]+$",
+              "title": "Order Id",
+              "type": "string"
+            },
+            "reason": {
+              "maxLength": 1000,
+              "minLength": 1,
+              "title": "Reason",
+              "type": "string"
+            }
+          },
+          "required": [
+            "operation",
+            "application_type",
+            "order_id",
+            "lines",
+            "reason",
+            "attachment_refs"
+          ],
+          "title": "Application",
+          "type": "object"
+        },
+        "ApplicationLine": {
+          "additionalProperties": false,
+          "properties": {
+            "order_line_id": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9_-]+$",
+              "title": "Order Line Id",
+              "type": "string"
+            },
+            "quantity": {
+              "maximum": 10000,
+              "minimum": 1,
+              "title": "Quantity",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "order_line_id",
+            "quantity"
+          ],
+          "title": "ApplicationLine",
+          "type": "object"
+        },
+        "Money": {
+          "additionalProperties": false,
+          "properties": {
+            "currency": {
+              "pattern": "^[A-Z]{3}$",
+              "title": "Currency",
+              "type": "string"
+            },
+            "minor_units": {
+              "maximum": 9007199254740991,
+              "minimum": 0,
+              "title": "Minor Units",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "minor_units",
+            "currency"
+          ],
+          "title": "Money",
+          "type": "object"
+        },
+        "PreflightView": {
+          "additionalProperties": false,
+          "properties": {
+            "application": {
+              "$ref": "#/$defs/Application"
+            },
+            "expires_at": {
+              "format": "date-time",
+              "title": "Expires At",
+              "type": "string"
+            },
+            "payload_hash": {
+              "pattern": "^[a-f0-9]{64}$",
+              "title": "Payload Hash",
+              "type": "string"
+            },
+            "preflight_id": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9_-]+$",
+              "title": "Preflight Id",
+              "type": "string"
+            },
+            "quoted_amount": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Money"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "resource_version": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9_-]+$",
+              "title": "Resource Version",
+              "type": "string"
+            },
+            "rule_version": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9_-]+$",
+              "title": "Rule Version",
+              "type": "string"
+            }
+          },
+          "required": [
+            "preflight_id",
+            "application",
+            "quoted_amount",
+            "resource_version",
+            "rule_version",
+            "payload_hash",
+            "expires_at"
+          ],
+          "title": "PreflightView",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "$ref": "#/$defs/PreflightView"
+        },
+        "request_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Request Id",
+          "type": "string"
+        },
+        "trace_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Trace Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "request_id",
+        "trace_id",
+        "data"
+      ],
+      "title": "Success[PreflightView]",
+      "type": "object"
+    },
+    "Success_ReplyResult": {
+      "$defs": {
+        "ReplyResult": {
+          "additionalProperties": false,
+          "properties": {
+            "delivery_status": {
+              "enum": [
+                "PENDING",
+                "DELIVERED",
+                "FAILED"
+              ],
+              "title": "Delivery Status",
+              "type": "string"
+            },
+            "formal_message_id": {
+              "anyOf": [
+                {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "pattern": "^[A-Za-z0-9_-]+$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Formal Message Id"
+            },
+            "reply_id": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9_-]+$",
+              "title": "Reply Id",
+              "type": "string"
+            }
+          },
+          "required": [
+            "reply_id",
+            "delivery_status",
+            "formal_message_id"
+          ],
+          "title": "ReplyResult",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "$ref": "#/$defs/ReplyResult"
+        },
+        "request_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Request Id",
+          "type": "string"
+        },
+        "trace_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Trace Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "request_id",
+        "trace_id",
+        "data"
+      ],
+      "title": "Success[ReplyResult]",
+      "type": "object"
+    },
+    "Success_RunCancelResult": {
+      "$defs": {
+        "RunCancelResult": {
+          "additionalProperties": false,
+          "properties": {
+            "disposition": {
+              "enum": [
+                "CANCEL_REQUESTED",
+                "CANCELLED",
+                "ALREADY_COMPLETED",
+                "SUPERSEDED"
+              ],
+              "title": "Disposition",
+              "type": "string"
+            },
+            "run_id": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9_-]+$",
+              "title": "Run Id",
+              "type": "string"
+            }
+          },
+          "required": [
+            "run_id",
+            "disposition"
+          ],
+          "title": "RunCancelResult",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "$ref": "#/$defs/RunCancelResult"
+        },
+        "request_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Request Id",
+          "type": "string"
+        },
+        "trace_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Trace Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "request_id",
+        "trace_id",
+        "data"
+      ],
+      "title": "Success[RunCancelResult]",
+      "type": "object"
+    },
+    "TicketClaim": {
+      "additionalProperties": false,
+      "properties": {
+        "expected_version": {
+          "maximum": 9007199254740991,
+          "minimum": 1,
+          "title": "Expected Version",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "expected_version"
+      ],
+      "title": "TicketClaim",
+      "type": "object"
+    },
+    "TicketReply": {
+      "additionalProperties": false,
+      "properties": {
+        "assignment_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Assignment Id",
+          "type": "string"
+        },
+        "reply_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Reply Id",
+          "type": "string"
+        },
+        "text": {
+          "maxLength": 8192,
+          "minLength": 1,
+          "title": "Text",
+          "type": "string"
+        },
+        "visibility": {
+          "const": "PUBLIC",
+          "title": "Visibility",
+          "type": "string"
+        }
+      },
+      "required": [
+        "assignment_id",
+        "reply_id",
+        "visibility",
+        "text"
+      ],
+      "title": "TicketReply",
+      "type": "object"
+    },
+    "TicketTransfer": {
+      "additionalProperties": false,
+      "properties": {
+        "assignment_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Assignment Id",
+          "type": "string"
+        },
+        "expected_version": {
+          "maximum": 9007199254740991,
+          "minimum": 1,
+          "title": "Expected Version",
+          "type": "integer"
+        },
+        "target_agent_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Target Agent Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "expected_version",
+        "assignment_id",
+        "target_agent_id"
+      ],
+      "title": "TicketTransfer",
+      "type": "object"
+    },
+    "WorkflowConfirm": {
+      "additionalProperties": false,
+      "properties": {
+        "payload_hash": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Payload Hash",
+          "type": "string"
+        },
+        "preflight_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Preflight Id",
+          "type": "string"
+        },
+        "workflow_version": {
+          "maximum": 9007199254740991,
+          "minimum": 1,
+          "title": "Workflow Version",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "preflight_id",
+        "payload_hash",
+        "workflow_version"
+      ],
+      "title": "WorkflowConfirm",
+      "type": "object"
+    },
+    "WorkflowPreflight": {
+      "$defs": {
+        "Application": {
+          "additionalProperties": false,
+          "properties": {
+            "application_type": {
+              "enum": [
+                "RETURN_REFUND",
+                "REFUND_ONLY",
+                "EXCHANGE",
+                "REPAIR",
+                "RESEND"
+              ],
+              "title": "Application Type",
+              "type": "string"
+            },
+            "attachment_refs": {
+              "items": {
+                "maxLength": 128,
+                "minLength": 1,
+                "pattern": "^[A-Za-z0-9_-]+$",
+                "type": "string"
+              },
+              "maxItems": 20,
+              "title": "Attachment Refs",
+              "type": "array"
+            },
+            "lines": {
+              "items": {
+                "$ref": "#/$defs/ApplicationLine"
+              },
+              "maxItems": 50,
+              "minItems": 1,
+              "title": "Lines",
+              "type": "array"
+            },
+            "operation": {
+              "const": "after_sales.apply",
+              "title": "Operation",
+              "type": "string"
+            },
+            "order_id": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9_-]+$",
+              "title": "Order Id",
+              "type": "string"
+            },
+            "reason": {
+              "maxLength": 1000,
+              "minLength": 1,
+              "title": "Reason",
+              "type": "string"
+            }
+          },
+          "required": [
+            "operation",
+            "application_type",
+            "order_id",
+            "lines",
+            "reason",
+            "attachment_refs"
+          ],
+          "title": "Application",
+          "type": "object"
+        },
+        "ApplicationLine": {
+          "additionalProperties": false,
+          "properties": {
+            "order_line_id": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9_-]+$",
+              "title": "Order Line Id",
+              "type": "string"
+            },
+            "quantity": {
+              "maximum": 10000,
+              "minimum": 1,
+              "title": "Quantity",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "order_line_id",
+            "quantity"
+          ],
+          "title": "ApplicationLine",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "application": {
+          "$ref": "#/$defs/Application"
+        },
+        "workflow_version": {
+          "maximum": 9007199254740991,
+          "minimum": 1,
+          "title": "Workflow Version",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "workflow_version",
+        "application"
+      ],
+      "title": "WorkflowPreflight",
+      "type": "object"
+    }
+  },
+  "status": "DESIGN_ONLY_NOT_LIVE_OPENAPI"
+}
