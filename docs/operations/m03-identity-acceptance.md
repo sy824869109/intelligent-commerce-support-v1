@@ -1,6 +1,6 @@
 # M03 身份、租户与权限：实施及验收
 
-日期：2026-09-10。状态：本地实现/功能测试完成；最终安全、开发库部署与远端 CI 待签收。
+日期：2026-09-10。状态：M03.1–M03.4 全部 DONE；本地、开发库与远端验收通过。
 
 ## 四项交付
 
@@ -103,3 +103,14 @@ python scripts/run_gateway.py --with-database
 本地安全重试结果：原 PyPI 查询恢复后，完整 check_backend.py security 已通过，两份锁均未发现已知漏洞；没有改扫描源、关闭规则或忽略漏洞。前述网络失败作为过程证据保留。
 
 最终加固：所有 API 默认先认证；修改密码的原密码验证也按用户 5 次/5 分钟限流，防止持有会话后无限尝试原密码。相同新旧密码拒绝。两项均有回归测试。
+
+## 最终签收
+
+- 实现 `942fba7`、默认认证补强 `5fa958a`、密码限流与实际探针 `3c8512d` 均已推送 `origin/codex/v1-greenfield`。
+- [GitHub CI 34459754847](https://github.com/sy824869109/intelligent-commerce-support-v1/actions/runs/34459754847) SUCCESS：双平台基础、后端、契约，Python 安全，以及四类镜像作业全部通过。前端与手动 Milvus 全源码检查按既有策略 skipped，不计为本轮执行通过。
+- 最终本地：90 项后端、169 项契约通过；真实 MySQL 12 项通过；基础 224 项运行成功（Windows 5 项跳过）。完整本地源码/依赖安全检查亦通过，之前 PyPI 网络失败不再阻塞。
+- 已执行新平台 `database_local.py upgrade`，开发库版本 `m03_0003`，READY。随后 `check_gateway_local.py` 实际回环 HTTP 验证 MySQL 就绪、trace、日志与匿名身份拒绝 PASS，专属测试进程已停止。
+- 只读核对开发库：identity_users=0、identity_tenants=0、identity_roles=3。未创建真实或演示用户，未调用开发库会话清理；账号密码由用户首次交互初始化。
+- M03 全部收口，上文“待签收”为过程记录。下一阶段 M04 商品与库存，尚未开始。M03 完成不代表已有业务查询/前端或局域网 HTTPS 部署。
+
+浏览器后续通过同源代理接入，并配置准确的 allowed_origins；本版未开放跨源 CORS 访问。原 KF、旧项目、参考归档与 Docker 数据位置未改动。

@@ -8,3 +8,5 @@
 依赖暂随平台运行锁安装。完整运行、边界和验收见 `docs/operations/m02-2-database.md`。
 
 M02.4 增加 `platform_audit`，迁移头为 `m02_4_0002`。观测包的审计端口复用调用方事务，不自行提交；历史非空拒绝降级。详见 [M02 最终验收](../../docs/operations/m02-final-acceptance.md)。
+
+当前迁移头为 `m03_0003`：M03 新增 12 张身份相关表及角色权限种子，保留 M02 表。无用户/密码默认值；任何身份或平台历史存在则拒绝破坏性降级。详见 [M03 验收](../../docs/operations/m03-identity-acceptance.md)。
