@@ -36,6 +36,7 @@ def main() -> int:
                 "ci/ruff.toml",
                 "apps",
                 "packages/persistence",
+                "packages/observability",
                 "tests/backend",
                 "tests/integration/test_m02_mysql.py",
             )
@@ -48,6 +49,7 @@ def main() -> int:
                 "ci/ruff.toml",
                 "apps",
                 "packages/persistence",
+                "packages/observability",
                 "tests/backend",
                 "tests/integration/test_m02_mysql.py",
             )
@@ -60,6 +62,7 @@ def main() -> int:
                 "-r",
                 "apps",
                 "packages/persistence",
+                "packages/observability",
                 "scripts/run_gateway.py",
                 "scripts/database_local.py",
                 "scripts/check_mysql.py",
