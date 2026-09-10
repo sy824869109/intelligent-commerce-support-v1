@@ -17,4 +17,6 @@ python scripts/check_contracts.py
 
 第五批增加 `handoff.py`、六份衔接 schema、固定响应 fixtures 与独立兼容基线，详见 [衔接与兼容说明](../../docs/api/m02-3-handoff-compatibility.md)。普通 `--generate` 不更新已审阅基线；`--init-baseline` 只允许首次创建。新增合同也须评审，不自动放行。
 
-详见 [第一批接口与事件说明](../../docs/api/m02-3-contract-foundation.md) 和 [第二批领域事件及策略](../../docs/api/m02-3-domain-policies.md)。M02.3 整体仍在实施：上传与来源/附件读取路径、MessageContent 正式消费方式仍待冻结；尚未接入聊天、授权、发布、重放和 KF 适配器。
+第六批增加 `media.py` 和独立媒体路径目录，详见 [媒体端口与收口复核](../../docs/api/m02-3-media-ports.md)。保留旧基线，以专用 `--init-media-extension` 首次创建新增制品摘要；正常 CI 两份基线均检查。六项新操作仍为设计端口，不是联网能力。
+
+详见 [第一批接口与事件说明](../../docs/api/m02-3-contract-foundation.md) 和 [第二批领域事件及策略](../../docs/api/m02-3-domain-policies.md)。M02.3 已补齐上传与来源/附件读取路径、MessageContent 正式消费设计，等待第六批验收；尚未接入聊天、授权、发布、重放和 KF 适配器。

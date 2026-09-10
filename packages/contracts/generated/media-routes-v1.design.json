@@ -1,0 +1,834 @@
+{
+  "authentication": "M03_UNFROZEN_NO_TOKEN_IN_URL",
+  "error_schema": {
+    "$defs": {
+      "MediaError": {
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "enum": [
+              "AUTH_REQUIRED",
+              "ACCESS_DENIED",
+              "INPUT_INVALID",
+              "UPLOAD_EXPIRED",
+              "UPLOAD_CONFLICT",
+              "ASSET_NOT_READY",
+              "PAYLOAD_TOO_LARGE",
+              "MEDIA_UNSUPPORTED",
+              "RATE_LIMITED",
+              "UPSTREAM_UNAVAILABLE"
+            ],
+            "title": "Code",
+            "type": "string"
+          },
+          "message": {
+            "maxLength": 500,
+            "minLength": 1,
+            "title": "Message",
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "message"
+        ],
+        "title": "MediaError",
+        "type": "object"
+      }
+    },
+    "additionalProperties": false,
+    "properties": {
+      "error": {
+        "$ref": "#/$defs/MediaError"
+      },
+      "request_id": {
+        "maxLength": 128,
+        "minLength": 1,
+        "pattern": "^[A-Za-z0-9_-]+$",
+        "title": "Request Id",
+        "type": "string"
+      },
+      "trace_id": {
+        "maxLength": 128,
+        "minLength": 1,
+        "pattern": "^[A-Za-z0-9_-]+$",
+        "title": "Trace Id",
+        "type": "string"
+      }
+    },
+    "required": [
+      "request_id",
+      "trace_id",
+      "error"
+    ],
+    "title": "MediaFailure",
+    "type": "object"
+  },
+  "errors": {
+    "ACCESS_DENIED": 404,
+    "ASSET_NOT_READY": 409,
+    "AUTH_REQUIRED": 401,
+    "INPUT_INVALID": 422,
+    "MEDIA_UNSUPPORTED": 415,
+    "PAYLOAD_TOO_LARGE": 413,
+    "RATE_LIMITED": 429,
+    "UPLOAD_CONFLICT": 409,
+    "UPLOAD_EXPIRED": 410,
+    "UPSTREAM_UNAVAILABLE": 503
+  },
+  "extension_version": 1,
+  "operations": {
+    "message.attachment": {
+      "authorization": "message_attachment_membership_and_current_ready_asset_access",
+      "deadline": "PROPAGATE_DEADLINE_NUMERIC_M17",
+      "idempotency": "READ_ONLY",
+      "implementation": "NOT_IMPLEMENTED",
+      "method": "GET",
+      "path": "/api/v1/conversations/{conversation_id}/messages/{message_id}/attachments/{attachment_ref}/bytes",
+      "request_media_type": "application/json",
+      "request_schema": {
+        "additionalProperties": false,
+        "description": "No request body/query fields; path identifiers are described separately.",
+        "properties": {},
+        "title": "Empty",
+        "type": "object"
+      },
+      "required_headers": [],
+      "response_media_type": "application/octet-stream",
+      "response_schema": null,
+      "success_status": 200
+    },
+    "message.content": {
+      "authorization": "current_conversation_access_and_formal_message_membership",
+      "deadline": "PROPAGATE_DEADLINE_NUMERIC_M17",
+      "idempotency": "READ_ONLY",
+      "implementation": "NOT_IMPLEMENTED",
+      "method": "GET",
+      "path": "/api/v1/conversations/{conversation_id}/messages/{message_id}/content",
+      "request_media_type": "application/json",
+      "request_schema": {
+        "additionalProperties": false,
+        "description": "No request body/query fields; path identifiers are described separately.",
+        "properties": {},
+        "title": "Empty",
+        "type": "object"
+      },
+      "required_headers": [],
+      "response_media_type": "application/json",
+      "response_schema": {
+        "$defs": {
+          "AttachmentPart": {
+            "additionalProperties": false,
+            "properties": {
+              "attachment_ref": {
+                "maxLength": 128,
+                "minLength": 1,
+                "pattern": "^[A-Za-z0-9_-]+$",
+                "title": "Attachment Ref",
+                "type": "string"
+              },
+              "kind": {
+                "const": "ATTACHMENT",
+                "title": "Kind",
+                "type": "string"
+              }
+            },
+            "required": [
+              "kind",
+              "attachment_ref"
+            ],
+            "title": "AttachmentPart",
+            "type": "object"
+          },
+          "MessageContent": {
+            "additionalProperties": false,
+            "properties": {
+              "message_id": {
+                "maxLength": 128,
+                "minLength": 1,
+                "pattern": "^[A-Za-z0-9_-]+$",
+                "title": "Message Id",
+                "type": "string"
+              },
+              "message_seq": {
+                "maximum": 9007199254740991,
+                "minimum": 1,
+                "title": "Message Seq",
+                "type": "integer"
+              },
+              "parts": {
+                "items": {
+                  "discriminator": {
+                    "mapping": {
+                      "ATTACHMENT": "#/$defs/AttachmentPart",
+                      "SOURCE": "#/$defs/SourcePart",
+                      "TEXT": "#/$defs/TextPart"
+                    },
+                    "propertyName": "kind"
+                  },
+                  "oneOf": [
+                    {
+                      "$ref": "#/$defs/TextPart"
+                    },
+                    {
+                      "$ref": "#/$defs/SourcePart"
+                    },
+                    {
+                      "$ref": "#/$defs/AttachmentPart"
+                    }
+                  ]
+                },
+                "maxItems": 50,
+                "minItems": 1,
+                "title": "Parts",
+                "type": "array"
+              }
+            },
+            "required": [
+              "message_id",
+              "message_seq",
+              "parts"
+            ],
+            "title": "MessageContent",
+            "type": "object"
+          },
+          "SourcePart": {
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "const": "SOURCE",
+                "title": "Kind",
+                "type": "string"
+              },
+              "locator_ref": {
+                "maxLength": 128,
+                "minLength": 1,
+                "pattern": "^[A-Za-z0-9_-]+$",
+                "title": "Locator Ref",
+                "type": "string"
+              },
+              "source_ref": {
+                "maxLength": 128,
+                "minLength": 1,
+                "pattern": "^[A-Za-z0-9_-]+$",
+                "title": "Source Ref",
+                "type": "string"
+              },
+              "version_ref": {
+                "maxLength": 128,
+                "minLength": 1,
+                "pattern": "^[A-Za-z0-9_-]+$",
+                "title": "Version Ref",
+                "type": "string"
+              }
+            },
+            "required": [
+              "kind",
+              "source_ref",
+              "version_ref",
+              "locator_ref"
+            ],
+            "title": "SourcePart",
+            "type": "object"
+          },
+          "TextPart": {
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "const": "TEXT",
+                "title": "Kind",
+                "type": "string"
+              },
+              "text": {
+                "maxLength": 8192,
+                "minLength": 1,
+                "title": "Text",
+                "type": "string"
+              }
+            },
+            "required": [
+              "kind",
+              "text"
+            ],
+            "title": "TextPart",
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "$ref": "#/$defs/MessageContent"
+          },
+          "request_id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_-]+$",
+            "title": "Request Id",
+            "type": "string"
+          },
+          "trace_id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_-]+$",
+            "title": "Trace Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "request_id",
+          "trace_id",
+          "data"
+        ],
+        "title": "Success[MessageContent]",
+        "type": "object"
+      },
+      "success_status": 200
+    },
+    "message.source": {
+      "authorization": "message_citation_membership_and_current_published_source_access",
+      "deadline": "PROPAGATE_DEADLINE_NUMERIC_M17",
+      "idempotency": "READ_ONLY",
+      "implementation": "NOT_IMPLEMENTED",
+      "method": "GET",
+      "path": "/api/v1/conversations/{conversation_id}/messages/{message_id}/sources/{source_ref}/versions/{version_ref}/locators/{locator_ref}",
+      "request_media_type": "application/json",
+      "request_schema": {
+        "additionalProperties": false,
+        "description": "No request body/query fields; path identifiers are described separately.",
+        "properties": {},
+        "title": "Empty",
+        "type": "object"
+      },
+      "required_headers": [],
+      "response_media_type": "application/json",
+      "response_schema": {
+        "$defs": {
+          "SourcePart": {
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "const": "SOURCE",
+                "title": "Kind",
+                "type": "string"
+              },
+              "locator_ref": {
+                "maxLength": 128,
+                "minLength": 1,
+                "pattern": "^[A-Za-z0-9_-]+$",
+                "title": "Locator Ref",
+                "type": "string"
+              },
+              "source_ref": {
+                "maxLength": 128,
+                "minLength": 1,
+                "pattern": "^[A-Za-z0-9_-]+$",
+                "title": "Source Ref",
+                "type": "string"
+              },
+              "version_ref": {
+                "maxLength": 128,
+                "minLength": 1,
+                "pattern": "^[A-Za-z0-9_-]+$",
+                "title": "Version Ref",
+                "type": "string"
+              }
+            },
+            "required": [
+              "kind",
+              "source_ref",
+              "version_ref",
+              "locator_ref"
+            ],
+            "title": "SourcePart",
+            "type": "object"
+          },
+          "SourceView": {
+            "additionalProperties": false,
+            "properties": {
+              "excerpt": {
+                "maxLength": 4000,
+                "minLength": 1,
+                "title": "Excerpt",
+                "type": "string"
+              },
+              "source": {
+                "$ref": "#/$defs/SourcePart"
+              },
+              "title": {
+                "maxLength": 300,
+                "minLength": 1,
+                "title": "Title",
+                "type": "string"
+              }
+            },
+            "required": [
+              "source",
+              "title",
+              "excerpt"
+            ],
+            "title": "SourceView",
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "$ref": "#/$defs/SourceView"
+          },
+          "request_id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_-]+$",
+            "title": "Request Id",
+            "type": "string"
+          },
+          "trace_id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_-]+$",
+            "title": "Trace Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "request_id",
+          "trace_id",
+          "data"
+        ],
+        "title": "Success[SourceView]",
+        "type": "object"
+      },
+      "success_status": 200
+    },
+    "upload.bytes": {
+      "authorization": "permit_owner_target_purpose_expiry_and_identical_bytes",
+      "deadline": "PROPAGATE_DEADLINE_NUMERIC_M17",
+      "idempotency": "SAME_PERMIT_SAME_BYTES",
+      "implementation": "NOT_IMPLEMENTED",
+      "method": "PUT",
+      "path": "/api/v1/uploads/{upload_ref}/bytes",
+      "request_media_type": "application/octet-stream",
+      "request_schema": null,
+      "required_headers": [
+        "Content-Length"
+      ],
+      "response_media_type": "application/json",
+      "response_schema": {
+        "$defs": {
+          "UploadObservation": {
+            "additionalProperties": false,
+            "properties": {
+              "attachment_ref": {
+                "anyOf": [
+                  {
+                    "maxLength": 128,
+                    "minLength": 1,
+                    "pattern": "^[A-Za-z0-9_-]+$",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Attachment Ref"
+              },
+              "purpose": {
+                "enum": [
+                  "CHAT_ATTACHMENT",
+                  "KNOWLEDGE_SOURCE"
+                ],
+                "title": "Purpose",
+                "type": "string"
+              },
+              "state": {
+                "enum": [
+                  "PENDING_UPLOAD",
+                  "VALIDATING",
+                  "READY",
+                  "REJECTED",
+                  "REVOKED",
+                  "DELETING",
+                  "DELETED"
+                ],
+                "title": "State",
+                "type": "string"
+              },
+              "upload_ref": {
+                "maxLength": 128,
+                "minLength": 1,
+                "pattern": "^[A-Za-z0-9_-]+$",
+                "title": "Upload Ref",
+                "type": "string"
+              },
+              "verified_sha256": {
+                "anyOf": [
+                  {
+                    "pattern": "^[a-f0-9]{64}$",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Verified Sha256"
+              }
+            },
+            "required": [
+              "upload_ref",
+              "state",
+              "attachment_ref",
+              "purpose",
+              "verified_sha256"
+            ],
+            "title": "UploadObservation",
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "$ref": "#/$defs/UploadObservation"
+          },
+          "request_id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_-]+$",
+            "title": "Request Id",
+            "type": "string"
+          },
+          "trace_id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_-]+$",
+            "title": "Trace Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "request_id",
+          "trace_id",
+          "data"
+        ],
+        "title": "Success[UploadObservation]",
+        "type": "object"
+      },
+      "success_status": 202
+    },
+    "upload.get": {
+      "authorization": "permit_owner_and_current_target_access",
+      "deadline": "PROPAGATE_DEADLINE_NUMERIC_M17",
+      "idempotency": "READ_ONLY",
+      "implementation": "NOT_IMPLEMENTED",
+      "method": "GET",
+      "path": "/api/v1/uploads/{upload_ref}",
+      "request_media_type": "application/json",
+      "request_schema": {
+        "additionalProperties": false,
+        "description": "No request body/query fields; path identifiers are described separately.",
+        "properties": {},
+        "title": "Empty",
+        "type": "object"
+      },
+      "required_headers": [],
+      "response_media_type": "application/json",
+      "response_schema": {
+        "$defs": {
+          "UploadObservation": {
+            "additionalProperties": false,
+            "properties": {
+              "attachment_ref": {
+                "anyOf": [
+                  {
+                    "maxLength": 128,
+                    "minLength": 1,
+                    "pattern": "^[A-Za-z0-9_-]+$",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Attachment Ref"
+              },
+              "purpose": {
+                "enum": [
+                  "CHAT_ATTACHMENT",
+                  "KNOWLEDGE_SOURCE"
+                ],
+                "title": "Purpose",
+                "type": "string"
+              },
+              "state": {
+                "enum": [
+                  "PENDING_UPLOAD",
+                  "VALIDATING",
+                  "READY",
+                  "REJECTED",
+                  "REVOKED",
+                  "DELETING",
+                  "DELETED"
+                ],
+                "title": "State",
+                "type": "string"
+              },
+              "upload_ref": {
+                "maxLength": 128,
+                "minLength": 1,
+                "pattern": "^[A-Za-z0-9_-]+$",
+                "title": "Upload Ref",
+                "type": "string"
+              },
+              "verified_sha256": {
+                "anyOf": [
+                  {
+                    "pattern": "^[a-f0-9]{64}$",
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Verified Sha256"
+              }
+            },
+            "required": [
+              "upload_ref",
+              "state",
+              "attachment_ref",
+              "purpose",
+              "verified_sha256"
+            ],
+            "title": "UploadObservation",
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "$ref": "#/$defs/UploadObservation"
+          },
+          "request_id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_-]+$",
+            "title": "Request Id",
+            "type": "string"
+          },
+          "trace_id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_-]+$",
+            "title": "Trace Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "request_id",
+          "trace_id",
+          "data"
+        ],
+        "title": "Success[UploadObservation]",
+        "type": "object"
+      },
+      "success_status": 200
+    },
+    "upload.permit": {
+      "authorization": "tenant_actor_target_upload_permission_and_quota",
+      "deadline": "PROPAGATE_DEADLINE_NUMERIC_M17",
+      "idempotency": "SCOPED_KEY",
+      "implementation": "NOT_IMPLEMENTED",
+      "method": "POST",
+      "path": "/api/v1/uploads",
+      "request_media_type": "application/json",
+      "request_schema": {
+        "$defs": {
+          "ChatTarget": {
+            "additionalProperties": false,
+            "properties": {
+              "conversation_id": {
+                "maxLength": 128,
+                "minLength": 1,
+                "pattern": "^[A-Za-z0-9_-]+$",
+                "title": "Conversation Id",
+                "type": "string"
+              },
+              "kind": {
+                "const": "CONVERSATION",
+                "title": "Kind",
+                "type": "string"
+              }
+            },
+            "required": [
+              "kind",
+              "conversation_id"
+            ],
+            "title": "ChatTarget",
+            "type": "object"
+          },
+          "KnowledgeTarget": {
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "const": "KNOWLEDGE_SPACE",
+                "title": "Kind",
+                "type": "string"
+              },
+              "space_id": {
+                "maxLength": 128,
+                "minLength": 1,
+                "pattern": "^[A-Za-z0-9_-]+$",
+                "title": "Space Id",
+                "type": "string"
+              }
+            },
+            "required": [
+              "kind",
+              "space_id"
+            ],
+            "title": "KnowledgeTarget",
+            "type": "object"
+          },
+          "UploadRequest": {
+            "additionalProperties": false,
+            "properties": {
+              "byte_size": {
+                "maximum": 33554432,
+                "minimum": 1,
+                "title": "Byte Size",
+                "type": "integer"
+              },
+              "content_sha256": {
+                "pattern": "^[a-f0-9]{64}$",
+                "title": "Content Sha256",
+                "type": "string"
+              },
+              "media_type": {
+                "enum": [
+                  "text/plain",
+                  "application/pdf",
+                  "image/png",
+                  "image/jpeg"
+                ],
+                "title": "Media Type",
+                "type": "string"
+              },
+              "purpose": {
+                "enum": [
+                  "CHAT_ATTACHMENT",
+                  "KNOWLEDGE_SOURCE"
+                ],
+                "title": "Purpose",
+                "type": "string"
+              }
+            },
+            "required": [
+              "purpose",
+              "byte_size",
+              "content_sha256",
+              "media_type"
+            ],
+            "title": "UploadRequest",
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "file": {
+            "$ref": "#/$defs/UploadRequest"
+          },
+          "target": {
+            "discriminator": {
+              "mapping": {
+                "CONVERSATION": "#/$defs/ChatTarget",
+                "KNOWLEDGE_SPACE": "#/$defs/KnowledgeTarget"
+              },
+              "propertyName": "kind"
+            },
+            "oneOf": [
+              {
+                "$ref": "#/$defs/ChatTarget"
+              },
+              {
+                "$ref": "#/$defs/KnowledgeTarget"
+              }
+            ],
+            "title": "Target"
+          }
+        },
+        "required": [
+          "file",
+          "target"
+        ],
+        "title": "PermitRequest",
+        "type": "object"
+      },
+      "required_headers": [
+        "Idempotency-Key"
+      ],
+      "response_media_type": "application/json",
+      "response_schema": {
+        "$defs": {
+          "UploadPermitView": {
+            "additionalProperties": false,
+            "properties": {
+              "expires_at": {
+                "format": "date-time",
+                "title": "Expires At",
+                "type": "string"
+              },
+              "max_bytes": {
+                "maximum": 33554432,
+                "minimum": 1,
+                "title": "Max Bytes",
+                "type": "integer"
+              },
+              "upload_ref": {
+                "maxLength": 128,
+                "minLength": 1,
+                "pattern": "^[A-Za-z0-9_-]+$",
+                "title": "Upload Ref",
+                "type": "string"
+              }
+            },
+            "required": [
+              "expires_at",
+              "upload_ref",
+              "max_bytes"
+            ],
+            "title": "UploadPermitView",
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "$ref": "#/$defs/UploadPermitView"
+          },
+          "request_id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_-]+$",
+            "title": "Request Id",
+            "type": "string"
+          },
+          "trace_id": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9_-]+$",
+            "title": "Trace Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "request_id",
+          "trace_id",
+          "data"
+        ],
+        "title": "Success[UploadPermitView]",
+        "type": "object"
+      },
+      "success_status": 201
+    }
+  },
+  "status": "DESIGN_ONLY_NOT_IMPLEMENTED"
+}
