@@ -101,3 +101,5 @@ python scripts/run_gateway.py --with-database
 开发库迁移、真实启动探针及远端 CI 最终结果待补记；未全部通过之前 M03 保持 IN_PROGRESS。两项既有 Starlette/anyio 弃用警告保留。
 
 本地安全重试结果：原 PyPI 查询恢复后，完整 check_backend.py security 已通过，两份锁均未发现已知漏洞；没有改扫描源、关闭规则或忽略漏洞。前述网络失败作为过程证据保留。
+
+最终加固：所有 API 默认先认证；修改密码的原密码验证也按用户 5 次/5 分钟限流，防止持有会话后无限尝试原密码。相同新旧密码拒绝。两项均有回归测试。

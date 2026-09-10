@@ -452,6 +452,8 @@ class Identity:
     def change_password(self, principal, old_password, new_password):
         if old_password == new_password:
             raise ValueError("New password must differ")
+        if not self._rate("password-change", principal.user_id, principal.session_id):
+            raise IdentityError("RATE_LIMITED", 429)
         if not self.hash_slots.acquire(blocking=False):
             raise IdentityError("RATE_LIMITED", 429)
         try:

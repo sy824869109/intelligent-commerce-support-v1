@@ -59,6 +59,17 @@ def main():
                 if time.monotonic() >= deadline:
                     raise RuntimeError("Gateway readiness deadline exceeded") from None
                 time.sleep(0.2)
+        # M03 is enabled by --with-database; no seeded identity is needed for denial testing.
+        denied = False
+        try:
+            with opener.open(f"http://127.0.0.1:{port}/api/v1/auth/me", timeout=2):
+                raise RuntimeError("Anonymous identity request unexpectedly succeeded")
+        except urllib.error.HTTPError as exc:
+            with exc:
+                body = json.loads(exc.read(8192))
+                denied = exc.code == 401 and body.get("error", {}).get("code") == "AUTH_REQUIRED"
+        if not denied:
+            raise RuntimeError("Identity denial contract mismatch")
     finally:
         # Exact owned child only; never kill by port or process name.
         if process.poll() is None:
@@ -82,7 +93,9 @@ def main():
         for row in events
     ):
         raise RuntimeError("Owned process did not emit correlated success log")
-    print("M02 local HTTP + MySQL readiness + trace + structured log PASS; owned gateway stopped.")
+    print(
+        "M02/M03 local HTTP + MySQL + trace + log + anonymous identity denial PASS; owned gateway stopped."
+    )
     return 0
 
 

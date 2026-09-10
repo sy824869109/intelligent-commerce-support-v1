@@ -523,3 +523,16 @@ def test_default_api_authentication_and_database_failure(identity, monkeypatch):
         result = client.get("/api/testing/unclassified", headers=bearer(pair))
         assert result.status_code == 500 and "database unavailable" not in result.text
         assert not executed
+
+
+def test_password_verification_is_rate_limited(identity):
+    principal = identity.authenticate(login(identity)["access_token"])
+    for _ in range(5):
+        with pytest.raises(IdentityError) as exc:
+            identity.change_password(
+                principal, "Wrong-Old-Passphrase-44!", "New-Target-Passphrase-49!"
+            )
+        assert exc.value.status == 401
+    with pytest.raises(IdentityError) as exc:
+        identity.change_password(principal, PASSWORD, "New-Target-Passphrase-49!")
+    assert exc.value.status == 429
