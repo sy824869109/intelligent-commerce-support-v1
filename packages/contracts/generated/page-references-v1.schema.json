@@ -1,0 +1,41 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "has_more": {
+      "title": "Has More",
+      "type": "boolean"
+    },
+    "items": {
+      "items": {
+        "maxLength": 128,
+        "minLength": 1,
+        "pattern": "^[A-Za-z0-9_-]+$",
+        "type": "string"
+      },
+      "maxItems": 100,
+      "title": "Items",
+      "type": "array"
+    },
+    "next_cursor": {
+      "anyOf": [
+        {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Next Cursor"
+    }
+  },
+  "required": [
+    "items",
+    "next_cursor",
+    "has_more"
+  ],
+  "title": "PageReferences",
+  "type": "object"
+}

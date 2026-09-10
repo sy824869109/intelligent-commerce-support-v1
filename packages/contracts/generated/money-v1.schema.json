@@ -1,0 +1,22 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "currency": {
+      "pattern": "^[A-Z]{3}$",
+      "title": "Currency",
+      "type": "string"
+    },
+    "minor_units": {
+      "maximum": 9007199254740991,
+      "minimum": 0,
+      "title": "Minor Units",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "minor_units",
+    "currency"
+  ],
+  "title": "Money",
+  "type": "object"
+}

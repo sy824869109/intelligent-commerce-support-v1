@@ -1,0 +1,37 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "channel": {
+      "const": "PAGE",
+      "title": "Channel",
+      "type": "string"
+    },
+    "idempotency_key": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9_-]+$",
+      "title": "Idempotency Key",
+      "type": "string"
+    },
+    "payload_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Payload Hash",
+      "type": "string"
+    },
+    "preflight_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9_-]+$",
+      "title": "Preflight Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "preflight_id",
+    "payload_hash",
+    "idempotency_key",
+    "channel"
+  ],
+  "title": "PageSubmit",
+  "type": "object"
+}

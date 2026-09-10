@@ -1,0 +1,90 @@
+{
+  "$defs": {
+    "ApplicationLine": {
+      "additionalProperties": false,
+      "properties": {
+        "order_line_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "title": "Order Line Id",
+          "type": "string"
+        },
+        "quantity": {
+          "maximum": 10000,
+          "minimum": 1,
+          "title": "Quantity",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "order_line_id",
+        "quantity"
+      ],
+      "title": "ApplicationLine",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "application_type": {
+      "enum": [
+        "RETURN_REFUND",
+        "REFUND_ONLY",
+        "EXCHANGE",
+        "REPAIR",
+        "RESEND"
+      ],
+      "title": "Application Type",
+      "type": "string"
+    },
+    "attachment_refs": {
+      "items": {
+        "maxLength": 128,
+        "minLength": 1,
+        "pattern": "^[A-Za-z0-9_-]+$",
+        "type": "string"
+      },
+      "maxItems": 20,
+      "title": "Attachment Refs",
+      "type": "array"
+    },
+    "lines": {
+      "items": {
+        "$ref": "#/$defs/ApplicationLine"
+      },
+      "maxItems": 50,
+      "minItems": 1,
+      "title": "Lines",
+      "type": "array"
+    },
+    "operation": {
+      "const": "after_sales.apply",
+      "title": "Operation",
+      "type": "string"
+    },
+    "order_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9_-]+$",
+      "title": "Order Id",
+      "type": "string"
+    },
+    "reason": {
+      "maxLength": 1000,
+      "minLength": 1,
+      "title": "Reason",
+      "type": "string"
+    }
+  },
+  "required": [
+    "operation",
+    "application_type",
+    "order_id",
+    "lines",
+    "reason",
+    "attachment_refs"
+  ],
+  "title": "Application",
+  "type": "object"
+}

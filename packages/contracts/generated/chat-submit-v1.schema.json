@@ -1,0 +1,60 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "channel": {
+      "const": "CHAT",
+      "title": "Channel",
+      "type": "string"
+    },
+    "confirmation_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9_-]+$",
+      "title": "Confirmation Id",
+      "type": "string"
+    },
+    "idempotency_key": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9_-]+$",
+      "title": "Idempotency Key",
+      "type": "string"
+    },
+    "payload_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Payload Hash",
+      "type": "string"
+    },
+    "preflight_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9_-]+$",
+      "title": "Preflight Id",
+      "type": "string"
+    },
+    "workflow_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9_-]+$",
+      "title": "Workflow Id",
+      "type": "string"
+    },
+    "workflow_version": {
+      "maximum": 9007199254740991,
+      "minimum": 1,
+      "title": "Workflow Version",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "preflight_id",
+    "payload_hash",
+    "idempotency_key",
+    "channel",
+    "confirmation_id",
+    "workflow_id",
+    "workflow_version"
+  ],
+  "title": "ChatSubmit",
+  "type": "object"
+}

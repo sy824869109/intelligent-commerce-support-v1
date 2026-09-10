@@ -1,0 +1,87 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "business_id": {
+      "anyOf": [
+        {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Business Id"
+    },
+    "command_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9_-]+$",
+      "title": "Command Id",
+      "type": "string"
+    },
+    "command_status": {
+      "anyOf": [
+        {
+          "enum": [
+            "ACCEPTED",
+            "EXECUTING",
+            "SUCCEEDED",
+            "REJECTED",
+            "FAILED",
+            "RECONCILING"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Command Status"
+    },
+    "next_action": {
+      "enum": [
+        "QUERY_COMMAND",
+        "REVIEW_RESULT",
+        "REFRESH_AND_RECONFIRM",
+        "CONTACT_SUPPORT"
+      ],
+      "title": "Next Action",
+      "type": "string"
+    },
+    "observation": {
+      "enum": [
+        "KNOWN",
+        "RESULT_UNKNOWN"
+      ],
+      "title": "Observation",
+      "type": "string"
+    },
+    "reason_code": {
+      "anyOf": [
+        {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Reason Code"
+    }
+  },
+  "required": [
+    "command_id",
+    "command_status",
+    "observation",
+    "reason_code",
+    "business_id",
+    "next_action"
+  ],
+  "title": "CommandResult",
+  "type": "object"
+}

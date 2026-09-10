@@ -16,6 +16,16 @@ def generated():
     from ics_contracts.events import EVENT_ADAPTER
     from ics_contracts.domain import PublicReply
     from ics_contracts.policies import registry
+    from ics_contracts.commerce import (
+        Application,
+        ChatSubmit,
+        CommandResult,
+        Money,
+        PageReferences,
+        PageRequest,
+        PageSubmit,
+        PreflightRecord,
+    )
     from ics_persistence.events import Event
     from ics_gateway.app import create_app
     from ics_gateway.settings import Settings
@@ -24,6 +34,19 @@ def generated():
     schema["$schema"] = "https://json-schema.org/draft/2020-12/schema"
     schema["title"] = "Platform browser event v1 (SSE id is envelope cursor)"
     return {
+        **{
+            "packages/contracts/generated/" + name + "-v1.schema.json": model.model_json_schema()
+            for name, model in {
+                "application": Application,
+                "chat-submit": ChatSubmit,
+                "page-submit": PageSubmit,
+                "command-result": CommandResult,
+                "money": Money,
+                "page-request": PageRequest,
+                "page-references": PageReferences,
+                "preflight-record": PreflightRecord,
+            }.items()
+        },
         "packages/contracts/generated/browser-events-v1.schema.json": schema,
         "packages/contracts/generated/domain-envelope.schema.json": Event.model_json_schema(),
         "packages/contracts/generated/public-reply-v1.schema.json": PublicReply.model_json_schema(),
