@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 from datetime import UTC, datetime, timedelta
 import json
+import hashlib
 import os
 from pathlib import Path
 import secrets
@@ -22,13 +23,20 @@ LOCAL = ROOT / "_local_artifacts/environment"
 PROJECT = "ics-v1-tools"
 LOCK = CONFIG / "images.lock.json"
 TAGS = {
-    "nginx": "nginx:1.30.4-alpine",
-    "prometheus": "prom/prometheus:v3.14.0",
-    "grafana": "grafana/grafana:13.2.1",
-    "otel": "otel/opentelemetry-collector-contrib:0.160.0",
-    "tempo": "grafana/tempo:3.0.3",
-    "loki": "grafana/loki:3.7.7",
+    "nginx": "ics-nginx:1.30.4-env.1",
+    "prometheus": "ics-prometheus:3.13.3-env.1",
+    "grafana": "ics-grafana:12.4.10-env.1",
+    "otel": "ics-otelcol:0.160.0-env.1",
+    "tempo": "ics-tempo:3.0.3-env.1",
+    "loki": "ics-loki:3.7.7-env.1",
 }
+
+
+def recipe_digest(name):
+    filename = "collector" if name == "otel" else name
+    return hashlib.sha256(
+        (CONFIG / "security" / (filename + ".Dockerfile")).read_bytes()
+    ).hexdigest()
 
 
 def run(args, timeout=180):
@@ -62,27 +70,68 @@ def capture_images():
     records = {}
     for name, tag in TAGS.items():
         image = json.loads(run(docker() + ["image", "inspect", tag]))[0]
-        repository = tag.rsplit(":", 1)[0]
-        reference = next((r for r in image["RepoDigests"] if r.split("@")[0] == repository), None)
-        if reference is None:
-            raise ValueError("Official image digest missing")
-        records[name] = {"tag": tag, "reference": reference, "image_id": image["Id"]}
+        if image["Config"].get("Labels", {}).get("org.ics.purpose") != "environment-toolkit":
+            raise ValueError("Unreviewed derived image purpose")
+        # Locally built derivatives have no registry RepoDigest. Compose uses the
+        # exact content-addressed local ID, never a mutable tag or implicit pull.
+        records[name] = {
+            "tag": tag,
+            "reference": image["Id"],
+            "image_id": image["Id"],
+            "recipe_sha256": recipe_digest(name),
+        }
     LOCK.write_text(
-        json.dumps({"schema_version": 1, "images": records}, indent=2) + "\n", encoding="utf-8"
+        json.dumps({"schema_version": 2, "images": records}, indent=2) + "\n", encoding="utf-8"
     )
 
 
 def images():
     data = json.loads(LOCK.read_text(encoding="utf-8"))
-    if data["schema_version"] != 1 or set(data["images"]) != set(TAGS):
+    if data["schema_version"] != 2 or set(data["images"]) != set(TAGS):
         raise ValueError("Unexpected tooling image scope")
     for name, item in data["images"].items():
-        if item["tag"] != TAGS[name]:
+        if (
+            item["tag"] != TAGS[name]
+            or item["reference"] != item["image_id"]
+            or item["recipe_sha256"] != recipe_digest(name)
+        ):
             raise ValueError("Tooling tag not reviewed")
         actual = run(docker() + ["image", "inspect", item["reference"], "--format", "{{.Id}}"])
         if actual != item["image_id"]:
             raise ValueError("Tooling image identity mismatch")
     return data["images"]
+
+
+def validate_audit(locked, audit):
+    """Re-evaluate preserved raw reports and exact approved fixes at startup."""
+    from environment_image_review import findings_from_report, review_findings
+
+    age = datetime.now(UTC) - datetime.fromisoformat(audit["checked_at"])
+    if (
+        audit.get("status") not in {"PASS", "PASS_REVIEWED"}
+        or not timedelta(0) <= age <= timedelta(days=3)
+        or set(audit.get("images", {})) != set(locked)
+    ):
+        raise ValueError("Complete fresh image security audit required before startup")
+    for name, value in locked.items():
+        record = audit["images"][name]
+        raw = owned_path(LOCAL / "image-audit" / (name + ".json")).read_bytes()
+        if (
+            record["image_id"] != value["image_id"]
+            or hashlib.sha256(raw).hexdigest() != record["report_sha256"]
+        ):
+            raise ValueError("Security report/image identity mismatch")
+        report = json.loads(raw)
+        if report["Metadata"]["ImageID"] != record["config_id"]:
+            raise ValueError("Security report config identity mismatch")
+        findings = findings_from_report(report)
+        review = review_findings(record, findings)
+        if (
+            review["unresolved_high_critical"]
+            or len(findings) != record["high_critical"]
+            or any(record.get(key) != expected for key, expected in review.items())
+        ):
+            raise ValueError("Unresolved findings or changed reviewed-fix evidence")
 
 
 def credentials():
@@ -209,7 +258,7 @@ def compose_config(locked):
             "user": "101:101",
             "entrypoint": ["nginx", "-g", "daemon off;"],
             "ports": ["127.0.0.1:28443:8443"],
-            "networks": ["edge"],
+            "networks": ["edge", "telemetry"],
             "volumes": [
                 mount(CONFIG / "nginx.conf", "/etc/nginx/nginx.conf"),
                 mount(LOCAL / "secrets/server.key", "/run/tls/server.key"),
@@ -217,6 +266,10 @@ def compose_config(locked):
             ],
         }
     )
+    # Docker Desktop does not publish host bindings on an internal-only network.
+    # Keep stores/Collector isolated; the existing Nginx edge owns loopback ingress.
+    for name in ("grafana", "prometheus", "otel", "tempo", "loki"):
+        services["nginx"]["ports"].extend(services[name].pop("ports"))
     return {
         "name": PROJECT,
         "services": services,
@@ -296,18 +349,7 @@ def main():
     elif args.action == "up":
         locked = images()
         audit = json.loads((LOCAL / "image-audit/summary.json").read_text(encoding="utf-8"))
-        age = datetime.now(UTC) - datetime.fromisoformat(audit["checked_at"])
-        if (
-            audit.get("status") != "PASS"
-            or not timedelta(0) <= age <= timedelta(days=3)
-            or set(audit.get("images", {})) != set(locked)
-            or any(
-                audit["images"][name]["image_id"] != value["image_id"]
-                or audit["images"][name]["high_critical"] != 0
-                for name, value in locked.items()
-            )
-        ):
-            raise ValueError("Complete fresh image security audit required before startup")
+        validate_audit(locked, audit)
         config = yaml.safe_load((LOCAL / "services.compose.yaml").read_text(encoding="utf-8"))
         if config != compose_config(images()):
             raise ValueError("Local tooling configuration differs from reviewed generator")

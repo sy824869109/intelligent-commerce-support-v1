@@ -177,7 +177,13 @@ def request(url, payload=None):
         raise ValueError("Probe requests are limited to reviewed loopback telemetry ports")
     data = json.dumps(payload).encode() if payload is not None else None
     req = urllib.request.Request(url, data=data, headers={"Content-Type": "application/json"})
-    with urllib.request.urlopen(req, timeout=10) as response:  # nosec B310
+
+    class NoRedirect(urllib.request.HTTPRedirectHandler):
+        def redirect_request(self, req, fp, code, msg, headers, newurl):
+            return None
+
+    opener = urllib.request.build_opener(urllib.request.ProxyHandler({}), NoRedirect())
+    with opener.open(req, timeout=10) as response:  # nosec B310
         return json.load(response)
 
 

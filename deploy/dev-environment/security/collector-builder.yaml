@@ -1,0 +1,22 @@
+# V1 requires only OTLP ingestion, batching/memory limits and three telemetry outputs.
+# Upstream OCB creates a distribution; this is not a patched or renamed contrib binary.
+dist:
+  module: github.com/sy824869109/intelligent-commerce-support-v1/otelcol
+  name: ics-otelcol
+  description: V1 local metrics, logs and traces Collector
+  version: 0.160.0-ics.1
+receivers:
+  - gomod: go.opentelemetry.io/collector/receiver/otlpreceiver v0.160.0
+processors:
+  - gomod: go.opentelemetry.io/collector/processor/memorylimiterprocessor v0.160.0
+  - gomod: go.opentelemetry.io/collector/processor/batchprocessor v0.160.0
+exporters:
+  - gomod: go.opentelemetry.io/collector/exporter/otlpexporter v0.160.0
+  - gomod: go.opentelemetry.io/collector/exporter/otlphttpexporter v0.160.0
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusexporter v0.160.0
+extensions:
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/extension/healthcheckextension v0.160.0
+providers:
+  - gomod: go.opentelemetry.io/collector/confmap/provider/fileprovider v1.66.0
+  - gomod: go.opentelemetry.io/collector/confmap/provider/envprovider v1.66.0
+  - gomod: go.opentelemetry.io/collector/confmap/provider/yamlprovider v1.66.0

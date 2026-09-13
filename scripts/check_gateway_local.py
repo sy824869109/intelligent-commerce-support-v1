@@ -1,9 +1,12 @@
 """Exercise a temporary loopback gateway with the ownership-checked platform database."""
 
 import json
+import argparse
+from datetime import UTC, datetime
 import os
 from pathlib import Path
 import socket
+import ssl
 
 # Fixed local test child, no shell or caller command input.
 import subprocess  # nosec B404
@@ -16,10 +19,21 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--tls-entry", action="store_true", help="Check the owned Nginx TLS entry")
+    args = parser.parse_args()
     # A test-only ephemeral port; do not stop or replace any existing listener.
     with socket.socket() as reservation:
-        reservation.bind(("127.0.0.1", 0))
+        reservation.bind(("127.0.0.1", 28000 if args.tls_entry else 0))
         port = reservation.getsockname()[1]
+    base = "https://localhost:28443" if args.tls_entry else f"http://127.0.0.1:{port}"
+    handlers = [urllib.request.ProxyHandler({})]
+    if args.tls_entry:
+        context = ssl.create_default_context(
+            cafile=str(ROOT / "_local_artifacts/environment/secrets/server.pem")
+        )
+        handlers.append(urllib.request.HTTPSHandler(context=context))
+    opener = urllib.request.build_opener(*handlers)
     environment = os.environ.copy()
     environment.update(
         ICS_GATEWAY_HOST="127.0.0.1", ICS_GATEWAY_PORT=str(port), PYTHONDONTWRITEBYTECODE="1"
@@ -41,11 +55,10 @@ def main():
                 raise RuntimeError("Owned gateway exited before readiness")
             try:
                 request = urllib.request.Request(
-                    f"http://127.0.0.1:{port}/health/ready",
+                    base + "/health/ready",
                     headers={"X-Request-ID": "M02-local-probe"},
                 )
                 # Literal loopback origin only; bypass inherited proxy settings.
-                opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
                 with opener.open(request, timeout=2) as response:
                     body = json.loads(response.read(8192))
                     if (
@@ -62,7 +75,7 @@ def main():
         # M03 is enabled by --with-database; no seeded identity is needed for denial testing.
         denied = False
         try:
-            with opener.open(f"http://127.0.0.1:{port}/api/v1/auth/me", timeout=2):
+            with opener.open(base + "/api/v1/auth/me", timeout=2):
                 raise RuntimeError("Anonymous identity request unexpectedly succeeded")
         except urllib.error.HTTPError as exc:
             with exc:
@@ -96,6 +109,25 @@ def main():
     print(
         "M02/M03 local HTTP + MySQL + trace + log + anonymous identity denial PASS; owned gateway stopped."
     )
+    if args.tls_entry:
+        destination = ROOT / "_local_artifacts/environment/check-gateway-tls.json"
+        destination.write_text(
+            json.dumps(
+                {
+                    "checked_at": datetime.now(UTC).isoformat(),
+                    "status": "PASS",
+                    "tls_certificate": "VERIFIED",
+                    "proxy_to_gateway": "PASS",
+                    "mysql": "PASS",
+                    "anonymous_identity": "401 AUTH_REQUIRED",
+                    "correlated_log": "PASS",
+                    "owned_gateway_stopped": True,
+                },
+                indent=2,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
     return 0
 
 

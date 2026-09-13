@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "approval": "User explicitly approved these two verified fixes on 2026-09-13",
+  "image_id": "sha256:9785371bd68b5dfdcb56fd4bb30599fe662715ad67ce41193936934621bda6ab",
+  "config_id": "sha256:9b94ef83723ad96e9dfe3983690d84e0756574a913be511095ec6f13079c1b89",
+  "binary_path": "usr/share/grafana/bin/grafana",
+  "binary_sha256": "b2eaef814e00acef21661ad034f2f8dfde02345e6c5f8ac5db1ebb6a80d3bc0a",
+  "package": "github.com/grafana/tempo",
+  "version": "v1.5.1-0.20260427112133-525d1bab07e0",
+  "go_module_sum": "h1:kE5kdMnyPJmlNUdWhahfzqPYB3vM8DtAxgWymbB8nOA=",
+  "source_commit": "525d1bab07e0257b7b9dc73189eaa6b9d32059e8",
+  "fixes": {
+    "CVE-2026-21728": {
+      "fix_commit": "650eb1985a0776789c8564122990f588a742356f",
+      "upstream_pr": "https://github.com/grafana/tempo/pull/6525",
+      "advisory": "https://grafana.com/security/security-advisories/cve-2026-21728/",
+      "comparison_status": "ahead",
+      "behind_by": 0
+    },
+    "CVE-2026-28377": {
+      "fix_commit": "bb8ca663db34a0980c9758b40d918fda3b4dbec3",
+      "upstream_pr": "https://github.com/grafana/tempo/pull/6711",
+      "advisory": "https://grafana.com/security/security-advisories/cve-2026-28377/",
+      "comparison_status": "ahead",
+      "behind_by": 0
+    }
+  }
+}

@@ -9,7 +9,7 @@
 
 ## 当前任务
 
-**ENV-V1 集中环境准备 IN_PROGRESS（2026-09-13）**：根据用户新要求，环境集中搭建、业务逐步教学；统一已有 `intelligent-commerce-support-v1` Conda，Vue 3，本地向量/重排 + 百炼云端 LLM。已通过 90 项后端、169 项契约、12 项 MySQL 回归与前端工具链测试；本地模型真实混合检索、离线 PDF/表格/中文 OCR、百炼合成请求已通过。选型以较新且受维护的稳定/LTS 分支为先，不追最新版。Nginx 修补候选扫描通过，Prometheus LTS/Grafana 维护分支候选仍有 HIGH/CRITICAL；完整监控组安全及跨服务验收尚未通过，不标为整体完成、不进入 M04。见 [环境说明](../operations/v1-environment-guide.md)。
+**ENV-V1 本机验收已通过，IN_PROGRESS 待提交和远端 CI 签收（2026-09-13）**：统一已有 V1 Conda、Vue 3、本地 BGE 与百炼。90 项后端、169 项契约、12 项 MySQL、244 项基础测试运行通过（Windows 跳过 5 项）。本地混合检索、离线 PDF/表格/中文 OCR、真实云端调用、HTTP 指标/日志/追踪回读、HTTPS 网关到 MySQL、匿名 401、Grafana 三数据源和 gRPC 空 Export 均通过。六镜像 PASS_REVIEWED：原始 2 项，用户同意按确切制品核实两项官方修复，未解决 0；原报告保留。M04 尚未开始，业务埋点、Golden Set 和局域网发布未验收。见 [完整行为说明](../operations/v1-environment-acceptance-20260913.md)。此前候选失败记录属于历史。
 
 **M03.1–M03.4 全部 DONE（2026-09-10）。** 最终实现 `3c8512d`，CI `34459754847` SUCCESS；90 项后端、169 项契约、12 项真实 MySQL 与基础检查通过。开发库已迁移到 m03_0003，真实启动及匿名 401 验证通过，临时进程已停止。无默认管理员或演示账号，首次使用需本机交互初始化密码。见 [M03 完整行为与验收](../operations/m03-identity-acceptance.md)。下一阶段 M04 尚未开始；以下为历史过程状态。
 

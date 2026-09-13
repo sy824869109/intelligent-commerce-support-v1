@@ -11,6 +11,7 @@ import tarfile
 import subprocess  # nosec B404
 
 import environment_services as env
+from environment_image_review import review_findings, findings_from_report
 from storage_image import SCANNER
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -18,6 +19,11 @@ CANDIDATES = {
     "prometheus-lts": "prom/prometheus:v3.13.3",
     "grafana-maintained": "grafana/grafana:12.4.10",
     "nginx-patched": "ics-nginx:1.30.4-env.1",
+    "prometheus-patched": "ics-prometheus:3.13.3-env.1",
+    "otel-minimal": "ics-otelcol:0.160.0-env.1",
+    "tempo-patched": "ics-tempo:3.0.3-env.1",
+    "loki-patched": "ics-loki:3.7.7-env.1",
+    "grafana-patched": "ics-grafana:12.4.10-env.1",
 }
 
 
@@ -78,6 +84,7 @@ def inspect_archive(path, image_id):
             if (config.get("os"), config.get("architecture")) != ("linux", "amd64"):
                 raise ValueError("Unexpected scan platform")
             java_count = 0
+            binaries = {}
             for layer in manifest["layers"]:
                 member = blob(layer["digest"])
                 if member.size != layer["size"]:
@@ -92,7 +99,25 @@ def inspect_archive(path, image_id):
                         # Matches Trivy v0.74.0 jar analyzer Required(), including links.
                         if Path(entry.name).suffix.lower() in {".jar", ".war", ".ear", ".par"}:
                             java_count += 1
-    return {"archive_sha256": total_hash, "config_id": config_id, "java_candidates": java_count}
+                        entry_name = entry.name.removeprefix("./")
+                        tracked_binary = "usr/share/grafana/bin/grafana"
+                        if "/.wh." in entry_name:
+                            # Conservative: whiteouts invalidate a prior binary observation.
+                            binaries.clear()
+                        if entry_name == tracked_binary:
+                            if not entry.isfile():
+                                binaries.pop(tracked_binary, None)
+                            else:
+                                with filesystem.extractfile(entry) as binary:
+                                    binaries[tracked_binary] = hashlib.file_digest(
+                                        binary, "sha256"
+                                    ).hexdigest()
+    return {
+        "archive_sha256": total_hash,
+        "config_id": config_id,
+        "java_candidates": java_count,
+        "binary_sha256": binaries,
+    }
 
 
 def main():
@@ -175,12 +200,8 @@ def main():
             section.get("Packages") for section in data.get("Results", [])
         ):
             raise ValueError("Scanner identity or package inventory missing")
-        findings = [
-            v
-            for section in data.get("Results", [])
-            for v in section.get("Vulnerabilities", [])
-            if v["Severity"] in {"HIGH", "CRITICAL"}
-        ]
+        findings = findings_from_report(data)
+        review = review_findings({"image_id": item["image_id"], **identity}, findings)
         records[name] = {
             "reference": item["reference"],
             "image_id": item["image_id"],
@@ -190,25 +211,34 @@ def main():
             else "ENABLED",
             "database_updated_at": metadata["UpdatedAt"],
             "high_critical": len(findings),
+            "report_sha256": hashlib.sha256(report.read_bytes()).hexdigest(),
+            **review,
         }
         # Precisely delete only this newly generated archive; reports and source image remain.
         if archive.resolve().parent != folder.resolve() or archive.is_symlink():
             raise ValueError("Archive cleanup target changed")
         if newly_exported:
             archive.unlink()
-        if findings:
+        if review["unresolved_high_critical"]:
             print(f"Image security gate FAILED: {name}, findings={len(findings)}", flush=True)
         else:
-            print(f"Image security gate PASS: {name}", flush=True)
+            print(
+                f"Image security gate PASS: {name}; raw={len(findings)}, reviewed={review['reviewed_count']}",
+                flush=True,
+            )
     result = {
         "checked_at": datetime.now(UTC).isoformat(),
         "images": records,
-        "status": "PASS" if all(r["high_critical"] == 0 for r in records.values()) else "FAILED",
+        "status": "FAILED"
+        if any(r["unresolved_high_critical"] for r in records.values())
+        else "PASS_REVIEWED"
+        if any(r["reviewed_count"] for r in records.values())
+        else "PASS",
     }
     # Candidate evidence must never replace the complete deployment acceptance report.
     summary = f"candidate-{args.candidate}.json" if args.candidate else "summary.json"
     (folder / summary).write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
-    return 0 if result["status"] == "PASS" else 1
+    return 0 if result["status"] in {"PASS", "PASS_REVIEWED"} else 1
 
 
 if __name__ == "__main__":

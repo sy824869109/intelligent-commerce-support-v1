@@ -14,6 +14,9 @@ storage:
     wal: {path: /data/wal}
 # Tempo 3 monolithic mode: no Kafka and no legacy compactor component.
 live_store:
+  wal:
+    path: /data/live-store/traces
+  shutdown_marker_dir: /data/live-store/shutdown-marker
   max_trace_idle: 10s
   max_block_duration: 1m
   max_block_bytes: 1000000

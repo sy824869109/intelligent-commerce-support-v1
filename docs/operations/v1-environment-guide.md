@@ -1,6 +1,6 @@
 # V1 环境搭建说明与操作入口
 
-> 当前为集中准备阶段，最终状态以验收记录为准。环境能运行不等于业务已实现；M04 及后续业务仍按教学节奏推进。
+> 本机开发环境运行验收已通过，代码与文档进入提交收口。环境能运行不等于业务已实现；M04 及后续业务仍按教学节奏推进。完整证据与行为记录见 [环境验收说明](v1-environment-acceptance-20260913.md)。
 
 ## 版本选型原则与当前验收状态（2026-09-13）
 
@@ -11,14 +11,14 @@
 | 本地 BGE 向量、重排及 LangChain/Milvus 混合检索 | `check-models.json`：PASS，1024 维，合成集合已清理 | 不等于知识库 Golden Set 效果验收 |
 | Docling 文本 PDF、表格及中文扫描件 OCR | `check-documents.json`：PASS，离线推理 | 仅合成文档，不代表所有真实文档均可解析 |
 | 百炼云端 LLM | `check-cloud.json`：真实合成请求 HTTP 200，PASS | 不回显密钥；调用探针识别配置中误带的界面标签，后续业务配置读取仍需统一 |
-| Nginx 安全修补候选 | `candidate-nginx-patched.json`：HIGH/CRITICAL 为 0 | 尚未完成整组准入和 HTTPS 跨服务联测 |
-| Prometheus 3.13.3 LTS 候选 | `candidate-prometheus-lts.json`：4 项 HIGH/CRITICAL 记录 | 需要修补 gRPC 并复验；不是 4 个不同漏洞 |
-| Grafana 12.4.10 维护分支候选 | `candidate-grafana-maintained.json`：7 项 HIGH/CRITICAL 记录 | 仍未通过，不能直接启动 |
-| 完整监控与入口组 | `image-audit/summary.json`：FAILED | 仍待安全修补、完整扫描、启动及指标/日志/追踪/TLS 联测 |
+| 六个修补后入口与监控镜像 | `image-audit/summary.json`：PASS_REVIEWED；原始 2 项，未解决 0 项 | Grafana 的两项只对确切制品复核；不是通用漏洞豁免 |
+| 指标 日志 追踪 | `check-all.json`：HTTP OTLP 写入和查询 PASS | 合成探针，不等于全部业务已埋点 |
+| HTTPS 到网关与 MySQL | `check-gateway-tls.json`：PASS；匿名认证请求 401 | 精确 CA 校验，测试网关已停止 |
+| gRPC 与 Grafana 数据源 | `check-telemetry-access.json`：PASS | gRPC 是空 Export 协议测试；真实信号持久化由 HTTP 探针验证 |
 
 报告位于项目 `_local_artifacts/environment/`；候选报告位于其 `image-audit/` 子目录。扫描依据当时漏洞库，不能解释为不存在未知漏洞；本次扫描还报告了 Alpine 生命周期资料和一条漏洞详情不完整的警告，保留原始报告，不据此承诺绝对安全。候选扫描不会覆盖完整准入报告。
 
-**集中环境准备仍为 IN_PROGRESS，M04 尚未开始。** 基础代码 CI、模型探针和镜像扫描是不同门禁，任何一项通过均不代表全部环境完成。
+**本机运行环境已通过集中验收，M04 尚未开始；提交与远端 CI 状态见任务台账。** 基础代码 CI、模型探针和镜像扫描是不同门禁。局域网发布、业务 RAG 接口、Golden Set 和 93 条业务用例仍未验收。
 
 ## 1. 你真正需要理解的四层
 
@@ -28,7 +28,7 @@ PyCharm：写代码、调试
   ├─ 项目 Node.js → pnpm → Vue 3 / Vite / TypeScript / 浏览器测试
   └─ Docker Desktop
        ├─ ics-v1-dev：MySQL、Redis、etcd、SeaweedFS、Milvus
-       └─ ics-v1-tools：TLS 入口、指标、追踪、日志与可视化（准备中）
+       └─ ics-v1-tools：TLS 入口、指标、追踪、日志与可视化（已启动验收）
 ```
 
 Conda 不是数据库，也不是服务器。它提供隔离的 Python 解释器和包；Docker 运行需要长期驻留的基础服务。PyCharm 是操作这些工具的开发界面。
@@ -109,12 +109,14 @@ python scripts/local_infra.py health
 python scripts/database_local.py status
 python scripts/check_environment.py runtime
 python scripts/check_environment.py models
+python scripts/environment_services.py up
 python scripts/environment_services.py health
 python scripts/check_environment.py telemetry
+python scripts/check_telemetry_access.py
 python scripts/run_gateway.py --with-database
 ```
 
-最后一个命令在当前终端运行后端；关闭前按 Ctrl+C 正常退出。M01 工具的 `up` 会检查归属和密钥，不会启动 KF。监控组首次准备流程和镜像审查需通过后才可启动，不能把配置文件存在当作服务已验收。
+最后一个命令在当前终端运行后端；关闭前按 Ctrl+C 正常退出。M01 工具的 `up` 会检查归属和密钥，不会启动 KF。监控组启动会校验六镜像身份、配方和完整扫描报告；报告超过 3 天时须重新执行 `python scripts/scan_environment_images.py`，不能跳过门禁。新机器的安全构建与准备步骤见验收说明。
 
 ## 7. 端口与访问边界
 
@@ -123,12 +125,14 @@ python scripts/run_gateway.py --with-database
 | MySQL / Redis | 23306 / 26379 | 已有开发底座 |
 | S3 / Milvus | 28333 / 29530 | 已有开发底座 |
 | 后端网关 | 28000 | 启动后提供已实现的健康和鉴权接口 |
-| HTTPS 入口 | 28443 | 准备中；项目本地证书，不自动加入系统信任 |
-| Grafana / Prometheus | 23000 / 29090 | 准备中；Grafana 不允许匿名访问 |
-| OTLP gRPC / HTTP | 24317 / 24318 | 准备中；只接收本机诊断数据 |
-| Tempo / Loki / Collector 健康 | 23200 / 23100 / 23333 | 准备中；诊断端口 |
+| HTTPS 入口 | 28443 | 已验收；项目本地证书，不自动加入系统信任 |
+| Grafana / Prometheus | 23000 / 29090 | 已验收；Grafana 不允许匿名访问 |
+| OTLP gRPC / HTTP | 24317 / 24318 | 已验收协议入口；只接收本机诊断数据 |
+| Tempo / Loki / Collector 健康 | 23200 / 23100 / 23333 | 已验收；诊断端口 |
 
 端口默认仅 `127.0.0.1`。此阶段不修改防火墙、不公开管理面。局域网业务发布还需实际页面、访问域名或 IP、可信证书、授权和发布验收；这不是“已具备完整电商平台”。
+
+五个监控后端只连接内部网络。Docker Desktop 在仅内部网络上未实际发布端口，因此本机诊断端口统一绑定 Nginx，由它转发到内部服务；没有通过把监控后端接入外网来处理问题。
 
 ## 8. 云端模型配置
 
