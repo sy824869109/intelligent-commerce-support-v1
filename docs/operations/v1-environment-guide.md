@@ -2,6 +2,24 @@
 
 > 当前为集中准备阶段，最终状态以验收记录为准。环境能运行不等于业务已实现；M04 及后续业务仍按教学节奏推进。
 
+## 版本选型原则与当前验收状态（2026-09-13）
+
+按用户最新要求：**较新、稳定、仍受维护，不强求最新版**。优先使用 LTS 或稳定分支的安全补丁版本；避免预览版与开发快照。完整依赖组合要通过安全和兼容验证后才锁定；不能为追新反复更换已通过的 Python、Vue 与 RAG 组合。具体依据见 [ADR-0010](../decisions/ADR-0010-unified-v1-development-environment.md)。
+
+| 验证对象 | 当前证据 | 边界 |
+|---|---|---|
+| 本地 BGE 向量、重排及 LangChain/Milvus 混合检索 | `check-models.json`：PASS，1024 维，合成集合已清理 | 不等于知识库 Golden Set 效果验收 |
+| Docling 文本 PDF、表格及中文扫描件 OCR | `check-documents.json`：PASS，离线推理 | 仅合成文档，不代表所有真实文档均可解析 |
+| 百炼云端 LLM | `check-cloud.json`：真实合成请求 HTTP 200，PASS | 不回显密钥；调用探针识别配置中误带的界面标签，后续业务配置读取仍需统一 |
+| Nginx 安全修补候选 | `candidate-nginx-patched.json`：HIGH/CRITICAL 为 0 | 尚未完成整组准入和 HTTPS 跨服务联测 |
+| Prometheus 3.13.3 LTS 候选 | `candidate-prometheus-lts.json`：4 项 HIGH/CRITICAL 记录 | 需要修补 gRPC 并复验；不是 4 个不同漏洞 |
+| Grafana 12.4.10 维护分支候选 | `candidate-grafana-maintained.json`：7 项 HIGH/CRITICAL 记录 | 仍未通过，不能直接启动 |
+| 完整监控与入口组 | `image-audit/summary.json`：FAILED | 仍待安全修补、完整扫描、启动及指标/日志/追踪/TLS 联测 |
+
+报告位于项目 `_local_artifacts/environment/`；候选报告位于其 `image-audit/` 子目录。扫描依据当时漏洞库，不能解释为不存在未知漏洞；本次扫描还报告了 Alpine 生命周期资料和一条漏洞详情不完整的警告，保留原始报告，不据此承诺绝对安全。候选扫描不会覆盖完整准入报告。
+
+**集中环境准备仍为 IN_PROGRESS，M04 尚未开始。** 基础代码 CI、模型探针和镜像扫描是不同门禁，任何一项通过均不代表全部环境完成。
+
 ## 1. 你真正需要理解的四层
 
 ```text

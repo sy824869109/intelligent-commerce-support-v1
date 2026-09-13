@@ -10,7 +10,9 @@ import json
 import logging
 import os
 from pathlib import Path
-import subprocess  # nosec B404 - fixed current-interpreter pip check; no shell or user command.
+
+# Fixed current-interpreter pip check; no shell or user command.
+import subprocess  # nosec B404
 import sys
 import time
 import urllib.parse
@@ -127,13 +129,14 @@ def models():
 
     connection = {
         "uri": f"http://127.0.0.1:{config['MILVUS_PORT']}",
-        "token": credentials.milvus_token,
+        "token": credentials["milvus_token"],
     }
     client = MilvusClient(**connection)
     created = False
     try:
         if client.has_collection(collection):
             raise ValueError("Unexpected probe name collision")
+        created = True  # Own this unique name even if SDK construction fails midway.
         store = Milvus(
             embedding_function=SyntheticEmbeddings(),
             connection_args=connection,
@@ -143,7 +146,6 @@ def models():
             consistency_level="Strong",
             auto_id=True,
         )
-        created = True
         store.add_texts(documents)
         hits = store.similarity_search(
             query, k=2, ranker_type="weighted", ranker_params={"weights": [0.55, 0.45]}
@@ -175,7 +177,7 @@ def request(url, payload=None):
         raise ValueError("Probe requests are limited to reviewed loopback telemetry ports")
     data = json.dumps(payload).encode() if payload is not None else None
     req = urllib.request.Request(url, data=data, headers={"Content-Type": "application/json"})
-    with urllib.request.urlopen(req, timeout=10) as response:  # nosec B310 - validated local HTTP above.
+    with urllib.request.urlopen(req, timeout=10) as response:  # nosec B310
         return json.load(response)
 
 
@@ -273,7 +275,7 @@ def telemetry():
             time.sleep(2)
 
 
-def cloud_config():
+def cloud_config(live=False):
     from dotenv import dotenv_values
 
     path = LOCAL / "model.env"
@@ -285,6 +287,11 @@ def cloud_config():
     required = [config.get(name) for name in ("LLM_BASE_URL", "LLM_API_KEY", "LLM_MODEL")]
     if not all(required):
         return {"status": "NEEDS_PRIVATE_CONFIGURATION", "live_call": "NOT_RUN"}
+    # A pasted UI label is not part of Bailian's documented sk-ws credential.
+    # Preserve the user's local file; normalize only this exact label in memory.
+    normalized_label = required[1].startswith("apiKey-sk-ws-")
+    if normalized_label:
+        required[1] = required[1].removeprefix("apiKey-")
     url = urllib.parse.urlsplit(required[0])
     if (
         url.scheme != "https"
@@ -295,12 +302,60 @@ def cloud_config():
         or url.fragment
     ):
         raise ValueError("Cloud endpoint must be credential-free HTTPS")
-    return {"status": "CONFIGURED_NOT_CALLED", "live_call": "NOT_RUN"}
+    if not live:
+        return {"status": "CONFIGURED_NOT_CALLED", "live_call": "NOT_RUN"}
+    # Only the user-selected Bailian service may receive this private credential.
+    allowed = {"dashscope.aliyuncs.com", "dashscope-intl.aliyuncs.com", "dashscope-us.aliyuncs.com"}
+    workspace = url.hostname.endswith(".cn-beijing.maas.aliyuncs.com")
+    if (
+        (url.hostname not in allowed and not workspace)
+        or url.path.rstrip("/") != "/compatible-mode/v1"
+        or url.port not in (None, 443)
+    ):
+        raise ValueError("Live probe requires a reviewed Bailian endpoint")
+    import httpx
+
+    # No SDK retries, redirects, external tracing, proxy environment or raw error bodies.
+    with httpx.Client(timeout=30, follow_redirects=False, trust_env=False) as client:
+        response = client.post(
+            required[0].rstrip("/") + "/chat/completions",
+            headers={"Authorization": "Bearer " + required[1]},
+            json={
+                "model": required[2],
+                "messages": [{"role": "user", "content": "Reply with OK only."}],
+                "max_tokens": 8,
+                "stream": False,
+            },
+        )
+    if response.status_code != 200:
+        raise ValueError("Bailian HTTP " + str(response.status_code))
+    data = response.json()
+    if not data.get("choices", [{}])[0].get("message", {}).get("content"):
+        raise ValueError("Bailian returned no text")
+    return {
+        "status": "LIVE_VERIFIED",
+        "live_call": "PASS",
+        "http_status": 200,
+        "synthetic_only": True,
+        "ui_label_removed": normalized_label,
+    }
+
+
+def documents():
+    from check_document_environment import verify
+
+    os.environ["DOCLING_CACHE_DIR"] = str(ROOT / "_local_artifacts/caches/docling")
+    return verify()
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("section", choices=["runtime", "models", "telemetry", "cloud", "all"])
+    parser.add_argument(
+        "section", choices=["runtime", "models", "documents", "telemetry", "cloud", "all"]
+    )
+    parser.add_argument(
+        "--live-cloud", action="store_true", help="Make one bounded billable synthetic request"
+    )
     args = parser.parse_args()
     LOCAL.mkdir(parents=True, exist_ok=True)
     os.environ["HF_HUB_OFFLINE"] = "1"
@@ -308,7 +363,13 @@ def main():
     os.environ["LANGSMITH_TRACING"] = "false"
     # Avoid SDK exception logging printing authentication material on failed probes.
     logging.disable(logging.CRITICAL)
-    checks = {"runtime": runtime, "models": models, "telemetry": telemetry, "cloud": cloud_config}
+    checks = {
+        "runtime": runtime,
+        "models": models,
+        "documents": documents,
+        "telemetry": telemetry,
+        "cloud": lambda: cloud_config(args.live_cloud),
+    }
     result = {"checked_at": datetime.now(UTC).isoformat(), "checks": {}}
     failed = False
     pending = False
@@ -331,6 +392,8 @@ def main():
         except Exception as exc:
             failed = True
             result["checks"][name] = {"status": "FAILED", "error_type": type(exc).__name__}
+            if name == "cloud" and str(exc).startswith("Bailian HTTP ") and str(exc)[13:].isdigit():
+                result["checks"][name]["http_status"] = int(str(exc)[13:])
             print(f"{name}: FAILED ({type(exc).__name__}; SDK details withheld)", flush=True)
     (LOCAL / f"check-{args.section}.json").write_text(
         json.dumps(result, indent=2) + "\n", encoding="utf-8"

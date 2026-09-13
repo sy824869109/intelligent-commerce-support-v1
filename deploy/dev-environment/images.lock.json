@@ -2,9 +2,9 @@
   "schema_version": 1,
   "images": {
     "nginx": {
-      "tag": "nginx:1.30.0",
-      "reference": "nginx@sha256:55d1fb0944aafb8534b253e486c6cf57d3e0c785c4f6a7b3e9f02c5a080fb2ce",
-      "image_id": "sha256:55d1fb0944aafb8534b253e486c6cf57d3e0c785c4f6a7b3e9f02c5a080fb2ce"
+      "tag": "nginx:1.30.4-alpine",
+      "reference": "nginx@sha256:dc5069ad14f19660b141b21236140b91656bf89bbc3e2417c70ae650cd66104c",
+      "image_id": "sha256:dc5069ad14f19660b141b21236140b91656bf89bbc3e2417c70ae650cd66104c"
     },
     "prometheus": {
       "tag": "prom/prometheus:v3.14.0",

@@ -22,7 +22,7 @@ LOCAL = ROOT / "_local_artifacts/environment"
 PROJECT = "ics-v1-tools"
 LOCK = CONFIG / "images.lock.json"
 TAGS = {
-    "nginx": "nginx:1.30.0",
+    "nginx": "nginx:1.30.4-alpine",
     "prometheus": "prom/prometheus:v3.14.0",
     "grafana": "grafana/grafana:13.2.1",
     "otel": "otel/opentelemetry-collector-contrib:0.160.0",

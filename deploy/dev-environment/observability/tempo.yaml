@@ -12,8 +12,15 @@ storage:
     backend: local
     local: {path: /data/blocks}
     wal: {path: /data/wal}
-compactor:
-  compaction:
-    block_retention: 24h
+# Tempo 3 monolithic mode: no Kafka and no legacy compactor component.
+live_store:
+  max_trace_idle: 10s
+  max_block_duration: 1m
+  max_block_bytes: 1000000
+backend_scheduler:
+  provider:
+    compaction:
+      compaction:
+        block_retention: 24h
 usage_report:
   reporting_enabled: false

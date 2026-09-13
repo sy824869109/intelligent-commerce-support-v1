@@ -1,0 +1,127 @@
+{
+  "schema_version": 1,
+  "models": {
+    "bge-m3": {
+      "repo": "BAAI/bge-m3",
+      "revision": "5617a9f61b028005a4858fdac845db406aefb181",
+      "license": "mit",
+      "files": [
+        {
+          "path": "README.md",
+          "size": 15822,
+          "git_blob": "e5a320176edd6ee1cfb256e68ee5ac0004de9447",
+          "sha256": "0b81ccf9134e5874d620a86e6905062ea999e779c34eb1a7e65eaeb7fe00e450"
+        },
+        {
+          "path": "config.json",
+          "size": 687,
+          "git_blob": "e6eda1c72da8f9dc30fdd9b69c73d35af3b7a7ad",
+          "sha256": "26159e7ad065073448460117eb24b7a4572f6f4e78eadff65dc0a11c052449fa"
+        },
+        {
+          "path": "config_sentence_transformers.json",
+          "size": 123,
+          "git_blob": "1fba91c78a6c8e17227058ab6d4d3acb5d8630a9",
+          "sha256": "1eef72430e7194a1e59680e635aed81ffa083f05668dbc5bb1c56c04c0999c38"
+        },
+        {
+          "path": "modules.json",
+          "size": 349,
+          "git_blob": "952a9b81c0bfd99800fabf352f69c7ccd46c5e43",
+          "sha256": "84e40c8e006c9b1d6c122e02cba9b02458120b5fb0c87b746c41e0207cf642cf"
+        },
+        {
+          "path": "sentence_bert_config.json",
+          "size": 54,
+          "git_blob": "0140ba1eac83a3c9b857d64baba91969d988624b",
+          "sha256": "eb9b44b13c0f52a3b3685c3b1cbdea1ba8b04bea123b98f61610048940776eb1"
+        },
+        {
+          "path": "1_Pooling/config.json",
+          "size": 191,
+          "git_blob": "9bd85925f325e25246d94c4918dc02ab98f2a1b7",
+          "sha256": "e54c164a07274f2eb45bb724f54a79d1efcc90c41573887cd9a29aeee0597352"
+        },
+        {
+          "path": "pytorch_model.bin",
+          "size": 2271145830,
+          "git_blob": "88e71f33b1af45aa960f3fbf6883edc6f014452a",
+          "sha256": "b5e0ce3470abf5ef3831aa1bd5553b486803e83251590ab7ff35a117cf6aad38"
+        },
+        {
+          "path": "sentencepiece.bpe.model",
+          "size": 5069051,
+          "git_blob": "7a3f40a75f870bc1f21700cd414dc2acc431583c",
+          "sha256": "cfc8146abe2a0488e9e2a0c56de7952f7c11ab059eca145a0a727afce0db2865"
+        },
+        {
+          "path": "special_tokens_map.json",
+          "size": 964,
+          "git_blob": "b1879d702821e753ffe4245048eee415d54a9385",
+          "sha256": "8c785abebea9ae3257b61681b4e6fd8365ceafde980c21970d001e834cf10835"
+        },
+        {
+          "path": "tokenizer.json",
+          "size": 17098108,
+          "git_blob": "c8fd8778874b9aa8bdafaa3bbd760f236d237dd6",
+          "sha256": "21106b6d7dab2952c1d496fb21d5dc9db75c28ed361a05f5020bbba27810dd08"
+        },
+        {
+          "path": "tokenizer_config.json",
+          "size": 444,
+          "git_blob": "dc69ac559dcba2694012009aaa108c614541789a",
+          "sha256": "a62b2b6784f990259fddef5f16388693a8043be4f69179e6a5257eeb3f9abac4"
+        }
+      ]
+    },
+    "bge-reranker-v2-m3": {
+      "repo": "BAAI/bge-reranker-v2-m3",
+      "revision": "953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+      "license": "apache-2.0",
+      "files": [
+        {
+          "path": "README.md",
+          "size": 17229,
+          "git_blob": "553540879ec61aea21df00434c984c0f760a3fcc",
+          "sha256": "c887aa6dd2598f908bf0582ca7068cc816585c7a1b6a07df305b631ede0cb174"
+        },
+        {
+          "path": "config.json",
+          "size": 795,
+          "git_blob": "9f62673cb00ec41dcec8947b9ed16f6f2eb23ba2",
+          "sha256": "13dcd6c31d9fec9d1d8e158702072f62d7fa7d312a64b9fe057bec9a08cfe41a"
+        },
+        {
+          "path": "model.safetensors",
+          "size": 2271071852,
+          "git_blob": "773a0a7d7cc8a010835938a3a82a87eac8b21909",
+          "sha256": "d9e3e081faff1eefb84019509b2f5558fd74c1a05a2c7db22f74174fcedb5286"
+        },
+        {
+          "path": "sentencepiece.bpe.model",
+          "size": 5069051,
+          "git_blob": "7a3f40a75f870bc1f21700cd414dc2acc431583c",
+          "sha256": "cfc8146abe2a0488e9e2a0c56de7952f7c11ab059eca145a0a727afce0db2865"
+        },
+        {
+          "path": "special_tokens_map.json",
+          "size": 964,
+          "git_blob": "b1879d702821e753ffe4245048eee415d54a9385",
+          "sha256": "8c785abebea9ae3257b61681b4e6fd8365ceafde980c21970d001e834cf10835"
+        },
+        {
+          "path": "tokenizer.json",
+          "size": 17098273,
+          "git_blob": "1c98a28b19c084901b2622d8e8b15e85eed13bff",
+          "sha256": "69564b696052886ed0ac63fa393e928384e0f8caada38c1f4864a9bfbf379c15"
+        },
+        {
+          "path": "tokenizer_config.json",
+          "size": 1173,
+          "git_blob": "328a00a9a560aadcf2a3064f917517359eb3cc26",
+          "sha256": "7e4c1cc848840aeccdd763458c18dd525eb0f795c992e00ebe9c28554e7db2d4"
+        }
+      ]
+    }
+  }
+}

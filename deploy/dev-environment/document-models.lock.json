@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "files": [
+    {
+      "path": "docling-project--docling-layout-heron/README.md",
+      "size": 3219,
+      "url": "https://huggingface.co/docling-project/docling-layout-heron/resolve/8f39ad3c0b4c58e9c2d2c84a38465abf757272d8/README.md",
+      "sha256": "175700839bc7808eac6af1d0c23e4f483606ab2276fe01122f4093e61a1a65b6",
+      "git_blob": "2c5b32c47fb9789ed49606988f58bc4741a731ab"
+    },
+    {
+      "path": "docling-project--docling-layout-heron/config.json",
+      "size": 3268,
+      "url": "https://huggingface.co/docling-project/docling-layout-heron/resolve/8f39ad3c0b4c58e9c2d2c84a38465abf757272d8/config.json",
+      "sha256": "fdea30805ce2f5666b147fca941dcdd27ad468e27d6ed21902207d3da056a97d",
+      "git_blob": "98434d37ace2399b824d685b0795ab7a68e53dd2"
+    },
+    {
+      "path": "docling-project--docling-layout-heron/preprocessor_config.json",
+      "size": 444,
+      "url": "https://huggingface.co/docling-project/docling-layout-heron/resolve/8f39ad3c0b4c58e9c2d2c84a38465abf757272d8/preprocessor_config.json",
+      "sha256": "cd38cd59999e7a95d68e487fbe5132df3d4e5c32a0836add57e6126ba0c4eaf1",
+      "git_blob": "fcdff16b42e5ebc51d28f59184490c6eff91a88b"
+    },
+    {
+      "path": "docling-project--docling-layout-heron/model.safetensors",
+      "size": 171658996,
+      "url": "https://huggingface.co/docling-project/docling-layout-heron/resolve/8f39ad3c0b4c58e9c2d2c84a38465abf757272d8/model.safetensors",
+      "sha256": "00333a43451945aaf89db8ca9c0a17e75d1537c17db60fdb91aa95f4c7929e0c",
+      "git_blob": null
+    },
+    {
+      "path": "docling-project--docling-models/README.md",
+      "size": 3413,
+      "url": "https://huggingface.co/docling-project/docling-models/resolve/fc0f2d45e2218ea24bce5045f58a389aed16dc23/README.md",
+      "sha256": "d17f233378eff1240b623b36da76ee8b40afcca05d505949713bf03f7e00822a",
+      "git_blob": "887b06ffad8cc669c554c6bebd703ba7bd11a417"
+    },
+    {
+      "path": "docling-project--docling-models/model_artifacts/tableformer/accurate/tm_config.json",
+      "size": 7060,
+      "url": "https://huggingface.co/docling-project/docling-models/resolve/fc0f2d45e2218ea24bce5045f58a389aed16dc23/model_artifacts/tableformer/accurate/tm_config.json",
+      "sha256": "984e122ceb8ccf84d84c9d2882f6f2302a44b4f1e577babd6289892c36f3cffd",
+      "git_blob": "5036aa114b9393f607440cb0f6cc54229b5b30e1"
+    },
+    {
+      "path": "docling-project--docling-models/model_artifacts/tableformer/accurate/tableformer_accurate.safetensors",
+      "size": 212758388,
+      "url": "https://huggingface.co/docling-project/docling-models/resolve/fc0f2d45e2218ea24bce5045f58a389aed16dc23/model_artifacts/tableformer/accurate/tableformer_accurate.safetensors",
+      "sha256": "2a7d6c924b3cd12fb99a09280ca9c33a89c5d60b93253617d2e088c1a40374d9",
+      "git_blob": null
+    },
+    {
+      "path": "RapidOcr/torch/PP-OCRv4/det/ch_PP-OCRv4_det_mobile.pth",
+      "size": 14506268,
+      "sha256": "89622c3f3e76b3ac7d10d9434c1f117a7471dba44723885cc04b49932a740d5b",
+      "url": "https://www.modelscope.cn/models/RapidAI/RapidOCR/resolve/v3.8.0/torch/PP-OCRv4/det/ch_PP-OCRv4_det_mobile.pth"
+    },
+    {
+      "path": "RapidOcr/torch/PP-OCRv4/cls/ch_ptocr_mobile_v2.0_cls_mobile.pth",
+      "size": 588638,
+      "sha256": "bfe13860824b3365c0c7f7ccfcddc8ff11645c60051739ff18bc9913f60c98e1",
+      "url": "https://www.modelscope.cn/models/RapidAI/RapidOCR/resolve/v3.8.0/torch/PP-OCRv4/cls/ch_ptocr_mobile_v2.0_cls_mobile.pth"
+    },
+    {
+      "path": "RapidOcr/torch/PP-OCRv4/rec/ch_PP-OCRv4_rec_mobile.pth",
+      "size": 26919769,
+      "sha256": "cb4265bb4300a2487e93e82ccfa1924bf9cd1194c1a202ab17a96b4911c27e0b",
+      "url": "https://www.modelscope.cn/models/RapidAI/RapidOCR/resolve/v3.8.0/torch/PP-OCRv4/rec/ch_PP-OCRv4_rec_mobile.pth"
+    },
+    {
+      "path": "RapidOcr/paddle/PP-OCRv4/rec/ch_PP-OCRv4_rec_mobile/ppocr_keys_v1.txt",
+      "size": 26249,
+      "sha256": "28b2362ad4ab2dc38769aa72feb535e3a9ddb3fd2a7585a05920e6393b1dc7f7",
+      "url": "https://www.modelscope.cn/models/RapidAI/RapidOCR/resolve/v3.8.0/paddle/PP-OCRv4/rec/ch_PP-OCRv4_rec_mobile/ppocr_keys_v1.txt"
+    },
+    {
+      "path": "RapidOcr/resources/fonts/FZYTK.TTF",
+      "size": 3241748,
+      "sha256": "4065a23df6823c8e2b69a0e76d02f02a6470b8774a5e91086609701ad95cc33f",
+      "url": "https://www.modelscope.cn/models/RapidAI/RapidOCR/resolve/v3.8.0/resources/fonts/FZYTK.TTF"
+    }
+  ]
+}
