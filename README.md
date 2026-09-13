@@ -5,7 +5,7 @@
 ## 当前进度
 
 - 已完成：M00、M01、M02.1–M02.4 与 M03.1–M03.4。
-- 当前任务：M04.1 商品读模型本地实现与迁移完成，待 GitHub 签收；[第一课与代码入口](docs/operations/m04-1-catalog-models.md)。新增六张空表，不植入示例商品，不新增查询 API。
+- M04.1 已完成：商品读模型实现 `04c6140` 已推送，[CI 34753021322 SUCCESS](https://github.com/sy824869109/intelligent-commerce-support-v1/actions/runs/34753021322)；[第一课与代码入口](docs/operations/m04-1-catalog-models.md)。新增六张空表，不植入示例商品，不新增查询 API。
 - ENV-V1 集中环境准备完成：实现 `cc73369` 已推送，[CI 34745972599 SUCCESS](https://github.com/sy824869109/intelligent-commerce-support-v1/actions/runs/34745972599)。统一已有 V1 Conda，六项入口/监控服务通过安全和真实联测。[环境验收与行为说明](docs/operations/v1-environment-acceptance-20260913.md)；[使用指南](docs/operations/v1-environment-guide.md)。本轮不推进 M04。
 - 下一任务：M04.2 商品搜索、详情、规格、库存和活动说明接口（尚未开始）。历史 M01 镜像安全阻断已修复，不代表当前阻塞。
 - 当前开发库：m04_0004 READY，六张商品表为空；已有网关/数据库/匿名 401 联测通过，临时测试网关已停止。回归及 GitHub 状态见任务台账。
