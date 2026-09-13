@@ -1,0 +1,19 @@
+target: all
+server:
+  http_listen_port: 3200
+distributor:
+  receivers:
+    otlp:
+      protocols:
+        grpc: {endpoint: '0.0.0.0:4317'}
+        http: {endpoint: '0.0.0.0:4318'}
+storage:
+  trace:
+    backend: local
+    local: {path: /data/blocks}
+    wal: {path: /data/wal}
+compactor:
+  compaction:
+    block_retention: 24h
+usage_report:
+  reporting_enabled: false

@@ -5,6 +5,7 @@
 ## 当前进度
 
 - 已完成：M00、M01、M02.1–M02.4 与 M03.1–M03.4。
+- 当前插入任务：集中准备 V1 全部开发环境（IN_PROGRESS），统一使用已有 V1 Conda；[环境搭建说明](docs/operations/v1-environment-guide.md)。本轮不推进 M04。
 - 下一阶段：M04 商品与库存（尚未开始）。历史 M01 镜像安全阻断已修复，不代表当前阻塞。
 - 最新验收：90 项后端、169 项契约、12 项真实 MySQL；CI 34459754847 SUCCESS。开发库 m03_0003 READY，临时测试网关已停止。
 - [M03 身份接口、首次初始化与完整行为记录](docs/operations/m03-identity-acceptance.md)：无默认密码，首次管理员在本机交互设置。身份模式随 `--with-database` 启用；尚未完成业务前端/RAG 查询或开放局域网部署。
@@ -27,10 +28,13 @@ F:\heima\ai\python\project\i
 - 环境名：`intelligent-commerce-support-v1`
 - Python：3.12.14
 
-创建或恢复环境：
+使用已有环境（不再新建 Conda）：
 
 ```powershell
-& 'F:\heima\ai\python\day01\Anaconda\Scripts\conda.exe' env create -f .\environment.yml
+. .\scripts\enter_environment.ps1
+python -c "import sys; print(sys.executable)"
+# 集中复现依赖；不会创建解释器。首次机器准备条件见环境说明。
+.\scripts\setup_v1_environment.ps1 -IncludeFrontend
 ```
 
 验证环境：
