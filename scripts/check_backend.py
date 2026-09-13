@@ -39,6 +39,7 @@ def main() -> int:
                 "packages/persistence",
                 "packages/observability",
                 "packages/identity",
+                "packages/domain",
                 "tests/backend",
                 "tests/integration/test_m02_mysql.py",
             )
@@ -53,6 +54,7 @@ def main() -> int:
                 "packages/persistence",
                 "packages/observability",
                 "packages/identity",
+                "packages/domain",
                 "tests/backend",
                 "tests/integration/test_m02_mysql.py",
             )
@@ -67,6 +69,7 @@ def main() -> int:
                 "packages/persistence",
                 "packages/observability",
                 "packages/identity",
+                "packages/domain",
                 "scripts/run_gateway.py",
                 "scripts/database_local.py",
                 "scripts/check_mysql.py",

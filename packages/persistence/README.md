@@ -9,4 +9,6 @@
 
 M02.4 增加 `platform_audit`，迁移头为 `m02_4_0002`。观测包的审计端口复用调用方事务，不自行提交；历史非空拒绝降级。详见 [M02 最终验收](../../docs/operations/m02-final-acceptance.md)。
 
-当前迁移头为 `m03_0003`：M03 新增 12 张身份相关表及角色权限种子，保留 M02 表。无用户/密码默认值；任何身份或平台历史存在则拒绝破坏性降级。详见 [M03 验收](../../docs/operations/m03-identity-acceptance.md)。
+M03 的 `m03_0003` 新增 12 张身份相关表及角色权限种子，保留 M02 表。无用户/密码默认值。详见 [M03 验收](../../docs/operations/m03-identity-acceptance.md)。
+
+当前迁移头为 `m04_0004`：增加 Commerce 所有的六张商品读模型表，租户复合外键、整数金额、显式未知库存和微秒 UTC 来源时间。运行时 metadata 统一导出，迁移保留独立冻结快照；本包只保存物理映射，不拥有商品授权和同步规则。任何商品、身份或平台历史存在都在降级 DDL 前拒绝。详见 [M04.1](../../docs/operations/m04-1-catalog-models.md)。

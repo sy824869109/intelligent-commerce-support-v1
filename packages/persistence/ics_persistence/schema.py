@@ -1,4 +1,4 @@
-"""Only the M02 event infrastructure tables; business schemas belong to later owners."""
+"""共享物理元数据入口；表所有权和领域逻辑仍分别归各服务。"""
 
 from sqlalchemy import (
     CheckConstraint,
@@ -12,7 +12,7 @@ from sqlalchemy import (
     Text,
 )
 
-from .identity_schema import metadata
+from .commerce_schema import metadata
 
 audit = Table(
     "platform_audit",

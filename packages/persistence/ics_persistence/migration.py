@@ -25,7 +25,7 @@ def migrate(engine, target="head", *, downgrade=False):
         try:
             tables = set(inspect(connection).get_table_names())
             if "platform_alembic_version" not in tables and (
-                any(name.startswith("identity_") for name in tables)
+                any(name.startswith(("identity_", "commerce_")) for name in tables)
                 or tables
                 & {
                     "platform_outbox",

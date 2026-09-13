@@ -9,6 +9,8 @@
 
 ## 当前任务
 
+**M04.1 IN_PROGRESS（2026-09-13，本地实现完成，待远端签收）**：新增商品、SKU、类目、属性、价格和库存六类纯模型及六张 SQL 表；整数金额、租户复合外键、显式未知库存、来源版本与 DATETIME(6)。开发库已由 m03_0003 升到 m04_0004，六表均为空，无默认商品。125 项后端、169 项契约、28 项真实 MySQL 通过；244 项基础测试运行通过（Windows 跳过 5 项），源码与依赖安全通过。旧 M03 数据升级保留、网关/数据库/匿名 401 联测通过，临时网关停止。M04.2 查询接口未开始，没有安装新依赖或清理维护测试组。教学与行为详见 [M04.1](../operations/m04-1-catalog-models.md)。下方 M03/ENV 的“未开始”是各阶段签收时状态。
+
 **ENV-V1 DONE（2026-09-13）**：实现 `cc73369` 已推送，[CI 34745972599 SUCCESS](https://github.com/sy824869109/intelligent-commerce-support-v1/actions/runs/34745972599)。统一已有 V1 Conda、Vue 3、本地 BGE 与百炼。90 项后端、169 项契约、12 项 MySQL、244 项基础测试运行通过（Windows 跳过 5 项）。本地混合检索、离线 PDF/表格/中文 OCR、真实云端调用、HTTP 指标/日志/追踪回读、HTTPS 网关到 MySQL、匿名 401、Grafana 三数据源和 gRPC 空 Export 均通过。六镜像 PASS_REVIEWED：原始 2 项，用户同意按确切制品核实两项官方修复，未解决 0；原报告保留。8 页 Word 已渲染并逐页检查，交付在 `_local_artifacts/environment/deliverables`。M04 尚未开始，业务埋点、Golden Set 和局域网发布未验收。见 [完整行为说明](../operations/v1-environment-acceptance-20260913.md)。此前候选失败记录属于历史。
 
 **M03.1–M03.4 全部 DONE（2026-09-10）。** 最终实现 `3c8512d`，CI `34459754847` SUCCESS；90 项后端、169 项契约、12 项真实 MySQL 与基础检查通过。开发库已迁移到 m03_0003，真实启动及匿名 401 验证通过，临时进程已停止。无默认管理员或演示账号，首次使用需本机交互初始化密码。见 [M03 完整行为与验收](../operations/m03-identity-acceptance.md)。下一阶段 M04 尚未开始；以下为历史过程状态。

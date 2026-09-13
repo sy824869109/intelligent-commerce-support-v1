@@ -73,6 +73,42 @@ def accept(session, item, handler):
     )
 
 
+def test_00_m03_existing_rows_survive_catalog_upgrade(db):
+    """复现真实旧库升级，不仅测试从空库直接创建最终 schema。"""
+    from alembic import command
+    from alembic.config import Config
+    from sqlalchemy import delete, inspect
+    from ics_persistence.identity_schema import organizations
+    from ics_persistence.commerce_schema import TABLES
+
+    config = Config()
+    config.set_main_option(
+        "script_location",
+        str(
+            Path(__file__).resolve().parents[2] / "packages/persistence/ics_persistence/migrations"
+        ),
+    )
+    with db.engine.connect() as connection:
+        config.attributes["connection"] = connection
+        command.upgrade(config, "m03_0003")
+        connection.commit()
+    assert not db.ready()
+    with db.transaction() as session:
+        session.execute(insert(organizations).values(id="UPGRADE_ONLY", name="迁移前已有组织"))
+    migrate(db.engine)
+    assert db.ready()
+    assert {table.name for table in TABLES} <= set(inspect(db.engine).get_table_names())
+    with db.transaction() as session:
+        assert (
+            session.scalar(select(organizations.c.name).where(organizations.c.id == "UPGRADE_ONLY"))
+            == "迁移前已有组织"
+        )
+        # 仅删除本测试在临时库内创建的这一行，随后验证空库回退。
+        session.execute(delete(organizations).where(organizations.c.id == "UPGRADE_ONLY"))
+    migrate(db.engine, "base", downgrade=True)
+    assert not db.ready()
+
+
 def test_01_real_schema_migration_roundtrip(db):
     assert not db.ready()
     migrate(db.engine)
@@ -364,4 +400,193 @@ def test_12_m03_database_constraints_and_downgrade_preservation(db):
     with db.transaction() as session:
         assert (
             session.scalar(select(tenants.c.id).where(tenants.c.id == "TENANT_M03")) == "TENANT_M03"
+        )
+
+
+@pytest.fixture(scope="module")
+def catalog_rows(db):
+    """只写本轮临时数据库；两个店铺故意复用商品/SKU ID 和编码。"""
+    from ics_persistence.identity_schema import organizations, tenants
+    from ics_persistence.commerce_schema import categories, products, skus, prices, inventory
+
+    stamp = dict(
+        source="synthetic-erp",
+        source_version=1,
+        as_of=datetime(2026, 9, 13, 12, 0, 0, 123456),
+        synced_at=datetime(2026, 9, 13, 12, 0, 0, 123456),
+    )
+    with db.transaction() as session:
+        session.execute(insert(organizations).values(id="ORG_CATALOG", name="测试组织"))
+        for tenant in ("CAT_A", "CAT_B"):
+            session.execute(
+                insert(tenants).values(
+                    id=tenant, organization_id="ORG_CATALOG", name=tenant, active=True
+                )
+            )
+            session.execute(
+                insert(categories).values(tenant_id=tenant, id="C1", name="耳机", **stamp)
+            )
+            session.execute(
+                insert(products).values(
+                    tenant_id=tenant,
+                    id="P1",
+                    category_id="C1",
+                    name="耳机",
+                    description="合成商品",
+                    status="ON_SALE",
+                    **stamp,
+                )
+            )
+            session.execute(
+                insert(skus).values(
+                    tenant_id=tenant,
+                    id="S1",
+                    product_id="P1",
+                    code="BLACK",
+                    specifications={"颜色": "黑色"},
+                    status="ON_SALE",
+                    **stamp,
+                )
+            )
+            session.execute(
+                insert(prices).values(
+                    tenant_id=tenant,
+                    sku_id="S1",
+                    minor_units=29900,
+                    currency="CNY",
+                    valid_from=stamp["as_of"],
+                    **stamp,
+                )
+            )
+            session.execute(
+                insert(inventory).values(
+                    tenant_id=tenant,
+                    sku_id="S1",
+                    available_quantity=None if tenant == "CAT_A" else 0,
+                    **stamp,
+                )
+            )
+        session.execute(
+            insert(products).values(
+                tenant_id="CAT_A",
+                id="ONLY_A",
+                category_id="C1",
+                name="A独有",
+                description="",
+                status="OFF_SHELF",
+                **stamp,
+            )
+        )
+    return stamp
+
+
+def test_13_catalog_exact_money_unknown_stock_and_tenant_local_ids(db, catalog_rows):
+    from ics_persistence.commerce_schema import prices, inventory, skus
+
+    db.close()  # 连接池重开后读取，不能依赖 Python 内存中保存的值。
+    with db.transaction() as session:
+        assert (
+            session.scalar(select(prices.c.as_of).where(prices.c.tenant_id == "CAT_A"))
+            == catalog_rows["as_of"]
+        )
+        assert (
+            session.scalar(select(prices.c.minor_units).where(prices.c.tenant_id == "CAT_A"))
+            == 29900
+        )
+        rows = session.execute(select(inventory.c.tenant_id, inventory.c.available_quantity)).all()
+        assert dict(rows) == {"CAT_A": None, "CAT_B": 0}
+        assert len(session.execute(select(skus).where(skus.c.id == "S1")).all()) == 2
+
+
+@pytest.mark.parametrize(
+    "case",
+    [
+        "cross_tenant_product",
+        "missing_sku",
+        "duplicate_code",
+        "negative_price",
+        "unsafe_price",
+        "lowercase_currency",
+        "invalid_currency",
+        "empty_price_window",
+        "negative_inventory",
+        "zero_version",
+        "future_source",
+        "invalid_status",
+        "category_self",
+    ],
+)
+def test_14_catalog_database_rejects_invalid_and_cross_tenant_rows(db, catalog_rows, case):
+    from sqlalchemy.exc import DBAPIError
+    from ics_persistence.commerce_schema import categories, products, skus, prices, inventory
+
+    stamp = catalog_rows
+    statements = {
+        "cross_tenant_product": insert(skus).values(
+            tenant_id="CAT_B",
+            id="S_BAD",
+            code="BAD",
+            product_id="ONLY_A",
+            specifications={},
+            status="ON_SALE",
+            **stamp,
+        ),
+        "missing_sku": insert(prices).values(
+            tenant_id="CAT_A",
+            sku_id="NO_SKU",
+            minor_units=1,
+            currency="CNY",
+            valid_from=stamp["as_of"],
+            **stamp,
+        ),
+        "duplicate_code": insert(skus).values(
+            tenant_id="CAT_A",
+            id="S_BAD",
+            code="BLACK",
+            product_id="P1",
+            specifications={},
+            status="ON_SALE",
+            **stamp,
+        ),
+        "negative_price": update(prices).values(minor_units=-1),
+        "unsafe_price": update(prices).values(minor_units=9007199254740992),
+        "lowercase_currency": update(prices).values(currency="cny"),
+        "invalid_currency": update(prices).values(currency="123"),
+        "empty_price_window": update(prices).values(valid_until=stamp["as_of"]),
+        "negative_inventory": update(inventory).values(available_quantity=-1),
+        "zero_version": update(products).values(source_version=0),
+        "future_source": update(products).values(as_of=datetime(2026, 9, 14)),
+        "invalid_status": update(products).values(status="UNKNOWN"),
+        "category_self": update(categories).values(parent_id="C1"),
+    }
+    statement = statements[case]
+    if case not in {"cross_tenant_product", "missing_sku", "duplicate_code"}:
+        statement = statement.where(statement.table.c.tenant_id == "CAT_A")
+    # MySQL CHECK 返回 3819，PyMySQL 将它映射为 OperationalError 而非 IntegrityError。
+    # 精确断言错误号，不能把断连或 SQL 语法错误当作约束测试通过。
+    with pytest.raises(DBAPIError) as rejected:
+        with db.transaction() as session:
+            session.execute(statement)
+    expected = (
+        1062
+        if case == "duplicate_code"
+        else 1452
+        if case in {"cross_tenant_product", "missing_sku"}
+        else 3819
+    )
+    assert rejected.value.orig.args[0] == expected
+
+
+def test_15_catalog_rows_and_schema_survive_refused_downgrade(db, catalog_rows):
+    from sqlalchemy import inspect
+    from ics_persistence.commerce_schema import TABLES, prices
+
+    with pytest.raises(RuntimeError, match="non-empty"):
+        migrate(db.engine, "base", downgrade=True)
+    assert db.ready()
+    assert {table.name for table in TABLES} <= set(inspect(db.engine).get_table_names())
+    with db.transaction() as session:
+        assert (
+            session.scalar(select(prices.c.minor_units).where(prices.c.tenant_id == "CAT_A"))
+            == 29900
         )
