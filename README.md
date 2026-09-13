@@ -5,7 +5,7 @@
 ## 当前进度
 
 - 已完成：M00、M01、M02.1–M02.4 与 M03.1–M03.4。
-- 当前插入任务：V1 集中环境本机验收已通过，提交与远端 CI 收口中；统一已有 V1 Conda，六项入口/监控服务通过安全和真实联测。[环境验收与行为说明](docs/operations/v1-environment-acceptance-20260913.md)；[使用指南](docs/operations/v1-environment-guide.md)。本轮不推进 M04。
+- ENV-V1 集中环境准备完成：实现 `cc73369` 已推送，[CI 34745972599 SUCCESS](https://github.com/sy824869109/intelligent-commerce-support-v1/actions/runs/34745972599)。统一已有 V1 Conda，六项入口/监控服务通过安全和真实联测。[环境验收与行为说明](docs/operations/v1-environment-acceptance-20260913.md)；[使用指南](docs/operations/v1-environment-guide.md)。本轮不推进 M04。
 - 下一阶段：M04 商品与库存（尚未开始）。历史 M01 镜像安全阻断已修复，不代表当前阻塞。
 - 最新验收：90 项后端、169 项契约、12 项真实 MySQL；CI 34459754847 SUCCESS。开发库 m03_0003 READY，临时测试网关已停止。
 - [M03 身份接口、首次初始化与完整行为记录](docs/operations/m03-identity-acceptance.md)：无默认密码，首次管理员在本机交互设置。身份模式随 `--with-database` 启用；尚未完成业务前端/RAG 查询或开放局域网部署。
