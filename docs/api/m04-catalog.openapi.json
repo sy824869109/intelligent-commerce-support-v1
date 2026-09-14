@@ -1,0 +1,1417 @@
+{
+  "components": {
+    "schemas": {
+      "Activity": {
+        "additionalProperties": false,
+        "properties": {
+          "explanation": {
+            "title": "Explanation",
+            "type": "string"
+          },
+          "product_id": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,63}$",
+            "title": "Product Id",
+            "type": "string"
+          },
+          "source": {
+            "title": "Source",
+            "type": "null"
+          },
+          "state": {
+            "const": "UNKNOWN",
+            "title": "State",
+            "type": "string"
+          }
+        },
+        "required": [
+          "product_id",
+          "state",
+          "source",
+          "explanation"
+        ],
+        "title": "Activity",
+        "type": "object"
+      },
+      "Attribute": {
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "observation": {
+            "$ref": "#/components/schemas/Observation"
+          },
+          "product_id": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,63}$",
+            "title": "Product Id",
+            "type": "string"
+          },
+          "unit": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unit"
+          },
+          "value": {
+            "title": "Value",
+            "type": "string"
+          }
+        },
+        "required": [
+          "product_id",
+          "name",
+          "value",
+          "unit",
+          "observation"
+        ],
+        "title": "Attribute",
+        "type": "object"
+      },
+      "Category": {
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,63}$",
+            "title": "Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "observation": {
+            "$ref": "#/components/schemas/Observation"
+          },
+          "parent_id": {
+            "anyOf": [
+              {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,63}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Parent Id"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "parent_id",
+          "observation"
+        ],
+        "title": "Category",
+        "type": "object"
+      },
+      "ErrorDetail": {
+        "properties": {
+          "client_action": {
+            "default": "FIX_REQUEST",
+            "title": "Client Action",
+            "type": "string"
+          },
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "command_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Command Id"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "retryable": {
+            "default": false,
+            "title": "Retryable",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "code",
+          "message"
+        ],
+        "title": "ErrorDetail",
+        "type": "object"
+      },
+      "Failure": {
+        "properties": {
+          "error": {
+            "$ref": "#/components/schemas/ErrorDetail"
+          },
+          "request_id": {
+            "title": "Request Id",
+            "type": "string"
+          },
+          "trace_id": {
+            "title": "Trace Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "request_id",
+          "trace_id",
+          "error"
+        ],
+        "title": "Failure",
+        "type": "object"
+      },
+      "Health": {
+        "properties": {
+          "checks": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "title": "Checks",
+            "type": "object"
+          },
+          "scope": {
+            "default": "application",
+            "title": "Scope",
+            "type": "string"
+          },
+          "service": {
+            "default": "api-gateway",
+            "title": "Service",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "checks"
+        ],
+        "title": "Health",
+        "type": "object"
+      },
+      "Inventory": {
+        "additionalProperties": false,
+        "properties": {
+          "available_quantity": {
+            "anyOf": [
+              {
+                "maximum": 9007199254740991.0,
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Available Quantity"
+          },
+          "observation": {
+            "$ref": "#/components/schemas/Observation"
+          },
+          "sku_id": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,63}$",
+            "title": "Sku Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "sku_id",
+          "available_quantity",
+          "observation"
+        ],
+        "title": "Inventory",
+        "type": "object"
+      },
+      "Observation": {
+        "additionalProperties": false,
+        "properties": {
+          "as_of": {
+            "format": "date-time",
+            "title": "As Of",
+            "type": "string"
+          },
+          "freshness": {
+            "enum": [
+              "FRESH",
+              "STALE",
+              "FUTURE"
+            ],
+            "title": "Freshness",
+            "type": "string"
+          },
+          "source": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,63}$",
+            "title": "Source",
+            "type": "string"
+          },
+          "source_version": {
+            "pattern": "^[1-9][0-9]{0,18}$",
+            "title": "Source Version",
+            "type": "string"
+          },
+          "synced_at": {
+            "format": "date-time",
+            "title": "Synced At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "source",
+          "source_version",
+          "as_of",
+          "synced_at",
+          "freshness"
+        ],
+        "title": "Observation",
+        "type": "object"
+      },
+      "Price": {
+        "additionalProperties": false,
+        "properties": {
+          "currency": {
+            "pattern": "^[A-Z]{3}$",
+            "title": "Currency",
+            "type": "string"
+          },
+          "minor_units": {
+            "maximum": 9007199254740991.0,
+            "minimum": 0.0,
+            "title": "Minor Units",
+            "type": "integer"
+          },
+          "observation": {
+            "$ref": "#/components/schemas/Observation"
+          },
+          "sku_id": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,63}$",
+            "title": "Sku Id",
+            "type": "string"
+          },
+          "valid_from": {
+            "format": "date-time",
+            "title": "Valid From",
+            "type": "string"
+          },
+          "valid_until": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Valid Until"
+          }
+        },
+        "required": [
+          "sku_id",
+          "minor_units",
+          "currency",
+          "valid_from",
+          "valid_until",
+          "observation"
+        ],
+        "title": "Price",
+        "type": "object"
+      },
+      "Product": {
+        "additionalProperties": false,
+        "properties": {
+          "category_id": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,63}$",
+            "title": "Category Id",
+            "type": "string"
+          },
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "id": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,63}$",
+            "title": "Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "observation": {
+            "$ref": "#/components/schemas/Observation"
+          },
+          "status": {
+            "const": "ON_SALE",
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "category_id",
+          "name",
+          "description",
+          "status",
+          "observation"
+        ],
+        "title": "Product",
+        "type": "object"
+      },
+      "ProductDetail": {
+        "additionalProperties": false,
+        "properties": {
+          "category": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Category"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "category_id": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,63}$",
+            "title": "Category Id",
+            "type": "string"
+          },
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "id": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,63}$",
+            "title": "Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "observation": {
+            "$ref": "#/components/schemas/Observation"
+          },
+          "status": {
+            "const": "ON_SALE",
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "category_id",
+          "name",
+          "description",
+          "status",
+          "observation",
+          "category"
+        ],
+        "title": "ProductDetail",
+        "type": "object"
+      },
+      "ProductPage": {
+        "additionalProperties": false,
+        "properties": {
+          "has_more": {
+            "title": "Has More",
+            "type": "boolean"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/Product"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "next_cursor": {
+            "anyOf": [
+              {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,63}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Cursor"
+          }
+        },
+        "required": [
+          "items",
+          "next_cursor",
+          "has_more"
+        ],
+        "title": "ProductPage",
+        "type": "object"
+      },
+      "Sku": {
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,63}$",
+            "title": "Code",
+            "type": "string"
+          },
+          "id": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,63}$",
+            "title": "Id",
+            "type": "string"
+          },
+          "observation": {
+            "$ref": "#/components/schemas/Observation"
+          },
+          "product_id": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,63}$",
+            "title": "Product Id",
+            "type": "string"
+          },
+          "specifications": {
+            "items": {
+              "maxItems": 2,
+              "minItems": 2,
+              "prefixItems": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "string"
+                }
+              ],
+              "type": "array"
+            },
+            "title": "Specifications",
+            "type": "array"
+          },
+          "status": {
+            "const": "ON_SALE",
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "product_id",
+          "code",
+          "specifications",
+          "status",
+          "observation"
+        ],
+        "title": "Sku",
+        "type": "object"
+      },
+      "SkuFacts": {
+        "additionalProperties": false,
+        "properties": {
+          "inventory": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Inventory"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "inventory_state": {
+            "enum": [
+              "UNKNOWN",
+              "FUTURE",
+              "STALE",
+              "IN_STOCK",
+              "OUT_OF_STOCK"
+            ],
+            "title": "Inventory State",
+            "type": "string"
+          },
+          "is_checkout_quote": {
+            "const": false,
+            "title": "Is Checkout Quote",
+            "type": "boolean"
+          },
+          "price": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Price"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "price_state": {
+            "enum": [
+              "UNKNOWN",
+              "FUTURE",
+              "STALE",
+              "NOT_STARTED",
+              "EXPIRED",
+              "AVAILABLE"
+            ],
+            "title": "Price State",
+            "type": "string"
+          },
+          "sku": {
+            "$ref": "#/components/schemas/Sku"
+          },
+          "stock_reserved": {
+            "const": false,
+            "title": "Stock Reserved",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "sku",
+          "price",
+          "price_state",
+          "inventory",
+          "inventory_state",
+          "is_checkout_quote",
+          "stock_reserved"
+        ],
+        "title": "SkuFacts",
+        "type": "object"
+      },
+      "Specifications": {
+        "additionalProperties": false,
+        "properties": {
+          "attributes": {
+            "items": {
+              "$ref": "#/components/schemas/Attribute"
+            },
+            "title": "Attributes",
+            "type": "array"
+          },
+          "has_more": {
+            "title": "Has More",
+            "type": "boolean"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/Sku"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "next_cursor": {
+            "anyOf": [
+              {
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,63}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Cursor"
+          },
+          "product_id": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,63}$",
+            "title": "Product Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "product_id",
+          "attributes",
+          "items",
+          "has_more",
+          "next_cursor"
+        ],
+        "title": "Specifications",
+        "type": "object"
+      },
+      "Success_Activity_": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/Activity"
+          },
+          "request_id": {
+            "title": "Request Id",
+            "type": "string"
+          },
+          "trace_id": {
+            "title": "Trace Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "request_id",
+          "trace_id",
+          "data"
+        ],
+        "title": "Success[Activity]",
+        "type": "object"
+      },
+      "Success_Health_": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/Health"
+          },
+          "request_id": {
+            "title": "Request Id",
+            "type": "string"
+          },
+          "trace_id": {
+            "title": "Trace Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "request_id",
+          "trace_id",
+          "data"
+        ],
+        "title": "Success[Health]",
+        "type": "object"
+      },
+      "Success_ProductDetail_": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/ProductDetail"
+          },
+          "request_id": {
+            "title": "Request Id",
+            "type": "string"
+          },
+          "trace_id": {
+            "title": "Trace Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "request_id",
+          "trace_id",
+          "data"
+        ],
+        "title": "Success[ProductDetail]",
+        "type": "object"
+      },
+      "Success_ProductPage_": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/ProductPage"
+          },
+          "request_id": {
+            "title": "Request Id",
+            "type": "string"
+          },
+          "trace_id": {
+            "title": "Trace Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "request_id",
+          "trace_id",
+          "data"
+        ],
+        "title": "Success[ProductPage]",
+        "type": "object"
+      },
+      "Success_SkuFacts_": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/SkuFacts"
+          },
+          "request_id": {
+            "title": "Request Id",
+            "type": "string"
+          },
+          "trace_id": {
+            "title": "Trace Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "request_id",
+          "trace_id",
+          "data"
+        ],
+        "title": "Success[SkuFacts]",
+        "type": "object"
+      },
+      "Success_Specifications_": {
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/Specifications"
+          },
+          "request_id": {
+            "title": "Request Id",
+            "type": "string"
+          },
+          "trace_id": {
+            "title": "Trace Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "request_id",
+          "trace_id",
+          "data"
+        ],
+        "title": "Success[Specifications]",
+        "type": "object"
+      }
+    },
+    "securitySchemes": {
+      "HTTPBearer": {
+        "scheme": "bearer",
+        "type": "http"
+      }
+    }
+  },
+  "info": {
+    "description": "应用骨架；显式启用数据库时检查连接和迁移版本。不表示 RAG 或业务已可用。",
+    "title": "智能电商客服 API Gateway",
+    "version": "0.1.0"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/api/v1/products": {
+      "get": {
+        "description": "搜索当前租户上架商品；after 是排他 ID 下界，不是授权凭证。",
+        "operationId": "search_api_v1_products_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "after",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,63}$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "After"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 20,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "q",
+            "required": false,
+            "schema": {
+              "default": "",
+              "maxLength": 100,
+              "title": "Q",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "category_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,63}$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Category Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Success_ProductPage_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Failure"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Failure"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Failure"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Failure"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Failure"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Failure"
+                }
+              }
+            },
+            "description": "Service Unavailable"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Search",
+        "tags": [
+          "catalog"
+        ]
+      }
+    },
+    "/api/v1/products/{product_id}": {
+      "get": {
+        "description": "返回可见商品与类目；不存在和无权访问统一 404。",
+        "operationId": "detail_api_v1_products__product_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "product_id",
+            "required": true,
+            "schema": {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,63}$",
+              "title": "Product Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Success_ProductDetail_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Failure"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Failure"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Failure"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Failure"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Failure"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Failure"
+                }
+              }
+            },
+            "description": "Service Unavailable"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Detail",
+        "tags": [
+          "catalog"
+        ]
+      }
+    },
+    "/api/v1/products/{product_id}/activity": {
+      "get": {
+        "description": "当前尚无可核实活动来源，明确返回 UNKNOWN 而非推测优惠。",
+        "operationId": "activity_api_v1_products__product_id__activity_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "product_id",
+            "required": true,
+            "schema": {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,63}$",
+              "title": "Product Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Success_Activity_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Failure"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Failure"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Failure"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Failure"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Failure"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Failure"
+                }
+              }
+            },
+            "description": "Service Unavailable"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Activity",
+        "tags": [
+          "catalog"
+        ]
+      }
+    },
+    "/api/v1/products/{product_id}/skus/{sku_id}": {
+      "get": {
+        "description": "返回独立的价格/库存观察状态，不提供结算或库存预留。",
+        "operationId": "sku_api_v1_products__product_id__skus__sku_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "product_id",
+            "required": true,
+            "schema": {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,63}$",
+              "title": "Product Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "sku_id",
+            "required": true,
+            "schema": {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,63}$",
+              "title": "Sku Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Success_SkuFacts_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Failure"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Failure"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Failure"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Failure"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Failure"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Failure"
+                }
+              }
+            },
+            "description": "Service Unavailable"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Sku",
+        "tags": [
+          "catalog"
+        ]
+      }
+    },
+    "/api/v1/products/{product_id}/specifications": {
+      "get": {
+        "description": "返回属性及分页上架 SKU；不隐式选择某个规格。",
+        "operationId": "specifications_api_v1_products__product_id__specifications_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "product_id",
+            "required": true,
+            "schema": {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,63}$",
+              "title": "Product Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "after",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,63}$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "After"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 20,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Success_Specifications_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Failure"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Failure"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Failure"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Failure"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Failure"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Failure"
+                }
+              }
+            },
+            "description": "Service Unavailable"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Specifications",
+        "tags": [
+          "catalog"
+        ]
+      }
+    },
+    "/health/live": {
+      "get": {
+        "operationId": "live_health_live_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Success_Health_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Live",
+        "tags": [
+          "health"
+        ]
+      }
+    },
+    "/health/ready": {
+      "get": {
+        "operationId": "ready_health_ready_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Success_Health_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Failure"
+                }
+              }
+            },
+            "description": "Service Unavailable"
+          }
+        },
+        "summary": "Ready",
+        "tags": [
+          "health"
+        ]
+      }
+    }
+  }
+}

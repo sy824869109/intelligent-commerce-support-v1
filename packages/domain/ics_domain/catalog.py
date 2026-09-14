@@ -31,7 +31,7 @@ def integer(value: int, minimum: int = 0, maximum: int = MAX_SAFE_INTEGER) -> No
 
 
 def utc(value: datetime) -> None:
-    """边界要求带时区 UTC；SQL 适配器以后显式转换为无时区 UTC 存储。"""
+    """领域边界要求带时区 UTC；Commerce SQL 读取适配显式转换数据库时间。"""
     if not isinstance(value, datetime) or value.utcoffset() != timedelta(0):
         raise ValueError("Catalog timestamps require aware UTC")
 

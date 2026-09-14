@@ -38,6 +38,8 @@ flowchart LR
 11. `packages/persistence` 是 SQL 基础设施，不属于纯领域包；不依赖 apps、不拥有业务规则。当前单库基础事件账本按 producer/consumer/tenant 显式限定，不能当作完整身份授权；物理拆库采用各所有者独立迁移，详见 ADR-0007。
 12. M04.1 商品纯模型归 `packages/domain/ics_domain`，SQL 映射在 persistence 共享物理迁移中，但 `commerce_` 六表的业务所有权归 Commerce。本步没有查询端点或同步写入服务；后续 Gateway/Orchestration 必须经 Commerce 的授权端口读取，不能把复合外键当作读权限。[六表关系与示例](../operations/m04-1-catalog-models.md)。
 
+M04.2 已新增 Commerce 授权查询端口：Gateway → `ics_commerce.catalog.Catalog` → M03 事务内重查权限 → 本租户商品 SQL。上文 M04.1“没有查询端点”仅描述上一卡；同步写入尚未实现。[查询数据流](../operations/m04-2-authorized-catalog.md)。
+
 ## V1 部署原则
 
 逻辑边界不等于必须一模块一进程。V1 可将低负载业务模块合并部署，以降低局域网运维成本；Knowledge Service 和 Worker 因依赖、资源与任务模型不同，优先保持独立运行。

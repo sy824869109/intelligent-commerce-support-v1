@@ -116,6 +116,7 @@ def main():
                 "-p",
                 "no:cacheprovider",
                 "tests/integration/test_m02_mysql.py",
+                "tests/backend/test_catalog_api.py",
                 "--basetemp",
                 str(temp / ("pytest-" + marker)),
             ],

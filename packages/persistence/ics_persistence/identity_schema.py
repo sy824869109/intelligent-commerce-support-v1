@@ -123,8 +123,8 @@ login_buckets = Table(
 )
 
 ROLE_GRANTS = {
-    "CUSTOMER": ("order.read", "ticket.read", "knowledge.read"),
-    "AGENT": ("order.read", "ticket.read", "ticket.reply", "knowledge.read"),
+    "CUSTOMER": ("order.read", "ticket.read", "knowledge.read", "product.read"),
+    "AGENT": ("order.read", "ticket.read", "ticket.reply", "knowledge.read", "product.read"),
     "ADMIN": (
         "order.read",
         "ticket.read",
@@ -132,6 +132,7 @@ ROLE_GRANTS = {
         "knowledge.read",
         "knowledge.publish",
         "identity.manage",
+        "product.read",
     ),
 }
 

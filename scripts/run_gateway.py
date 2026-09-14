@@ -12,6 +12,8 @@ sys.path.insert(0, str(ROOT / "apps/api-gateway"))
 sys.path.insert(0, str(ROOT / "packages/persistence"))
 sys.path.insert(0, str(ROOT / "packages/observability"))
 sys.path.insert(0, str(ROOT / "packages/identity"))
+sys.path.insert(0, str(ROOT / "packages/domain"))
+sys.path.insert(0, str(ROOT / "apps/commerce-service"))
 
 
 def main() -> int:
@@ -35,6 +37,7 @@ def main() -> int:
     logging.basicConfig(level=logging.INFO, format="%(message)s")
     database = None
     identity = None
+    catalog = None
     if args.with_database:
         from database_local import load_database
 
@@ -43,11 +46,14 @@ def main() -> int:
             from ics_identity.service import Identity
 
             identity = Identity(database)
+            from ics_commerce.catalog import Catalog
+
+            catalog = Catalog(identity)
         except Exception:
             print("Local database configuration/ownership invalid; values withheld.")
             return 1
     uvicorn.run(
-        create_app(settings, database=database, identity=identity),
+        create_app(settings, database=database, identity=identity, catalog=catalog),
         host=settings.host,
         port=settings.port,
         access_log=False,

@@ -7,8 +7,9 @@
 - 已完成：M00、M01、M02.1–M02.4 与 M03.1–M03.4。
 - M04.1 已完成：商品读模型实现 `04c6140` 已推送，[CI 34753021322 SUCCESS](https://github.com/sy824869109/intelligent-commerce-support-v1/actions/runs/34753021322)；[第一课与代码入口](docs/operations/m04-1-catalog-models.md)。新增六张空表，不植入示例商品，不新增查询 API。
 - ENV-V1 集中环境准备完成：实现 `cc73369` 已推送，[CI 34745972599 SUCCESS](https://github.com/sy824869109/intelligent-commerce-support-v1/actions/runs/34745972599)。统一已有 V1 Conda，六项入口/监控服务通过安全和真实联测。[环境验收与行为说明](docs/operations/v1-environment-acceptance-20260913.md)；[使用指南](docs/operations/v1-environment-guide.md)。本轮不推进 M04。
-- 下一任务：M04.2 商品搜索、详情、规格、库存和活动说明接口（尚未开始）。历史 M01 镜像安全阻断已修复，不代表当前阻塞。
-- 当前开发库：m04_0004 READY，六张商品表为空；已有网关/数据库/匿名 401 联测通过，临时测试网关已停止。回归及 GitHub 状态见任务台账。
+- M04.2 实施中：授权商品搜索、详情、规格、SKU 价格库存与活动可用性接口；[第二课与流程图](docs/operations/m04-2-authorized-catalog.md)。活动来源未接入，明确 UNKNOWN。
+- 下一任务：M04.3 商品同步适配器与幂等任务，本卡签收后启动。
+- 当前开发库：m04_0005 READY，新增 product.read 与三角色授权，六张商品表仍为空；回归及 GitHub 状态见台账。历史 M01 安全阻断已修复。
 - [M03 身份接口、首次初始化与完整行为记录](docs/operations/m03-identity-acceptance.md)：无默认密码，首次管理员在本机交互设置。身份模式随 `--with-database` 启用；尚未完成业务前端/RAG 查询或开放局域网部署。
 - M01 历史验收：五项基础服务、认证读写、S3/向量闭环与持久化演练通过；当前阶段基础测试运行 224 项（Windows 跳过 5 项）。93 条跨模块业务用例仍未执行。
 - V1 目标：前后端、业务服务、KF RAG 知识引擎、人工工单和数据闭环在局域网内完整运行

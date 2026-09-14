@@ -7,6 +7,7 @@
 - 禁止：承载订单规则、RAG 检索、售后状态机等领域逻辑。
 - 已实现 M02.1：FastAPI 应用工厂、生命周期、统一成功/错误响应、请求关联 ID、网关自身健康检查。
 - M03 已实现服务端会话认证、租户权限、限流与资源授权依赖；身份模式使用 `--with-database` 启用，默认无数据库模式仅保留健康接口。仍只监听本机回环地址。
+- M04.2 随数据库模式装配 Commerce 五个授权商品接口，SQL 和时效判断不放在 Gateway。[学习与接口](../../docs/operations/m04-2-authorized-catalog.md)。
 
 首次管理员在本机运行 `scripts/bootstrap_identity.py --username admin` 交互设置；不含默认密码。身份接口与完整说明见 [M03 验收](../../docs/operations/m03-identity-acceptance.md)。
 
@@ -15,11 +16,12 @@
 项目根目录执行（PyCharm 选择同一个解释器，运行 `scripts/run_gateway.py`）：
 
 ```powershell
-& .\_local_artifacts\dependencies\platform\python.exe scripts/run_gateway.py
+. .\scripts\enter_environment.ps1
+python scripts/run_gateway.py --with-database
 ```
 
 默认地址 `http://127.0.0.1:28000`；`/docs` 为 Swagger UI，`/openapi.json` 为本地模式定义。
-Swagger 的默认 JS/CSS 来自 CDN，离线时直接读取 `/openapi.json`；M02.3 再冻结完整机器合同。
+Swagger 的默认 JS/CSS 来自 CDN，离线时读取 `/openapi.json`；M02、M03、M04 的独立机器合同保存在 docs/api，旧合同不覆盖。
 
 默认仅读取 `ICS_GATEWAY_*` 环境变量，不自动读取根目录历史 `.env` 或 M01 密钥。
 M02.2 增加 `--with-database`：校验新平台容器/镜像/端口后读取 M01 非 root MySQL 凭据，注册连接与迁移健康检查；不执行自动迁移。

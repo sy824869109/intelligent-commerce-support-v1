@@ -31,6 +31,7 @@ def create_app(
     checks: Mapping[str, Check] | None = None,
     database: Database | None = None,
     identity=None,
+    catalog=None,
 ) -> FastAPI:
     """Each instance owns its lifecycle; database is an explicit optional dependency."""
     settings = settings or Settings()
@@ -68,6 +69,10 @@ def create_app(
     app.state.ready = False
     app.state.settings = settings
     app.state.metrics = Metrics(["http"])
+    if catalog is not None and identity is None:
+        raise ValueError("Catalog requires identity boundary")
+    if catalog is not None and catalog.identity is not identity:
+        raise ValueError("Catalog and gateway must share one identity authority")
     if identity is not None:
         from .identity import IdentityBoundary, router
         from ics_identity.service import IdentityError
@@ -90,6 +95,26 @@ def create_app(
                 else {"WWW-Authenticate": "Bearer"}
                 if exc.status == 401
                 else None,
+            )
+
+    if catalog is not None:
+        from .catalog import router as catalog_router
+        from ics_commerce.catalog import CatalogError
+
+        app.state.catalog = catalog
+        app.include_router(catalog_router())
+
+        @app.exception_handler(CatalogError)
+        async def catalog_error(request: Request, exc: CatalogError):
+            return failure(
+                request,
+                exc.status,
+                ErrorDetail(
+                    code=exc.code,
+                    message="商品数据暂不可用。" if exc.status == 503 else "商品查询参数无效。",
+                    retryable=exc.status == 503,
+                    client_action="RETRY_WITH_BACKOFF" if exc.status == 503 else "FIX_REQUEST",
+                ),
             )
 
     app.add_middleware(RequestContext, metrics=app.state.metrics)

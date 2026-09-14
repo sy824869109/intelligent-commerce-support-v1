@@ -29,6 +29,7 @@ def main() -> int:
         if args.gate == "tests":
             run("-m", "pip", "check")
             run("scripts/export_identity_openapi.py")
+            run("scripts/export_catalog_openapi.py")
             run(
                 "-m",
                 "ruff",

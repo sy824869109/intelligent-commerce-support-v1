@@ -95,10 +95,28 @@ def test_00_m03_existing_rows_survive_catalog_upgrade(db):
     assert not db.ready()
     with db.transaction() as session:
         session.execute(insert(organizations).values(id="UPGRADE_ONLY", name="迁移前已有组织"))
+    with db.engine.connect() as connection:
+        config.attributes["connection"] = connection
+        command.upgrade(config, "m04_0004")
+        connection.commit()
+        assert (
+            connection.scalar(
+                text("SELECT COUNT(*) FROM identity_permissions WHERE id = 'product.read'")
+            )
+            == 0
+        )
     migrate(db.engine)
     assert db.ready()
     assert {table.name for table in TABLES} <= set(inspect(db.engine).get_table_names())
     with db.transaction() as session:
+        assert (
+            session.scalar(
+                text(
+                    "SELECT COUNT(*) FROM identity_role_permissions WHERE permission_id = 'product.read'"
+                )
+            )
+            == 3
+        )
         assert (
             session.scalar(select(organizations.c.name).where(organizations.c.id == "UPGRADE_ONLY"))
             == "迁移前已有组织"

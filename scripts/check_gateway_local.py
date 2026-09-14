@@ -83,6 +83,21 @@ def main():
                 denied = exc.code == 401 and body.get("error", {}).get("code") == "AUTH_REQUIRED"
         if not denied:
             raise RuntimeError("Identity denial contract mismatch")
+        for path in (
+            "/api/v1/products",
+            "/api/v1/products/P1",
+            "/api/v1/products/P1/specifications",
+            "/api/v1/products/P1/skus/S1",
+            "/api/v1/products/P1/activity",
+        ):
+            try:
+                with opener.open(base + path, timeout=2):
+                    raise RuntimeError("Anonymous catalog request unexpectedly succeeded")
+            except urllib.error.HTTPError as exc:
+                with exc:
+                    body = json.loads(exc.read(8192))
+                    if exc.code != 401 or body.get("error", {}).get("code") != "AUTH_REQUIRED":
+                        raise RuntimeError("Catalog denial contract mismatch") from None
     finally:
         # Exact owned child only; never kill by port or process name.
         if process.poll() is None:
@@ -107,7 +122,7 @@ def main():
     ):
         raise RuntimeError("Owned process did not emit correlated success log")
     print(
-        "M02/M03 local HTTP + MySQL + trace + log + anonymous identity denial PASS; owned gateway stopped."
+        "M02/M03/M04 local HTTP + MySQL + trace + log + identity/catalog anonymous denial PASS; owned gateway stopped."
     )
     if args.tls_entry:
         destination = ROOT / "_local_artifacts/environment/check-gateway-tls.json"

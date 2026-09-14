@@ -428,6 +428,10 @@ class Identity:
             raise IdentityError("ACCESS_DENIED", 404)
         if current.role == "ADMIN":
             return current
+        if resource.kind == "product":
+            if resource.published and resource.customer_visible:
+                return current
+            raise IdentityError("ACCESS_DENIED", 404)
         if resource.kind == "knowledge":
             if not resource.published:
                 raise IdentityError("ACCESS_DENIED", 404)
