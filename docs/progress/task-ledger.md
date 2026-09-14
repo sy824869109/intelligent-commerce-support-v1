@@ -9,7 +9,7 @@
 
 ## 当前任务
 
-**M04.2 IN_PROGRESS（2026-09-14）**：授权商品查询、独立 OpenAPI 与 m04_0005 权限迁移已实现，本地验收中；活动来源尚未接入，端点明确 UNKNOWN。开发库升级后六表仍为空。[教程](../operations/m04-2-authorized-catalog.md)。下方 M04.1“未开始”是上一卡历史状态。
+**M04.2 DONE（2026-09-14）**：实现 `f778dff3586e3ba4548ba5ea4ea37c79e18b0085` 已推送，[CI 34796282887 SUCCESS](https://github.com/sy824869109/intelligent-commerce-support-v1/actions/runs/34796282887)。五个授权商品查询入口、独立 OpenAPI、事务内重查 product.read、租户与可见性隔离、来源时效/未知状态均已实现。156 项后端、169 项契约、59 项真实 MySQL 通过，244 项基础测试运行通过（Windows 跳过 5 项），源码/依赖与四镜像门禁通过。开发库 m04_0005 READY，只新增权限与三条授权，六张商品表为空；真实本机匿名 401 联测通过，临时网关停止。活动来源尚未接入，端点明确 UNKNOWN；未装依赖、改 KF 或清理维护测试组。[教程与行为](../operations/m04-2-authorized-catalog.md)。下一卡 M04.3 未开始，下方 M04.1“未开始”是历史状态。
 
 **M04.1 DONE（2026-09-13）**：实现 `04c6140` 已推送，[CI 34753021322 SUCCESS](https://github.com/sy824869109/intelligent-commerce-support-v1/actions/runs/34753021322)。新增商品、SKU、类目、属性、价格和库存六类纯模型及六张 SQL 表；整数金额、租户复合外键、显式未知库存、来源版本与 DATETIME(6)。开发库已由 m03_0003 升到 m04_0004，六表均为空，无默认商品。125 项后端、169 项契约、28 项真实 MySQL 通过；244 项基础测试运行通过（Windows 跳过 5 项），源码与依赖安全通过。旧 M03 数据升级保留、网关/数据库/匿名 401 联测通过，临时网关停止。M04.2 查询接口未开始，没有安装新依赖或清理维护测试组。教学与行为详见 [M04.1](../operations/m04-1-catalog-models.md)。下方 M03/ENV 的“未开始”是各阶段签收时状态。
 

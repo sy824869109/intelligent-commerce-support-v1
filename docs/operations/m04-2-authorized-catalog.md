@@ -93,6 +93,8 @@ python scripts/run_gateway.py --with-database
 
 初轮 MySQL 因模拟客户端地址共用触发登录限流，修正测试隔离后通过，未降低实际限流。旧降级测试要求稳定的 non-empty 信息，新迁移对齐，未放松降级保护。
 
-本地后端 156 项、契约 169 项、真实 MySQL 59 项通过；基础测试运行 244 项（Windows 跳过 5 项）。Ruff、Bandit 与锁定依赖审计通过，旧测试工具弃用提示保留，不因此升级环境。开发库 m04_0005 READY，五个商品入口真实本机 HTTP 匿名 401 联测通过，临时网关已停止。GitHub 提交与 CI 签收在推送后补记。
+本地后端 156 项、契约 169 项、真实 MySQL 59 项通过；基础测试运行 244 项（Windows 跳过 5 项）。Ruff、Bandit 与锁定依赖审计通过，旧测试工具弃用提示保留，不因此升级环境。开发库 m04_0005 READY，五个商品入口真实本机 HTTP 匿名 401 联测通过，临时网关已停止。
+
+实现提交 `f778dff3586e3ba4548ba5ea4ea37c79e18b0085` 已推送到 `origin/codex/v1-greenfield`，[GitHub CI 34796282887 SUCCESS](https://github.com/sy824869109/intelligent-commerce-support-v1/actions/runs/34796282887)。Windows/Linux 后端与契约、基础、安全与四镜像门禁通过。前端 M14 和手动 Milvus 全源码审计按既有策略跳过，不写成已运行。Windows CI 的现有 setup-miniconda 初始化/Node 弃用注释不影响最终成功；没有改动本机 Conda 或降低门禁。
 
 下一任务 M04.3 商品同步与幂等，不自动进入下一卡。
